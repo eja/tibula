@@ -1,0 +1,62 @@
+{
+  "module": {
+    "parentName": "ejaAdministration",
+    "power": 2,
+    "searchLimit": 0,
+    "sqlCreated": 1
+  },
+  "command": [
+    "logout",
+    "new",
+    "edit",
+    "previous",
+    "next",
+    "search",
+    "save",
+    "copy",
+    "list",
+    "delete",
+    "link",
+    "unlink"
+  ],
+  "field": [
+    {
+      "value": "",
+      "powerEdit": 1,
+      "powerList": 1,
+      "type": "text",
+      "translate": 0,
+      "powerSearch": 1,
+      "name": "name"
+    },
+    {
+      "value": "",
+      "powerEdit": 2,
+      "powerList": 0,
+      "type": "textArea",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "note"
+    }
+  ],
+  "translation": [
+    {
+      "ejaLanguage": "en",
+      "word": "ejaGroups",
+      "translation": "Groups"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaGroups",
+      "word": "name",
+      "translation": "Name"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaGroups",
+      "word": "note",
+      "translation": "Note"
+    }
+  ],
+  "name": "ejaGroups"
+}

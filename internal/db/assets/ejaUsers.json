@@ -1,0 +1,120 @@
+{
+  "module": {
+    "parentName": "ejaAdministration",
+    "power": 1,
+    "searchLimit": 0,
+    "sqlCreated": 1
+  },
+  "command": [
+    "logout",
+    "new",
+    "edit",
+    "previous",
+    "next",
+    "search",
+    "save",
+    "copy",
+    "list",
+    "delete"
+  ],
+  "field": [
+    {
+      "value": "",
+      "powerEdit": 1,
+      "powerList": 1,
+      "type": "text",
+      "translate": 0,
+      "powerSearch": 1,
+      "name": "username"
+    },
+    {
+      "value": "",
+      "powerEdit": 2,
+      "powerList": 0,
+      "type": "password",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "password"
+    },
+    {
+      "value": "SELECT ejaId,name FROM ejaModules ORDER BY name",
+      "powerEdit": 5,
+      "powerList": 1,
+      "type": "sqlMatrix",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "defaultModuleId"
+    },
+    {
+      "value": "SELECT ejaId,username FROM ejaUsers WHERE ejaId IN (SELECT value FROM ejaSession WHERE ejaSession.name='ejaOwners') ORDER BY username",
+      "powerEdit": 3,
+      "powerList": 3,
+      "type": "sqlMatrix",
+      "translate": 0,
+      "powerSearch": 3,
+      "name": "ejaOwner"
+    },
+    {
+      "value": "SELECT name,nameFull FROM ejaLanguages ORDER BY nameFull",
+      "powerEdit": 5,
+      "powerList": 0,
+      "type": "sqlMatrix",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "ejaLanguage"
+    },
+    {
+      "value": "",
+      "powerEdit": 6,
+      "powerList": 0,
+      "type": "text",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "ejaSession"
+    }
+  ],
+  "translation": [
+    {
+      "ejaLanguage": "en",
+      "word": "ejaUsers",
+      "translation": "Users"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaUsers",
+      "word": "defaultModuleId",
+      "translation": "Default Module"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaUsers",
+      "word": "ejaSession",
+      "translation": "Session Key"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaUsers",
+      "word": "ejaOwner",
+      "translation": "Owner"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaUsers",
+      "word": "username",
+      "translation": "Username"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaUsers",
+      "word": "password",
+      "translation": "Password"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaUsers",
+      "word": "ejaLanguage",
+      "translation": "Language"
+    }
+  ],
+  "name": "ejaUsers"
+}

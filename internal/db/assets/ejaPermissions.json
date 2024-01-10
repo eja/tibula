@@ -1,0 +1,78 @@
+{
+  "module": {
+    "sqlCreated": 1,
+    "sortList": "ejaModuleId",
+    "parentName": "ejaStructure",
+    "power": 4,
+    "searchLimit": 0
+  },
+  "command": [
+    "logout",
+    "new",
+    "edit",
+    "previous",
+    "next",
+    "search",
+    "save",
+    "copy",
+    "list",
+    "delete",
+    "link",
+		"unlink"
+  ],
+  "field": [
+    {
+      "value": "SELECT ejaId,name FROM ejaModules ORDER BY name;",
+      "powerEdit": 2,
+      "powerList": 2,
+      "type": "sqlMatrix",
+      "translate": 0,
+      "powerSearch": 2,
+      "name": "ejaModuleId"
+    },
+    {
+      "value": "SELECT ejaId,name FROM ejaCommands ORDER BY name;",
+      "powerEdit": 3,
+      "powerList": 3,
+      "type": "sqlMatrix",
+      "translate": 0,
+      "powerSearch": 3,
+      "name": "ejaCommandId"
+    },
+    {
+      "value": "SELECT ejaId,username FROM ejaUsers WHERE ejaId IN (SELECT value FROM ejaSession WHERE ejaSession.name='ejaOwners') ORDER BY username;",
+      "powerEdit": 1,
+      "powerList": 0,
+      "type": "sqlMatrix",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "ejaOwner"
+    }
+  ],
+  "translation": [
+    {
+      "ejaLanguage": "en",
+      "word": "ejaPermissions",
+      "translation": "Permissions"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaPermissions",
+      "word": "ejaOwner",
+      "translation": "Owner"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaPermissions",
+      "word": "ejaModuleId",
+      "translation": "Module"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaPermissions",
+      "word": "ejaCommandId",
+      "translation": "Command"
+    }
+  ],
+  "name": "ejaPermissions"
+}

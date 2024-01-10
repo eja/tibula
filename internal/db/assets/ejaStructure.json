@@ -1,0 +1,21 @@
+{
+  "module": {
+    "sqlCreated": 1,
+    "sortList": "",
+    "parentName": "eja",
+    "power": 2,
+    "searchLimit": 0
+  },
+  "command": [
+    "logout"
+  ],
+  "field": [],
+  "translation": [
+    {
+      "ejaLanguage": "en",
+      "word": "ejaStructure",
+      "translation": "Structure"
+    }
+  ],
+  "name": "ejaStructure"
+}

@@ -1,0 +1,19 @@
+{
+  "module": {
+    "power": 1,
+    "searchLimit": 0,
+    "sqlCreated": 0
+  },
+  "command": [
+    "logout"
+  ],
+  "field": [],
+  "translation": [
+    {
+      "ejaLanguage": "en",
+      "word": "eja",
+      "translation": "Tibula"
+    }
+  ],
+  "name": "eja"
+}

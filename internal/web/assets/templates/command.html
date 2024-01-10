@@ -1,0 +1,24 @@
+			{{if and .Link (gt .Link.ModuleId 0) (gt .Link.FieldId 0) }}
+			{{if or (eq .ActionType "Search") (eq .ActionType "List") }}
+			<div class="form-check form-switch mt-3">
+				{{if .SearchLink }}
+  			<input class="form-check-input" type="checkbox" name="ejaSearchLink" value="1" id="SearchLinks" checked>
+				{{else}}
+				<input class="form-check-input" type="checkbox" name="ejaSearchLink" value="1" id="SearchLinks">
+				{{end}}
+  			<label class="form-check-label" for="SearchLinks">Links Only</label>
+			</div>
+			{{end}}
+			{{end}}
+			<div class="text-center mt-3">
+				{{range .Commands}}
+					{{if and (eq .Name "previous") (eq $.SearchOffset 0) }}
+					{{else if and (eq .Name "next") (ge $.SearchLast $.SearchCount) }}
+					{{else if and (not $.Linking) (eq .Name "link")}}
+					{{else if and (not $.Linking) (eq .Name "unlink")}}
+					{{else}}
+					<button type="submit" name="ejaAction" value="{{.Name}}"class="btn btn-light">{{.Label}}</button>
+					{{end}}
+				{{end}}
+			</div>
+

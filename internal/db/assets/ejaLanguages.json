@@ -1,0 +1,74 @@
+{
+  "module": {
+    "parentName": "ejaSystem",
+    "power": 50,
+    "searchLimit": 0,
+    "sqlCreated": 1
+  },
+  "command": [
+    "logout",
+    "new",
+    "edit",
+    "previous",
+    "next",
+    "search",
+    "save",
+    "copy",
+    "list",
+    "delete"
+  ],
+  "field": [
+    {
+      "value": "",
+      "powerEdit": 1,
+      "powerList": 1,
+      "type": "text",
+      "translate": 0,
+      "powerSearch": 1,
+      "name": "name"
+    },
+    {
+      "value": "",
+      "powerEdit": 2,
+      "powerList": 2,
+      "type": "text",
+      "translate": 0,
+      "powerSearch": 2,
+      "name": "nameFull"
+    }
+  ],
+  "translation": [
+    {
+      "ejaLanguage": "en",
+      "word": "ejaLanguages",
+      "translation": "Languages"
+    },
+    {
+      "ejaLanguage": "en",
+			"ejaModuleName": "ejaLanguages",
+      "word": "name",
+      "translation": "Code"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaLanguages",
+      "word": "nameFull",
+      "translation": "Full Name"
+    }
+   ],
+  "name": "ejaLanguages",
+  "data": [
+    {
+      "name": "en",
+      "nameFull": "English"
+    },
+    {
+      "name": "es",
+      "nameFull": "Español"
+    },
+    {
+      "name": "it",
+      "nameFull": "Italiano"
+    }
+  ]
+}

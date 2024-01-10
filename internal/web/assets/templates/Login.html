@@ -1,0 +1,21 @@
+{{template "head.html" .}}
+	<div class="container">
+		<h2 class="text-center mt-2">Tibula</h2>
+		<div class="row justify-content-center">
+			<div class="col-md-6 mt-5">
+				<div class="mb-3">
+					<label for="username" class="form-label">Username</label>
+					<input type="text" id="username" name="ejaValues[username]" class="form-control" required>
+				</div>
+				<div class="mb-3">
+					<label for="password" class="form-label">Password</label>
+					<input type="password" id="password" name="ejaValues[password]" class="form-control" required>
+				</div>
+				<div class="mb-3 text-center">
+					<button type="submit" name="ejaAction" value="login" class="btn btn-primary">Login</button>
+				</div>
+			</div>
+		</div>
+	</div>
+{{template "notification.html" .}}
+{{template "foot.html" .}}

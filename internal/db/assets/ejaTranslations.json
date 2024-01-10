@@ -1,0 +1,149 @@
+{
+  "module": {
+    "parentName": "ejaAdministration",
+    "power": 6,
+    "searchLimit": 0,
+    "sqlCreated": 1
+  },
+  "command": [
+    "logout",
+    "new",
+    "edit",
+    "previous",
+    "next",
+    "search",
+    "save",
+    "copy",
+    "list",
+    "delete"
+  ],
+  "field": [
+    {
+      "value": "SELECT ejaId,name FROM ejaModules ORDER BY name;",
+      "powerEdit": 2,
+      "powerList": 2,
+      "type": "sqlMatrix",
+      "translate": 0,
+      "powerSearch": 2,
+      "name": "ejaModuleId"
+    },
+    {
+      "value": "SELECT name,nameFull FROM ejaLanguages ORDER BY nameFull;",
+      "powerEdit": 4,
+      "powerList": 3,
+      "type": "sqlMatrix",
+      "translate": 0,
+      "powerSearch": 3,
+      "name": "ejaLanguage"
+    },
+    {
+      "value": "",
+      "powerEdit": 1,
+      "powerList": 1,
+      "type": "text",
+      "translate": 0,
+      "powerSearch": 1,
+      "name": "word"
+    },
+    {
+      "value": "",
+      "powerEdit": 5,
+      "powerList": 2,
+      "type": "htmlArea",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "translation"
+    }
+  ],
+  "translation": [
+    {
+      "ejaLanguage": "en",
+      "word": "ejaTranslations",
+      "translation": "Translations"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaTranslations",
+      "word": "word",
+      "translation": "Translating Word"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaTranslations",
+      "word": "translation",
+      "translation": "Translation"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaTranslations",
+      "word": "ejaLanguage",
+      "translation": "Language"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaTranslations",
+      "word": "ejaModuleId",
+      "translation": "Module"
+    },
+    {
+      "word": "ejaNotAuthorized",
+      "translation": "Wrong Username or Password"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "ejaNotPermitted",
+      "translation": "Operation not permitted"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "ejaActionNewError",
+      "translation": "Cannot create a new entry"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "ejaSqlModuleNotCreated",
+      "translation": "DB table not created"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "ejaSqlModuleCreated",
+      "translation": "DB table created"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "ejaModulePermissionsAddDefault",
+      "translation": "Default permissions added"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "ejaModulePermissionAdd",
+      "translation": "Operative permissions added"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "ejaSqlFieldCreated",
+      "translation": "DB field created"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "ejaSqlFieldNotCreated",
+      "translation": "DB field not created"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "ejaErrorEditId",
+      "translation": "Field ID is not valid, skipping"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "ejaSqlModuleDeleteTrue",
+      "translation": "Module and all dependencies removed"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "ejaSqlModuleDeleteFalse",
+      "translation": "Module removal failed or not completed"
+    }
+  ],
+  "name": "ejaTranslations"
+}

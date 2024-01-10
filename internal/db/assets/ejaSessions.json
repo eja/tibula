@@ -1,0 +1,101 @@
+{
+  "module": {
+    "parentName": "ejaSystem",
+    "power": 5,
+    "searchLimit": 0,
+    "sqlCreated": 1
+  },
+  "command": [
+    "logout",
+    "previous",
+    "next",
+    "search",
+    "list",
+    "delete"
+  ],
+  "field": [
+    {
+      "value": "",
+      "powerEdit": 1,
+      "powerList": 2,
+      "type": "text",
+      "translate": 0,
+      "powerSearch": 1,
+      "name": "name"
+    },
+    {
+      "value": "",
+      "powerEdit": 3,
+      "powerList": 4,
+      "type": "textArea",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "value"
+    },
+    {
+      "value": "SELECT ejaId,username FROM ejaUsers ORDER BY username;",
+      "powerEdit": 0,
+      "powerList": 1,
+      "type": "sqlMatrix",
+      "translate": 0,
+      "powerSearch": 1,
+      "name": "ejaOwner"
+    },
+    {
+      "value": "",
+      "powerEdit": 2,
+      "powerList": 3,
+      "type": "text",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "sub"
+    },
+    {
+      "value": "",
+      "powerEdit": 10,
+      "powerList": 10,
+      "type": "datetime",
+      "translate": 0,
+      "powerSearch": 10,
+      "name": "ejaLog"
+    }
+  ],
+  "translation": [
+    {
+      "ejaLanguage": "en",
+      "word": "ejaSessions",
+      "translation": "Sessions"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaSessions",
+      "word": "ejaLog",
+      "translation": "Log"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaSessions",
+      "word": "name",
+      "translation": "Name"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaSessions",
+      "word": "value",
+      "translation": "Value"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaSessions",
+      "word": "ejaOwner",
+      "translation": "Owner"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaSessions",
+      "word": "sub",
+      "translation": "Tag"
+    }
+  ],
+  "name": "ejaSessions"
+}

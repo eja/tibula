@@ -1,0 +1,90 @@
+{
+  "module": {
+    "parentName": "ejaStructure",
+    "power": 5,
+    "searchLimit": 0,
+    "sqlCreated": 1
+  },
+  "command": [
+    "logout",
+    "new",
+    "edit",
+    "previous",
+    "next",
+    "search",
+    "save",
+    "copy",
+    "list",
+    "delete"
+  ],
+  "field": [
+    {
+      "value": "SELECT ejaId,name FROM ejaModules ORDER BY name;",
+      "powerEdit": 1,
+      "powerList": 1,
+      "type": "sqlMatrix",
+      "translate": 0,
+      "powerSearch": 1,
+      "name": "dstModuleId"
+    },
+    {
+      "value": "SELECT ejaId,name FROM ejaModules ORDER BY name;",
+      "powerEdit": 2,
+      "powerList": 2,
+      "type": "sqlMatrix",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "srcModuleId"
+    },
+    {
+      "value": "",
+      "powerEdit": 5,
+      "powerList": 5,
+      "type": "integer",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "power"
+    },
+    {
+      "value": "",
+      "powerEdit": 4,
+      "powerList": 4,
+      "type": "text",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "srcFieldName"
+    }
+  ],
+  "translation": [
+    {
+      "ejaLanguage": "en",
+      "word": "ejaModuleLinks",
+      "translation": "Module Links"
+    },
+    {
+      "ejaLanguage": "en",
+			"ejaModuleName": "ejaModuleLinks",
+      "word": "srcFieldName",
+      "translation": "Linked Field Name"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaModuleLinks",
+      "word": "dstModuleId",
+      "translation": "Linking Module"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaModuleLinks",
+      "word": "srcModuleId",
+      "translation": "Linked Module"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaModuleLinks",
+      "word": "power",
+      "translation": "Power"
+    }
+  ],
+  "name": "ejaModuleLinks"
+}

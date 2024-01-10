@@ -1,0 +1,183 @@
+{
+  "module": {
+    "sqlCreated": 1,
+    "sortList": "name",
+    "parentName": "ejaSystem",
+    "power": 3,
+    "searchLimit": 0
+  },
+  "command": [
+    "logout",
+    "new",
+    "edit",
+    "previous",
+    "next",
+    "search",
+    "save",
+    "copy",
+    "list",
+    "delete",
+    "link",
+    "unlink"
+  ],
+  "field": [
+    {
+      "value": "",
+      "powerEdit": 1,
+      "powerList": 1,
+      "type": "text",
+      "translate": 0,
+      "powerSearch": 1,
+      "name": "name"
+    },
+    {
+      "value": "",
+      "powerEdit": 2,
+      "powerList": 2,
+      "type": "integer",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "powerSearch"
+    },
+    {
+      "value": "",
+      "powerEdit": 3,
+      "powerList": 3,
+      "type": "integer",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "powerList"
+    },
+    {
+      "value": "",
+      "powerEdit": 4,
+      "powerList": 4,
+      "type": "integer",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "powerEdit"
+    },
+    {
+      "value": "",
+      "powerEdit": 5,
+      "powerList": 5,
+      "type": "boolean",
+      "translate": 0,
+      "powerSearch": 2,
+      "name": "defaultCommand"
+    },
+    {
+      "value": "",
+      "powerEdit": 6,
+      "powerList": 6,
+      "type": "boolean",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "linking"
+    }
+  ],
+  "translation": [
+    {
+      "ejaLanguage": "en",
+      "word": "ejaCommands",
+      "translation": "Commands"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaCommands",
+      "word": "name",
+      "translation": "Name"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaCommands",
+      "word": "powerSearch",
+      "translation": "Search Power"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaCommands",
+      "word": "powerEdit",
+      "translation": "Edit Power"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaCommands",
+      "word": "powerList",
+      "translation": "List Power"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaCommands",
+      "word": "defaultCommand",
+      "translation": "Default"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaCommands",
+      "word": "linking",
+      "translation": "Linkable"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "logout",
+      "translation": "Logout"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "new",
+      "translation": "New"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "edit",
+      "translation": "Edit"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "previous",
+      "translation": "<"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "next",
+      "translation": ">"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "search",
+      "translation": "Search"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "save",
+      "translation": "Save"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "copy",
+      "translation": "Copy"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "list",
+      "translation": "List"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "delete",
+      "translation": "Delete"
+    },
+     {
+      "ejaLanguage": "en",
+      "word": "link",
+      "translation": "Link"
+    },
+     {
+      "ejaLanguage": "en",
+      "word": "unlink",
+      "translation": "Unlink"
+		}
+  ],
+  "name": "ejaCommands"
+}

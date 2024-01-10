@@ -1,0 +1,178 @@
+{
+  "module": {
+    "sqlCreated": 1,
+    "sortList": "",
+    "parentName": "ejaStructure",
+    "power": 3,
+    "searchLimit": 0
+  },
+  "command": [
+    "logout",
+    "new",
+    "edit",
+    "previous",
+    "next",
+    "search",
+    "save",
+    "copy",
+    "list",
+    "delete"
+  ],
+  "field": [
+    {
+      "value": "",
+      "powerEdit": 1,
+      "powerList": 1,
+      "type": "text",
+      "translate": 0,
+      "powerSearch": 1,
+      "name": "name"
+    },
+    {
+      "value": "boolean\ndate\ndatetime\ndecimal\nfile\nhidden\nhtmlArea\ninteger\nlabel\npassword\nselect\nsqlHidden\nsqlMatrix\nsqlTable\nsqlValue\ntext\ntextArea\ntime\nview\n",
+      "powerEdit": 2,
+      "powerList": 2,
+      "type": "select",
+      "translate": 0,
+      "powerSearch": 2,
+      "name": "type"
+    },
+    {
+      "value": "",
+      "powerEdit": 100,
+      "powerList": 0,
+      "type": "textArea",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "value"
+    },
+    {
+      "value": "",
+      "powerEdit": 7,
+      "powerList": 201,
+      "type": "integer",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "powerList"
+    },
+    {
+      "value": "",
+      "powerEdit": 8,
+      "powerList": 202,
+      "type": "integer",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "powerEdit"
+    },
+    {
+      "value": "",
+      "powerEdit": 6,
+      "powerList": 200,
+      "type": "integer",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "powerSearch"
+    },
+    {
+      "value": "SELECT ejaId,name FROM ejaModules ORDER BY name",
+      "powerEdit": 2,
+      "powerList": 2,
+      "type": "sqlMatrix",
+      "translate": 0,
+      "powerSearch": 3,
+      "name": "ejaModuleId"
+    },
+    {
+      "value": "",
+      "powerEdit": 50,
+      "powerList": 0,
+      "type": "boolean",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "translate"
+    },
+    {
+      "value": "SELECT ejaId,name FROM ejaGroups ORDER BY name",
+      "powerEdit": 60,
+      "powerList": 0,
+      "type": "hidden",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "ejaGroup"
+    }
+  ],
+  "translation": [
+    {
+      "ejaLanguage": "en",
+      "word": "ejaFields",
+      "translation": "Fields"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaFields",
+      "word": "ejaModuleId",
+      "translation": "Module"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaFields",
+      "word": "type",
+      "translation": "Type"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaFields",
+      "word": "value",
+      "translation": "Values"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaFields",
+      "word": "powerEdit",
+      "translation": "Edit Power"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaFields",
+      "word": "powerList",
+      "translation": "List Power"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaFields",
+      "word": "powerSearch",
+      "translation": "Search Power"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaFields",
+      "word": "sqlType",
+      "translation": "Sql Type"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaFields",
+      "word": "translate",
+      "translation": "Translate"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaFields",
+      "word": "name",
+      "translation": "Name"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaFields",
+      "word": "ejaGroup",
+      "translation": "Edit Group"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaFields",
+      "word": "ejaSqlFieldCreated",
+      "translation": "Sql field created"
+    }
+  ],
+  "name": "ejaFields"
+}

@@ -1,0 +1,129 @@
+{
+  "module": {
+    "sqlCreated": 1,
+    "sortList": "name",
+    "parentName": "ejaStructure",
+    "power": 1,
+    "searchLimit": 0
+  },
+  "command": [
+    "logout",
+    "new",
+    "edit",
+    "previous",
+    "next",
+    "search",
+    "save",
+    "copy",
+    "list",
+    "delete",
+    "link",
+    "unlink"
+  ],
+  "field": [
+    {
+      "value": "SELECT ejaId,name FROM ejaModules ORDER BY name",
+      "powerEdit": 2,
+      "powerList": 2,
+      "type": "sqlMatrix",
+      "translate": 0,
+      "powerSearch": 2,
+      "name": "parentId"
+    },
+    {
+      "value": "",
+      "powerEdit": 1,
+      "powerList": 1,
+      "type": "text",
+      "translate": 0,
+      "powerSearch": 1,
+      "name": "name"
+    },
+    {
+      "value": "",
+      "powerEdit": 3,
+      "powerList": 3,
+      "type": "integer",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "power"
+    },
+    {
+      "value": "",
+      "powerEdit": 7,
+      "powerList": 0,
+      "type": "boolean",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "sqlCreated"
+    },
+    {
+      "value": "",
+      "powerEdit": 5,
+      "powerList": 0,
+      "type": "integer",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "searchLimit"
+    },
+    {
+      "value": "SELECT name AS value, name AS title FROM ejaFields WHERE ejaModuleId=(SELECT value FROM ejaSession WHERE ejaSession.name='ejaId') ORDER BY name",
+      "powerEdit": 20,
+      "powerList": 0,
+      "type": "sqlMatrix",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "sortList"
+    }
+  ],
+  "translation": [
+    {
+      "ejaLanguage": "en",
+      "word": "ejaModules",
+      "translation": "Modules"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaModules",
+      "word": "name",
+      "translation": "Name"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaModules",
+      "word": "parentId",
+      "translation": "Parent"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaModules",
+      "word": "power",
+      "translation": "Power"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaModules",
+      "word": "searchLimit",
+      "translation": "Page Results"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaModules",
+      "word": "sqlCreated",
+      "translation": "SQL Table"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaModules",
+      "word": "sortList",
+      "translation": "Default Sorting"
+    },
+		{
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaModules",
+      "word": "ejaSqlTableCreated",
+      "translation": "Sql table created"
+    }
+  ],
+  "name": "ejaModules"
+}
