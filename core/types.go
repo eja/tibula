@@ -1,6 +1,6 @@
 // Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
 
-package web
+package core
 
 import (
 	"github.com/eja/tibula/db"

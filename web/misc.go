@@ -3,22 +3,8 @@
 package web
 
 import (
-	"fmt"
-	"log"
 	"regexp"
 )
-
-func info(array *[]string, format string, args ...interface{}) {
-	row := fmt.Sprintf(format, args...)
-	log.Println("[info]", row)
-	*array = append(*array, row)
-}
-
-func alert(array *[]string, format string, args ...interface{}) {
-	row := fmt.Sprintf(format, args...)
-	log.Println("[alert]", row)
-	*array = append(*array, row)
-}
 
 func arrayKeyNameExtract(input string) string {
 	re := regexp.MustCompile(`\[(.*?)\]`)
