@@ -6,11 +6,13 @@ import (
 	"embed"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"html/template"
 	"io/fs"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strings"
 	"tibula/internal/cfg"
@@ -35,9 +37,25 @@ func Start() error {
 	}
 
 	address := fmt.Sprintf("%s:%d", cfg.Options.WebHost, cfg.Options.WebPort)
-	log.Println("Starting server on", address)
-	if err := http.ListenAndServe(address, mux); err != nil {
-		return err
+
+	if cfg.Options.WebTlsPrivate != "" && cfg.Options.WebTlsPublic != "" {
+		if _, err := os.Stat(cfg.Options.WebTlsPrivate); err != nil {
+			return errors.New("cannot open private certificate")
+		} else {
+			if _, err := os.Stat(cfg.Options.WebTlsPublic); err != nil {
+				return errors.New("cannot open public certificate")
+			} else {
+				log.Printf("Starting server on https://%s\n", address)
+				if err := http.ListenAndServeTLS(address, cfg.Options.WebTlsPublic, cfg.Options.WebTlsPrivate, mux); err != nil {
+					return err
+				}
+			}
+		}
+	} else {
+		log.Printf("Starting server on http://%s\n", address)
+		if err := http.ListenAndServe(address, mux); err != nil {
+			return err
+		}
 	}
 
 	return nil

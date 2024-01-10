@@ -14,23 +14,25 @@ var Version = "17.1.5"
 var Options TypeConfig
 
 type TypeConfig struct {
-	DbType     string `json:"db_type"`
-	DbName     string `json:"db_name"`
-	DbUser     string `json:"db_user"`
-	DbPass     string `json:"db_pass"`
-	DbHost     string `json:"db_host"`
-	DbPort     int    `json:"db_port"`
-	WebHost    string `json:"web_host"`
-	WebPort    int    `json:"web_port"`
-	WebPath    string `json:"web_path"`
-	Start      bool   `json:"start"`
-	Setup      bool   `json:"setup"`
-	SetupUser  string `json:"setup_user"`
-	SetupPass  string `json:"setup_pass"`
-	SetupPath  string `json:"setup_path"`
-	ConfigFile string `json:"config_file"`
-	Language   string `json:"language"`
-	LogLevel   int    `json:"log_level"`
+	DbType        string `json:"db_type"`
+	DbName        string `json:"db_name"`
+	DbUser        string `json:"db_user"`
+	DbPass        string `json:"db_pass"`
+	DbHost        string `json:"db_host"`
+	DbPort        int    `json:"db_port"`
+	WebHost       string `json:"web_host"`
+	WebPort       int    `json:"web_port"`
+	WebPath       string `json:"web_path"`
+	WebTlsPublic  string `json:"web_tls_public"`
+	WebTlsPrivate string `json:"web_tls_private"`
+	Start         bool   `json:"start"`
+	Setup         bool   `json:"setup"`
+	SetupUser     string `json:"setup_user"`
+	SetupPass     string `json:"setup_pass"`
+	SetupPath     string `json:"setup_path"`
+	ConfigFile    string `json:"config_file"`
+	Language      string `json:"language"`
+	LogLevel      int    `json:"log_level"`
 }
 
 func Configure() {
@@ -44,6 +46,8 @@ func Configure() {
 	flag.StringVar(&Options.WebPath, "web-path", "", "web path")
 	flag.StringVar(&Options.WebHost, "web-host", "localhost", "web listen address")
 	flag.IntVar(&Options.WebPort, "web-port", 35248, "web listen port")
+	flag.StringVar(&Options.WebTlsPublic, "web-tls-public", "", "web ssl/tls public certificate")
+	flag.StringVar(&Options.WebTlsPrivate, "web-tls-private", "", "web ssl/tls private certificate")
 	flag.BoolVar(&Options.Setup, "setup", false, "initialize the database")
 	flag.StringVar(&Options.SetupPath, "setup-path", "", "setup files path")
 	flag.StringVar(&Options.SetupUser, "setup-user", "admin", "setup admin username")
