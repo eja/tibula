@@ -3,9 +3,9 @@
 package test
 
 import (
+	"github.com/eja/tibula/db"
+	"github.com/eja/tibula/sys"
 	"testing"
-	"tibula/internal/cfg"
-	"tibula/internal/db"
 )
 
 func TestModule(t *testing.T) {
@@ -13,7 +13,7 @@ func TestModule(t *testing.T) {
 	tableName := "ejaUsers"
 	fieldName := "username"
 
-	cfg.Configure()
+	sys.Configure()
 
 	t.Run("Open db", func(t *testing.T) {
 		if err := db.Open("sqlite", ":memory:", "", "", "", 0); err != nil {
@@ -22,7 +22,7 @@ func TestModule(t *testing.T) {
 	})
 
 	t.Run("Populate db core", func(t *testing.T) {
-		if err := db.Setup("../../"+cfg.Options.SetupPath, "test", "test"); err != nil {
+		if err := db.Setup("../"+sys.Options.SetupPath, "test", "test"); err != nil {
 			t.Error("Setup error", err)
 		}
 	})

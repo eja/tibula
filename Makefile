@@ -16,7 +16,7 @@ test:
 	@go mod tidy
 	@go mod verify
 	@go vet ./...
-	@go test -v ./internal/test
+	@go test -v ./test
 
 tibula:
 	@go build -ldflags "-s -w"

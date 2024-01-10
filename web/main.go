@@ -8,6 +8,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/eja/tibula/db"
+	"github.com/eja/tibula/sys"
 	"html/template"
 	"io/fs"
 	"log"
@@ -15,8 +17,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"tibula/internal/cfg"
-	"tibula/internal/db"
 )
 
 //go:embed assets
@@ -26,8 +26,8 @@ func Start() error {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", run)
-	if cfg.Options.WebPath != "" {
-		mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(filepath.Join(cfg.Options.WebPath, "static")))))
+	if sys.Options.WebPath != "" {
+		mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(filepath.Join(sys.Options.WebPath, "static")))))
 	} else {
 		staticFs, err := fs.Sub(assets, "assets/static")
 		if err != nil {
@@ -36,17 +36,17 @@ func Start() error {
 		mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.FS(staticFs))))
 	}
 
-	address := fmt.Sprintf("%s:%d", cfg.Options.WebHost, cfg.Options.WebPort)
+	address := fmt.Sprintf("%s:%d", sys.Options.WebHost, sys.Options.WebPort)
 
-	if cfg.Options.WebTlsPrivate != "" && cfg.Options.WebTlsPublic != "" {
-		if _, err := os.Stat(cfg.Options.WebTlsPrivate); err != nil {
+	if sys.Options.WebTlsPrivate != "" && sys.Options.WebTlsPublic != "" {
+		if _, err := os.Stat(sys.Options.WebTlsPrivate); err != nil {
 			return errors.New("cannot open private certificate")
 		} else {
-			if _, err := os.Stat(cfg.Options.WebTlsPublic); err != nil {
+			if _, err := os.Stat(sys.Options.WebTlsPublic); err != nil {
 				return errors.New("cannot open public certificate")
 			} else {
 				log.Printf("Starting server on https://%s\n", address)
-				if err := http.ListenAndServeTLS(address, cfg.Options.WebTlsPublic, cfg.Options.WebTlsPrivate, mux); err != nil {
+				if err := http.ListenAndServeTLS(address, sys.Options.WebTlsPublic, sys.Options.WebTlsPrivate, mux); err != nil {
 					return err
 				}
 			}
@@ -62,12 +62,12 @@ func Start() error {
 }
 
 func run(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Server", "Tibula/"+cfg.Version)
+	w.Header().Set("Server", "Tibula/"+sys.Version)
 	templateFile := "Login.html"
 	var err error
 	var user map[string]string
 	eja := TypeEja{
-		Language:           cfg.Options.Language,
+		Language:           sys.Options.Language,
 		DefaultSearchLimit: 15,
 		DefaultSearchOrder: "ejaLog DESC",
 		Values:             make(map[string]string),
@@ -81,8 +81,8 @@ func run(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//open db connection
-	db.LogLevel = cfg.Options.LogLevel
-	if err := db.Open(cfg.Options.DbType, cfg.Options.DbName, cfg.Options.DbUser, cfg.Options.DbPass, cfg.Options.DbHost, cfg.Options.DbPort); err != nil {
+	db.LogLevel = sys.Options.LogLevel
+	if err := db.Open(sys.Options.DbType, sys.Options.DbName, sys.Options.DbUser, sys.Options.DbPass, sys.Options.DbHost, sys.Options.DbPort); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
@@ -477,8 +477,8 @@ func run(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 		var tpl *template.Template
-		if cfg.Options.WebPath != "" {
-			tpl, err = template.ParseGlob(filepath.Join(cfg.Options.WebPath, "templates", "*.html"))
+		if sys.Options.WebPath != "" {
+			tpl, err = template.ParseGlob(filepath.Join(sys.Options.WebPath, "templates", "*.html"))
 		} else {
 			tpl, err = template.ParseFS(assets, "assets/templates/*.html")
 		}

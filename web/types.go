@@ -3,7 +3,7 @@
 package web
 
 import (
-	"tibula/internal/db"
+	"github.com/eja/tibula/db"
 )
 
 type TypeEja struct {

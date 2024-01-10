@@ -3,31 +3,31 @@
 package main
 
 import (
+	"github.com/eja/tibula/db"
+	"github.com/eja/tibula/sys"
+	"github.com/eja/tibula/web"
 	"log"
-	"tibula/internal/cfg"
-	"tibula/internal/db"
-	"tibula/internal/web"
 )
 
 func main() {
-	cfg.Configure()
+	sys.Configure()
 
-	if cfg.Options.Setup {
-		err := db.Open(cfg.Options.DbType, cfg.Options.DbName, cfg.Options.DbUser, cfg.Options.DbPass, cfg.Options.DbHost, cfg.Options.DbPort)
+	if sys.Options.Setup {
+		err := db.Open(sys.Options.DbType, sys.Options.DbName, sys.Options.DbUser, sys.Options.DbPass, sys.Options.DbHost, sys.Options.DbPort)
 		if err != nil {
 			log.Fatal(err)
 		}
-		if err := db.Setup(cfg.Options.SetupPath, cfg.Options.SetupUser, cfg.Options.SetupPass); err != nil {
+		if err := db.Setup(sys.Options.SetupPath, sys.Options.SetupUser, sys.Options.SetupPass); err != nil {
 			log.Fatal(err)
 		}
-	} else if cfg.Options.Start {
-		if cfg.Options.DbName == "" {
+	} else if sys.Options.Start {
+		if sys.Options.DbName == "" {
 			log.Fatal("Database name/file is mandatory")
 		}
 		if err := web.Start(); err != nil {
 			log.Fatal("Cannot start the web service: ", err)
 		}
 	} else {
-		cfg.Help()
+		sys.Help()
 	}
 }

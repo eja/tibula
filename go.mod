@@ -1,4 +1,4 @@
-module tibula
+module github.com/eja/tibula
 
 go 1.19
 

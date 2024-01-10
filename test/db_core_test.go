@@ -3,8 +3,8 @@
 package test
 
 import (
+	"github.com/eja/tibula/db"
 	"testing"
-	"tibula/internal/db"
 )
 
 func TestDbOperations(t *testing.T) {
