@@ -1,6 +1,6 @@
 // Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
 
-package core
+package api
 
 import (
 	"fmt"

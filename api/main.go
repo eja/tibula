@@ -1,6 +1,6 @@
 // Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
 
-package core
+package api
 
 import (
 	"encoding/base64"
@@ -9,8 +9,8 @@ import (
 	"github.com/eja/tibula/sys"
 )
 
-func Init() TypeEja {
-	return TypeEja{
+func Set() TypeApi {
+	return TypeApi{
 		Language:           sys.Options.Language,
 		DefaultSearchLimit: 15,
 		DefaultSearchOrder: "ejaLog DESC",
@@ -20,7 +20,7 @@ func Init() TypeEja {
 	}
 }
 
-func Run(eja TypeEja) (result TypeEja, err error) {
+func Run(eja TypeApi) (result TypeApi, err error) {
 	var user map[string]string
 
 	//open db connection

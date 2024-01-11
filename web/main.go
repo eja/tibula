@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/eja/tibula/core"
+	"github.com/eja/tibula/api"
 	"github.com/eja/tibula/db"
 	"github.com/eja/tibula/sys"
 	"html/template"
@@ -62,10 +62,10 @@ func Start() error {
 }
 
 func root(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Server", "Tibula/"+sys.Version)
+	w.Header().Set("Server", sys.Name+"/"+sys.Version)
 	templateFile := "Login.html"
 	var err error
-	eja := core.Init()
+	eja := api.Set()
 
 	r.PostFormValue("")
 	if err := r.ParseForm(); err != nil {
@@ -138,7 +138,7 @@ func root(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	eja, err = core.Run(eja)
+	eja, err = api.Run(eja)
 	if err != nil {
 		log.Println(r.RemoteAddr, err)
 	} else {

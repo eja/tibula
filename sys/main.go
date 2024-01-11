@@ -2,5 +2,7 @@
 
 package sys
 
-var Version = "17.1.10"
+const Name = "Tibula"
+const Version = "17.1.11"
+
 var Options TypeConfig
