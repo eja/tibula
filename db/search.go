@@ -100,7 +100,6 @@ func SearchQuery(ownerId int64, tableName string, values map[string]string) (str
 				default:
 					sqlAnd = fmt.Sprintf(" AND %s = ? ", key)
 				}
-
 			}
 			if sqlAnd == "" {
 				sqlAnd = fmt.Sprintf(" AND %s LIKE ? ", key)
@@ -120,7 +119,7 @@ func SearchQuery(ownerId int64, tableName string, values map[string]string) (str
 
 // SearchCount calculates the number of records for a given search query and arguments.
 func SearchCount(query string, args []interface{}) int64 {
-	queryCount := ""
+	var queryCount string
 	start := strings.Index(strings.ToUpper(query), "FROM")
 	stop := strings.LastIndex(strings.ToUpper(query), "LIMIT")
 	if start > 0 {
@@ -192,7 +191,6 @@ func searchRow(ownerId int64, queryHead TypeSearchColumn, row TypeRow) TypeRow {
 		}
 		if len(row[colName]) >= 19 {
 			switch queryHead[colName]["type"] {
-
 			case "datetime":
 				filteredRow[colName] = row[colName][:10] + " " + row[colName][11:19]
 			case "date":

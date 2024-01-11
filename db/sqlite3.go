@@ -126,7 +126,7 @@ func sqliteFieldExists(tableName, fieldName string) (bool, error) {
 	}
 
 	for _, row := range rows {
-		if string(row["name"]) == fieldName {
+		if row["name"] == fieldName {
 			return true, nil
 		}
 	}

@@ -118,7 +118,6 @@ func Row(query string, args ...interface{}) (result TypeRow, err error) {
 		Trace(query, args)
 	}
 	return
-
 }
 
 // Rows executes a query with optional parameters and returns multiple rows of results as a TypeRows.

@@ -227,7 +227,7 @@ func Setup(setupPath string, setupUser string, setupPass string) error {
 	}
 
 	//add admin user
-	if _, err := Run("INSERT INTO ejaUsers (ejaOwner,ejaLog,username,password,defaultModuleId,ejaLanguage) VALUES (1,?,?,?,?,?)", Now(), setupUser, Sha256(setupPass), ModuleGetIdByName("eja"), "en"); err != nil {
+	if _, err := Run("INSERT INTO ejaUsers (ejaOwner,ejaLog,username,password,defaultModuleId,ejaLanguage) VALUES (1,?,?,?,?,?)", Now(), setupUser, Password(setupPass), ModuleGetIdByName("eja"), "en"); err != nil {
 		return err
 	}
 

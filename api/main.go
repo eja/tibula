@@ -65,7 +65,6 @@ func Run(eja TypeApi) (result TypeApi, err error) {
 			alert(&eja.Alert, db.Translate(error))
 		}
 		return eja, errors.New(error)
-
 	} else {
 		// set module id and name
 		if eja.ModuleId == 0 {
@@ -332,6 +331,10 @@ func Run(eja TypeApi) (result TypeApi, err error) {
 		eja.Commands, _ = db.Commands(eja.Owner, eja.ModuleId, eja.ActionType)
 		eja.Path = db.ModulePath(eja.Owner, eja.ModuleId)
 		eja.Tree = db.ModuleTree(eja.Owner, eja.ModuleId, eja.Path)
+	}
+
+	if Plugins[eja.ModuleName] != nil {
+		eja = Plugins[eja.ModuleName](eja)
 	}
 
 	db.Close()

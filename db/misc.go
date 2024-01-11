@@ -16,6 +16,11 @@ func Now() string {
 	return time.Now().Format("2006-01-02 15:04:05")
 }
 
+// Generate an hashed password
+func Password(value string) string {
+	return Sha256(value)
+}
+
 // Sha256 generates the SHA256 hash of a given string value.
 func Sha256(value string) string {
 	hasher := sha256.New()

@@ -4,7 +4,7 @@ package db
 
 // UserGetAllByUserAndPass retrieves user information based on the provided username and hashed password.
 func UserGetAllByUserAndPass(username string, password string) TypeRow {
-	result, _ := Row("SELECT * FROM ejaUsers WHERE username=? AND password=?", username, Sha256(password))
+	result, _ := Row("SELECT * FROM ejaUsers WHERE username=? AND password=?", username, Password(password))
 	return result
 }
 

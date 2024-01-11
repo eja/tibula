@@ -1,0 +1,94 @@
+{
+  "module": {
+    "parentName": "eja",
+    "power": 100,
+    "searchLimit": 0,
+    "sqlCreated": 1
+  },
+  "command": [],
+  "field": [
+    {
+      "value": "",
+      "powerEdit": 0,
+      "powerList": 0,
+      "type": "password",
+      "translate": 0,
+      "powerSearch": 1,
+      "name": "passwordOld"
+    },
+    {
+      "value": "",
+      "powerEdit": 0,
+      "powerList": 0,
+      "type": "password",
+      "translate": 0,
+      "powerSearch": 2,
+      "name": "passwordNew"
+    },
+     {
+      "value": "",
+      "powerEdit": 0,
+      "powerList": 0,
+      "type": "password",
+      "translate": 0,
+      "powerSearch": 3,
+      "name": "passwordRepeat"
+    }
+   ],
+  "translation": [
+    {
+      "ejaLanguage": "en",
+      "word": "ejaProfile",
+      "translation": "Profile"
+    },
+		{
+      "ejaLanguage": "en",
+			"ejaModuleName":"ejaProfile",
+      "word": "update",
+      "translation": "Update"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaProfile",
+      "word": "passwordOld",
+      "translation": "Current Password"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaProfile",
+      "word": "passwordNew",
+      "translation": "New Password"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaProfile",
+      "word": "passwordRepeat",
+      "translation": "Repeat Password"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaProfile",
+      "word": "passwordEmptyError",
+      "translation": "All fields must be filled"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaProfile",
+      "word": "passwordOldError",
+      "translation": "Current password is wrong"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaProfile",
+      "word": "passwordMatchError",
+      "translation": "New password and repeat do not match"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaProfile",
+      "word": "passwordUpdated",
+      "translation": "Password successfully updated"
+    }
+   ],
+  "name": "ejaProfile"
+}
