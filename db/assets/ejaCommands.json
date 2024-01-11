@@ -17,8 +17,8 @@
     "copy",
     "list",
     "delete",
-    "link",
-    "unlink"
+		"link",
+		"unlink"
   ],
   "field": [
     {
@@ -168,16 +168,122 @@
       "word": "delete",
       "translation": "Delete"
     },
-     {
+    {
       "ejaLanguage": "en",
       "word": "link",
       "translation": "Link"
     },
-     {
+    {
       "ejaLanguage": "en",
       "word": "unlink",
       "translation": "Unlink"
-		}
+    }
   ],
-  "name": "ejaCommands"
+  "name": "ejaCommands",
+  "data": [
+    {
+      "name": "logout",
+      "powerSearch": 90,
+      "powerList": 0,
+      "powerEdit": 0,
+      "defaultCommand": 1,
+      "linking": 0
+    },
+    {
+      "name": "new",
+      "powerSearch": 2,
+      "powerList": 3,
+      "powerEdit": 0,
+      "defaultCommand": 1,
+      "linking": 0
+    },
+    {
+      "name": "edit",
+      "powerSearch": 0,
+      "powerList": 2,
+      "powerEdit": 0,
+      "defaultCommand": 1,
+      "linking": 0
+    },
+    {
+      "name": "previous",
+      "powerSearch": 0,
+      "powerList": 1,
+      "powerEdit": 0,
+      "defaultCommand": 1,
+      "linking": 0
+    },
+    {
+      "name": "next",
+      "powerSearch": 0,
+      "powerList": 100,
+      "powerEdit": 0,
+      "defaultCommand": 1,
+      "linking": 0
+    },
+    {
+      "name": "copy",
+      "powerSearch": 0,
+      "powerList": 0,
+      "powerEdit": 2,
+      "defaultCommand": 1,
+      "linking": 0
+    },
+    {
+      "name": "delete",
+      "powerSearch": 0,
+      "powerList": 10,
+      "powerEdit": 10,
+      "defaultCommand": 1,
+      "linking": 0
+    },
+    {
+      "name": "save",
+      "powerSearch": 0,
+      "powerList": 0,
+      "powerEdit": 1,
+      "defaultCommand": 1,
+      "linking": 0
+    },
+    {
+      "name": "search",
+      "powerSearch": 1,
+      "powerList": 5,
+      "powerEdit": 0,
+      "defaultCommand": 1,
+      "linking": 0
+    },
+    {
+      "name": "list",
+      "powerSearch": 0,
+      "powerList": 0,
+      "powerEdit": 5,
+      "defaultCommand": 1,
+      "linking": 0
+    },
+    {
+      "name": "link",
+      "powerSearch": 0,
+      "powerList": 4,
+      "powerEdit": 0,
+      "defaultCommand": 1,
+      "linking": 1
+    },
+    {
+      "name": "unlink",
+      "powerSearch": 0,
+      "powerList": 6,
+      "powerEdit": 0,
+      "defaultCommand": 1,
+      "linking": 1
+    },
+    {
+      "name": "run",
+      "powerSearch": 1,
+      "powerList": 1,
+      "powerEdit": 1,
+      "defaultCommand": 0,
+      "linking": 0
+    }
+  ]
 }

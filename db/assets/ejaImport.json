@@ -1,0 +1,73 @@
+{
+  "module": {
+    "parentName": "ejaSystem",
+    "power": 11,
+    "searchLimit": 0,
+    "sqlCreated": 1
+  },
+  "command": [
+    "logout",
+    "run"
+  ],
+  "field": [
+    {
+      "value": "",
+      "powerEdit": 0,
+      "powerList": 0,
+      "type": "text",
+      "translate": 0,
+      "powerSearch": 1,
+      "name": "ejaModuleName"
+    },
+    {
+      "value": "",
+      "powerEdit": 0,
+      "powerList": 0,
+      "type": "boolean",
+      "translate": 0,
+      "powerSearch": 2,
+      "name": "dataImport"
+    },
+    {
+      "value": "",
+      "powerEdit": 0,
+      "powerList": 0,
+      "type": "file",
+      "translate": 0,
+      "powerSearch": 3,
+      "name": "dataFile"
+    }
+  ],
+  "translation": [
+    {
+      "ejaLanguage": "en",
+      "word": "ejaImport",
+      "translation": "Import"
+    },
+    {
+      "ejaLanguage": "en",
+			"ejaModuleName": "ejaImport",
+      "word": "ejaModuleName",
+      "translation": "Module Name"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaImport",
+      "word": "dataImport",
+      "translation": "Data Import"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaImport",
+      "word": "dataFile",
+      "translation": "File"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaImport",
+      "word": "run",
+      "translation": "Import"
+    }
+  ],
+  "name": "ejaImport"
+}

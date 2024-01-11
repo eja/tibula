@@ -2,6 +2,44 @@
 
 package db
 
+// TypeModule represents a modular structure containing information about modules, fields, translations, and data.
+type TypeModule struct {
+	Module      TypeModuleModule         `json:"module"`
+	Command     []string                 `json:"command"`
+	Field       []TypeModuleField        `json:"field"`
+	Translation []TypeModuleTranslation  `json:"translation"`
+	Name        string                   `json:"name"`
+	Data        []map[string]interface{} `json:"data"`
+}
+
+// TypeModuleModule represents metadata about a module within a TypeModule.
+type TypeModuleModule struct {
+	ParentName  string `json:"parentName,omitempty"`
+	Power       int    `json:"power"`
+	SearchLimit int    `json:"searchLimit"`
+	SqlCreated  int    `json:"sqlCreated"`
+	SortList    string `json:"sortList,omitempty"`
+}
+
+// TypeModuleField represents metadata about a field within a TypeModule.
+type TypeModuleField struct {
+	Value       string `json:"value"`
+	PowerEdit   int    `json:"powerEdit"`
+	PowerList   int    `json:"powerList"`
+	Type        string `json:"type"`
+	Translate   int    `json:"translate"`
+	PowerSearch int    `json:"powerSearch"`
+	Name        string `json:"name"`
+}
+
+// TypeModuleTranslation represents translation information within a TypeModule.
+type TypeModuleTranslation struct {
+	EjaLanguage   string `json:"ejaLanguage"`
+	EjaModuleName string `json:"ejaModuleName,omitempty"`
+	Word          string `json:"word"`
+	Translation   string `json:"translation"`
+}
+
 // ModuleGetIdByName retrieves the module ID based on the given module name.
 // If an error occurs during the database operation or table name is not valid, it returns 0.
 func ModuleGetIdByName(name string) int64 {

@@ -11,8 +11,7 @@ type TypePlugins map[string]func(TypeApi) TypeApi
 var Plugins = TypePlugins{
 	"ejaProfile": func(eja TypeApi) TypeApi {
 		eja.Alert = nil
-		eja.Commands = append(eja.Commands, db.TypeCommand{Name: "update", Label: db.Translate("update", eja.Owner)})
-		if eja.Action == "update" {
+		if eja.Action == "run" {
 			if eja.Values["passwordOld"] == "" || eja.Values["passwordNew"] == "" || eja.Values["passwordRepeat"] == "" {
 				alert(&eja.Alert, db.Translate("passwordEmptyError", eja.Owner))
 			} else if eja.Values["passwordNew"] != eja.Values["passwordRepeat"] {
@@ -27,6 +26,12 @@ var Plugins = TypePlugins{
 					info(&eja.Info, db.Translate("passwordUpdated", eja.Owner))
 				}
 			}
+		}
+		return eja
+	},
+	"ejaExport": func(eja TypeApi) TypeApi {
+		if eja.Action == "run" {
+			info(&eja.Info, db.Translate("processing", eja.Owner))
 		}
 		return eja
 	},

@@ -13,6 +13,7 @@ type TypeApi struct {
 	Commands           []db.TypeCommand
 	DefaultSearchLimit int64
 	DefaultSearchOrder string
+	Export             db.TypeModule
 	FieldNameList      []string
 	Fields             []db.TypeField
 	Id                 int64

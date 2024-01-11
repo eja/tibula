@@ -1,0 +1,59 @@
+{
+  "module": {
+    "parentName": "ejaSystem",
+    "power": 10,
+    "searchLimit": 0,
+    "sqlCreated": 1
+  },
+  "command": [
+    "logout",
+    "run"
+  ],
+  "field": [
+    {
+      "value": "SELECT ejaId,name FROM ejaModules ORDER BY name;",
+      "powerEdit": 0,
+      "powerList": 0,
+      "type": "sqlMatrix",
+      "translate": 0,
+      "powerSearch": 1,
+      "name": "ejaModuleId"
+    },
+    {
+      "value": "",
+      "powerEdit": 0,
+      "powerList": 0,
+      "type": "boolean",
+      "translate": 0,
+      "powerSearch": 2,
+      "name": "dataExport"
+    }
+
+  ],
+  "translation": [
+    {
+      "ejaLanguage": "en",
+      "word": "ejaExport",
+      "translation": "Export"
+    },
+    {
+      "ejaLanguage": "en",
+			"ejaModuleName": "ejaExport",
+      "word": "ejaModuleId",
+      "translation": "Module"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaExport",
+      "word": "dataExport",
+      "translation": "Data"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaExport",
+      "word": "run",
+      "translation": "Export"
+    }
+  ],
+  "name": "ejaExport"
+}

@@ -40,6 +40,10 @@
 				{{else if or (eq .Type "textArea") (eq .Type "htmlArea")}}
 				<div class="col-md-12 mt-3">
 				 <label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
+          <span class="position-absolute end-0 me-3">
+            <a href="#" onclick="fieldUpload('{{.Name}}')"><i class="bi bi-cloud-upload"></i></a>
+            <a href="#" onclick="fieldDownload(this, '{{.Name}}')"><i class="bi bi-cloud-download"></i></a>
+          </span>
 				 <textarea class="form-control" name="ejaValues[{{.Name}}]" rows="3">{{$fieldValue}}</textarea>
 				</div>
 				{{else if eq .Type "password"}}

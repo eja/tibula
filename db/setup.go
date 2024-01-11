@@ -108,7 +108,6 @@ func Setup(setupPath string, setupUser string, setupPass string) error {
 				return err
 			}
 
-			modules = append(modules, module)
 			if err := TableAdd(module.Name); err != nil {
 				return err
 			}
@@ -124,64 +123,31 @@ func Setup(setupPath string, setupUser string, setupPass string) error {
 				}
 			}
 
-			//add commands
+			// add commands
 			if module.Name == "ejaCommands" {
-				for _, command := range module.Command {
-					powerSearch := 0
-					powerList := 0
-					powerEdit := 0
-					defaultCommand := 1
-					linking := 0
-					switch command {
-					case "logout":
-						powerSearch = 90
-					case "new":
-						powerSearch = 2
-						powerList = 2
-					case "edit":
-						powerList = 3
-					case "previous":
-						powerList = 1
-					case "next":
-						powerList = 100
-					case "save":
-						powerEdit = 1
-					case "list":
-						powerEdit = 3
-					case "copy":
-						powerEdit = 2
-					case "delete":
-						powerEdit = 10
-						powerList = 10
-					case "search":
-						powerSearch = 1
-						powerList = 5
-					case "link":
-						powerList = 4
-						linking = 1
-					case "unlink":
-						powerList = 6
-						linking = 1
-					}
+				for _, data := range module.Data {
 					_, err := Run(
 						"INSERT INTO ejaCommands (ejaId, ejaOwner, ejaLog, name, powerSearch, powerList, powerEdit, linking, defaultCommand) VALUES (NULL,1,?,?,?,?,?,?,?)",
 						Now(),
-						command,
-						powerSearch,
-						powerList,
-						powerEdit,
-						linking,
-						defaultCommand,
+						data["name"],
+						data["powerSearch"],
+						data["powerList"],
+						data["powerEdit"],
+						data["linking"],
+						data["defaultCommand"],
 					)
 					if err != nil {
 						return err
 					}
 				}
+				module.Data = nil
 			}
+
+			modules = append(modules, module)
 		}
 	}
 
-	//add modules
+	// add modules
 	for _, module := range modules {
 		_, err = Run(
 			"INSERT INTO ejaModules (ejaId, ejaOwner, ejaLog, name, power, searchLimit, sqlCreated, sortList, parentId) VALUES (NULL, 1, ?, ?, ?, ?, ?, ?, 0)",
@@ -212,7 +178,7 @@ func Setup(setupPath string, setupUser string, setupPass string) error {
 		}
 	}
 
-	//add module links
+	// add module links
 	if _, err := Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", Now(), ModuleGetIdByName("ejaGroups"), ModuleGetIdByName("ejaPermissions"), 2); err != nil {
 		return err
 	}
@@ -226,7 +192,7 @@ func Setup(setupPath string, setupUser string, setupPass string) error {
 		return err
 	}
 
-	//add admin user
+	// add admin user
 	if _, err := Run("INSERT INTO ejaUsers (ejaOwner,ejaLog,username,password,defaultModuleId,ejaLanguage) VALUES (1,?,?,?,?,?)", Now(), setupUser, Password(setupPass), ModuleGetIdByName("eja"), "en"); err != nil {
 		return err
 	}

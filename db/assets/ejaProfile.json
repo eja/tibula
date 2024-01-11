@@ -5,7 +5,10 @@
     "searchLimit": 0,
     "sqlCreated": 1
   },
-  "command": [],
+  "command": [
+    "run",
+    "logout"
+  ],
   "field": [
     {
       "value": "",
@@ -25,7 +28,7 @@
       "powerSearch": 2,
       "name": "passwordNew"
     },
-     {
+    {
       "value": "",
       "powerEdit": 0,
       "powerList": 0,
@@ -34,17 +37,17 @@
       "powerSearch": 3,
       "name": "passwordRepeat"
     }
-   ],
+  ],
   "translation": [
     {
       "ejaLanguage": "en",
       "word": "ejaProfile",
       "translation": "Profile"
     },
-		{
+    {
       "ejaLanguage": "en",
-			"ejaModuleName":"ejaProfile",
-      "word": "update",
+      "ejaModuleName": "ejaProfile",
+      "word": "run",
       "translation": "Update"
     },
     {
@@ -89,6 +92,6 @@
       "word": "passwordUpdated",
       "translation": "Password successfully updated"
     }
-   ],
+  ],
   "name": "ejaProfile"
 }
