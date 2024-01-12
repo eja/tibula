@@ -30,6 +30,30 @@ var Plugins = TypePlugins{
 		}
 		return eja
 	},
+	"ejaImport": func(eja TypeApi) TypeApi {
+		if eja.Action == "run" {
+			moduleName := eja.Values["moduleName"]
+			moduleData := eja.Values["import"]
+			dataImport := db.Number(eja.Values["dataImport"]) > 0
+			if moduleData != "" {
+				var module db.TypeModule
+				if err := json.Unmarshal([]byte(moduleData), &module); err != nil {
+					alert(&eja.Alert, db.Translate("ejaImportJsonError", eja.Owner))
+				} else {
+					if !dataImport {
+						module.Data = nil
+					}
+					if err := db.ModuleImport(module, moduleName); err != nil {
+						alert(&eja.Alert, db.Translate("ejaImportError", eja.Owner))
+					} else {
+						eja.Values["import"] = ""
+						info(&eja.Info, db.Translate("ejaImportOk", eja.Owner))
+					}
+				}
+			}
+		}
+		return eja
+	},
 	"ejaExport": func(eja TypeApi) TypeApi {
 		if eja.Action == "run" {
 			moduleId := db.Number(eja.Values["ejaModuleId"])

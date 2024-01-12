@@ -39,14 +39,14 @@ func ModuleExport(moduleId int64, data bool) (module TypeModule, err error) {
 	rows, err = Rows(`
 		SELECT ejaLanguage, word, translation, (SELECT ejaModules.name FROM ejaModules WHERE ejaModules.ejaId=ejaModuleId) AS ejaModuleName 
 		FROM ejaTranslations 
-		WHERE ejaModuleId=? OR word='?'
+		WHERE ejaModuleId=? OR word=?
 		`, moduleId, moduleName)
 	if err != nil {
 		return
 	}
 	for _, row := range rows {
 		module.Translation = append(module.Translation, TypeModuleTranslation{
-			EjaLanguage:   row["ejaLangauge"],
+			EjaLanguage:   row["ejaLanguage"],
 			EjaModuleName: row["ejaModuleName"],
 			Word:          row["word"],
 			Translation:   row["translation"],

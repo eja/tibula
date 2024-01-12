@@ -1,7 +1,7 @@
 {
   "module": {
     "parentName": "ejaSystem",
-    "power": 11,
+    "power": 10,
     "searchLimit": 0,
     "sqlCreated": 1
   },
@@ -17,7 +17,7 @@
       "type": "text",
       "translate": 0,
       "powerSearch": 1,
-      "name": "ejaModuleName"
+      "name": "moduleName"
     },
     {
       "value": "",
@@ -32,10 +32,10 @@
       "value": "",
       "powerEdit": 0,
       "powerList": 0,
-      "type": "file",
+      "type": "textArea",
       "translate": 0,
       "powerSearch": 3,
-      "name": "dataFile"
+      "name": "import"
     }
   ],
   "translation": [
@@ -47,20 +47,38 @@
     {
       "ejaLanguage": "en",
 			"ejaModuleName": "ejaImport",
-      "word": "ejaModuleName",
+      "word": "moduleName",
       "translation": "Module Name"
     },
     {
       "ejaLanguage": "en",
       "ejaModuleName": "ejaImport",
-      "word": "dataImport",
-      "translation": "Data Import"
+      "word": "import",
+      "translation": "Import"
     },
     {
       "ejaLanguage": "en",
       "ejaModuleName": "ejaImport",
-      "word": "dataFile",
-      "translation": "File"
+      "word": "dataImport",
+      "translation": "Import Data"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaImport",
+      "word": "ejaImportJsonError",
+      "translation": "Json structure is not compatible"
+     },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaImport",
+      "word": "ejaImportError",
+      "translation": "Cannot import this module"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaImport",
+      "word": "ejaImportOk",
+      "translation": "Module imported"
     },
     {
       "ejaLanguage": "en",

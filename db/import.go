@@ -11,12 +11,11 @@ import (
 // ModuleImport imports a module into the database based on the provided TypeModule and module name.
 func ModuleImport(module TypeModule, moduleName string) error {
 	const owner = 1
-	name := moduleName
 	if moduleName == "" {
-		name = String(module.Name)
+		moduleName = String(module.Name)
 	}
 
-	moduleId := ModuleGetIdByName(name)
+	moduleId := ModuleGetIdByName(moduleName)
 
 	if moduleId < 1 {
 		moduleIdRun, err := Run(`
@@ -24,7 +23,7 @@ func ModuleImport(module TypeModule, moduleName string) error {
 				(ejaId, ejaOwner, ejaLog, name, power, searchLimit, sqlCreated, sortList, parentId) 
       VALUES 
 				(NULL,?,?,?,?,?,?,?,?)
-			`, owner, Now(), name,
+			`, owner, Now(), moduleName,
 			module.Module.Power,
 			module.Module.SearchLimit,
 			module.Module.SqlCreated,
@@ -35,6 +34,10 @@ func ModuleImport(module TypeModule, moduleName string) error {
 			return err
 		}
 		moduleId = moduleIdRun.LastId
+		if err := TableAdd(moduleName); err != nil {
+			return err
+		}
+
 	}
 
 	if moduleId > 0 {
@@ -45,11 +48,11 @@ func ModuleImport(module TypeModule, moduleName string) error {
 
 		if module.Module.SqlCreated > 0 {
 			for _, field := range module.Field {
-				if check, err := FieldExists(module.Name, field.Name); !check {
+				if check, err := FieldExists(moduleName, field.Name); !check {
 					if err != nil {
 						return err
 					}
-					if err := FieldAdd(module.Name, field.Name, field.Type); err != nil {
+					if err := FieldAdd(moduleName, field.Name, field.Type); err != nil {
 						return err
 					}
 				}
@@ -114,14 +117,14 @@ func ModuleImport(module TypeModule, moduleName string) error {
 			return err
 		}
 
-		_, err = Run(`DELETE FROM ejaTranslations WHERE word=? AND ejaModuleId < 1`, name)
+		_, err = Run(`DELETE FROM ejaTranslations WHERE word=? AND ejaModuleId < 1`, moduleName)
 		if err != nil {
 			return err
 		}
 
 		for _, field := range module.Translation {
 			moduleTmpId := moduleId
-			if field.EjaModuleName != name {
+			if field.EjaModuleName != moduleName {
 				moduleTmpId = 0
 			}
 

@@ -1,7 +1,7 @@
 {
   "module": {
     "parentName": "ejaSystem",
-    "power": 10,
+    "power": 11,
     "searchLimit": 0,
     "sqlCreated": 1
   },
