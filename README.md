@@ -8,7 +8,7 @@ Tibula is a powerful and flexible web-based Relational Database Management Syste
 * **Dynamic table and field customization:** Tibula allows for the flexible addition of tables and fields, giving you the ability to adapt and evolve your database structure as needed.
 * **Hierarchical access:** Tibula allows for hierarchical access, giving you fine-grained control over who can access your data.
 * **Group management:** Tibula includes group management features, making it easy to organize and manage access to your data.
-* **Extensible:** Tibula can be easily extended using simple SQL, allowing for enhanced customization and expanded functionality.
+* **Extensible:** Tibula efficiently manages database tables and their data, incorporating a practical Import/Export feature for smooth interchange in JSON format.
 * **Support for multiple databases:** Tibula supports both SQLite3 and MySQL, giving you the flexibility to choose the database that best meets your needs.
 
 ## Getting Started
