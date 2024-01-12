@@ -20,6 +20,10 @@
 						{{end}}
 					</select>
 				</div>
+        {{else if eq .Type "label"}}
+        <h6 class="text-center mt-5">
+          {{.Label}}
+        </h6>
 				{{else if (eq .Type "boolean") }}
 				<div class="col-md-4 mt-3">
           <label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>

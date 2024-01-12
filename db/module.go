@@ -15,20 +15,20 @@ type TypeModule struct {
 // TypeModuleModule represents metadata about a module within a TypeModule.
 type TypeModuleModule struct {
 	ParentName  string `json:"parentName,omitempty"`
-	Power       int    `json:"power"`
-	SearchLimit int    `json:"searchLimit"`
-	SqlCreated  int    `json:"sqlCreated"`
+	Power       int64  `json:"power"`
+	SearchLimit int64  `json:"searchLimit"`
+	SqlCreated  int64  `json:"sqlCreated"`
 	SortList    string `json:"sortList,omitempty"`
 }
 
 // TypeModuleField represents metadata about a field within a TypeModule.
 type TypeModuleField struct {
 	Value       string `json:"value"`
-	PowerEdit   int    `json:"powerEdit"`
-	PowerList   int    `json:"powerList"`
+	PowerEdit   int64  `json:"powerEdit"`
+	PowerList   int64  `json:"powerList"`
 	Type        string `json:"type"`
-	Translate   int    `json:"translate"`
-	PowerSearch int    `json:"powerSearch"`
+	Translate   int64  `json:"translate"`
+	PowerSearch int64  `json:"powerSearch"`
 	Name        string `json:"name"`
 }
 

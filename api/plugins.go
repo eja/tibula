@@ -3,6 +3,7 @@
 package api
 
 import (
+	"encoding/json"
 	"github.com/eja/tibula/db"
 )
 
@@ -31,7 +32,17 @@ var Plugins = TypePlugins{
 	},
 	"ejaExport": func(eja TypeApi) TypeApi {
 		if eja.Action == "run" {
-			info(&eja.Info, db.Translate("processing", eja.Owner))
+			moduleId := db.Number(eja.Values["ejaModuleId"])
+			dataExport := db.Number(eja.Values["dataExport"]) > 0
+			if moduleId > 0 {
+				if data, err := db.ModuleExport(moduleId, dataExport); err != nil {
+					alert(&eja.Alert, db.Translate("ejaExportError", eja.Owner))
+				} else {
+					jsonData, _ := json.MarshalIndent(data, "", "  ")
+					eja.Values["export"] = string(jsonData)
+					info(&eja.Info, db.Translate("ejaExportOk", eja.Owner))
+				}
+			}
 		}
 		return eja
 	},

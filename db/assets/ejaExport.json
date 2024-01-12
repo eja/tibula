@@ -27,8 +27,16 @@
       "translate": 0,
       "powerSearch": 2,
       "name": "dataExport"
+    },
+    {
+      "value": "",
+      "powerEdit": 0,
+      "powerList": 0,
+      "type": "textArea",
+      "translate": 0,
+      "powerSearch": 3,
+      "name": "export"
     }
-
   ],
   "translation": [
     {
@@ -45,8 +53,26 @@
     {
       "ejaLanguage": "en",
       "ejaModuleName": "ejaExport",
+      "word": "export",
+      "translation": "Export"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaExport",
       "word": "dataExport",
       "translation": "Data"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaExport",
+      "word": "ejaExportError",
+      "translation": "Cannot export this module"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaExport",
+      "word": "ejaExportOk",
+      "translation": "Module exported"
     },
     {
       "ejaLanguage": "en",

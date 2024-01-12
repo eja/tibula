@@ -29,7 +29,7 @@
       "name": "name"
     },
     {
-      "value": "boolean\ndate\ndatetime\ndecimal\nfile\nhidden\nhtmlArea\ninteger\nlabel\npassword\nselect\nsqlHidden\nsqlMatrix\nsqlTable\nsqlValue\ntext\ntextArea\ntime\nview\n",
+      "value": "boolean\ndate\ndatetime\ndecimal\nhidden\ninteger\nlabel\npassword\nselect\nsqlHidden\nsqlMatrix\nsqlValue\ntext\ntextArea\ntime\nview\n",
       "powerEdit": 2,
       "powerList": 2,
       "type": "select",
