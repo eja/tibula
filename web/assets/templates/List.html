@@ -7,7 +7,7 @@
 				<tr>
 				{{range $key := .SearchCols}}
 					{{if eq $key "ejaId"}}
-					<th width="30px" class="text-center"><input type="checkbox" onclick="tableRowsCheck(this)"></th>
+					<th width="30px" class="text-center"><input type="checkbox" name="ejaCheckAll" onclick="tableRowsCheck(this)"></th>
 						{{if $.Linking}}
 						<th width="30px" class="text-center"><i class="bi bi-link-45deg"></i></th>
 						{{end}}					
