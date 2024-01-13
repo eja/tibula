@@ -224,6 +224,14 @@ func Run(eja TypeApi) (result TypeApi, err error) {
 				}
 				eja.Action = "search"
 			}
+
+			//list
+			if eja.Action == "list" && eja.SqlQuery64 == "" {
+				eja.Values = make(map[string]string)
+				eja.Action = ""
+				eja.Id = 0
+			}
+
 			//search
 			if eja.Action == "search" || eja.Action == "previous" || eja.Action == "next" || eja.Action == "list" {
 				var sqlQuery string
