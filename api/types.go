@@ -7,42 +7,41 @@ import (
 )
 
 type TypeApi struct {
-	Action             string
-	ActionType         string
-	Alert              []string
-	Commands           []db.TypeCommand
-	DefaultSearchLimit int64
-	DefaultSearchOrder string
-	Export             db.TypeModule
-	FieldNameList      []string
-	Fields             []db.TypeField
-	Id                 int64
-	IdList             []int64
-	Info               []string
-	Language           string
-	Link               db.TypeLink
-	Linking            bool
-	Links              []db.TypeLink
-	ModuleId           int64
-	ModuleLabel        string
-	ModuleName         string
-	Owner              int64
-	Path               []db.TypeModulePath
-	SearchCols         []string
-	SearchCount        int64
-	SearchLabels       map[string]string
-	SearchLast         int64
-	SearchLimit        int64
-	SearchLink         bool
-	SearchLinkClean    bool
-	SearchLinks        []string
-	SearchOffset       int64
-	SearchOrder        map[string]string
-	SearchRows         db.TypeRows
-	Session            string
-	SqlQuery           string
-	SqlQuery64         string
-	SqlQueryArgs       []interface{}
-	Tree               []db.TypeModuleTree
-	Values             map[string]string
+	Action             string              `json:"Action,omitempty"`
+	ActionType         string              `json:"ActionType,omitempty"`
+	Alert              []string            `json:"Alert,omitempty"`
+	Commands           []db.TypeCommand    `json:"Commands,omitempty"`
+	DefaultSearchLimit int64               `json:"DefaultSearchLimit,omitempty"`
+	DefaultSearchOrder string              `json:"DefaultSearchOrder,omitempty"`
+	FieldNameList      []string            `json:"FieldNameList,omitempty"`
+	Fields             []db.TypeField      `json:"Fields,omitempty"`
+	Id                 int64               `json:"Id,omitempty"`
+	IdList             []int64             `json:"IdList,omitempty"`
+	Info               []string            `json:"Info,omitempty"`
+	Language           string              `json:"Language,omitempty"`
+	Link               db.TypeLink         `json:"Link,omitempty"`
+	Linking            bool                `json:"Linking,omitempty"`
+	Links              []db.TypeLink       `json:"Links,omitempty"`
+	ModuleId           int64               `json:"ModuleId,omitempty"`
+	ModuleLabel        string              `json:"ModuleLabel,omitempty"`
+	ModuleName         string              `json:"ModuleName,omitempty"`
+	Owner              int64               `json:"Owner,omitempty"`
+	Path               []db.TypeModulePath `json:"Path,omitempty"`
+	SearchCols         []string            `json:"SearchCols,omitempty"`
+	SearchCount        int64               `json:"SearchCount,omitempty"`
+	SearchLabels       map[string]string   `json:"SearchLabels,omitempty"`
+	SearchLast         int64               `json:"SearchLast,omitempty"`
+	SearchLimit        int64               `json:"SearchLimit,omitempty"`
+	SearchLink         bool                `json:"SearchLink,omitempty"`
+	SearchLinkClean    bool                `json:"SearchLinkClean,omitempty"`
+	SearchLinks        []string            `json:"SearchLinks,omitempty"`
+	SearchOffset       int64               `json:"SearchOffset,omitempty"`
+	SearchOrder        map[string]string   `json:"SearchOrder,omitempty"`
+	SearchRows         db.TypeRows         `json:"SearchRows,omitempty"`
+	Session            string              `json:"Session,omitempty"`
+	SqlQuery           string              `json:"SqlQuery,omitempty"`
+	SqlQuery64         string              `json:"SqlQuery64,omitempty"`
+	SqlQueryArgs       []interface{}       `json:"SqlQueryArgs,omitempty"`
+	Tree               []db.TypeModuleTree `json:"Tree,omitempty"`
+	Values             map[string]string   `json:"Values,omitempty"`
 }

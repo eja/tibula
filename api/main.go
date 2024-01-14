@@ -20,7 +20,7 @@ func Set() TypeApi {
 	}
 }
 
-func Run(eja TypeApi) (result TypeApi, err error) {
+func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 	var user map[string]string
 
 	//open db connection
@@ -47,6 +47,9 @@ func Run(eja TypeApi) (result TypeApi, err error) {
 			if user["ejaLanguage"] != "" {
 				eja.Language = user["ejaLanguage"]
 			}
+		}
+		if eja.ModuleId == 0 && eja.ModuleName != "" {
+			eja.ModuleId = db.ModuleGetIdByName(eja.ModuleName)
 		}
 		if eja.ModuleId == 0 {
 			eja.ModuleId = db.Number(user["defaultModuleId"])
@@ -343,6 +346,10 @@ func Run(eja TypeApi) (result TypeApi, err error) {
 
 	if Plugins[eja.ModuleName] != nil {
 		eja = Plugins[eja.ModuleName](eja)
+	}
+
+	if eja.Owner > 0 && !sessionSave {
+		db.SessionReset(eja.Owner)
 	}
 
 	db.Close()

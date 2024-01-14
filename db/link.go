@@ -6,10 +6,10 @@ import ()
 
 // TypeLink represents a link between modules and fields.
 type TypeLink struct {
-	Label       string
-	ModuleId    int64
-	ModuleLabel string
-	FieldId     int64
+	Label       string `json:"Label,omitempty"`
+	ModuleId    int64  `json:"ModuleId,omitempty"`
+	ModuleLabel string `json:"ModuleLabel,omitempty"`
+	FieldId     int64  `json:"FieldId,omitempty"`
 }
 
 // ModuleLinks retrieves a list of links associated with a specified module.
