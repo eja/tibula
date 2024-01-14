@@ -38,6 +38,8 @@ Tibula provides extensive command-line options to configure various aspects of i
     --db-user      # Database username
     --db-pass      # Database password
     ```
+    ***Note:***
+    By default, the database type is set to `sqlite` and the default database name is `tibula.db` in the current directory.
 
 - **Language and Logging:**
   - Default language code and log level can be configured.
@@ -45,15 +47,21 @@ Tibula provides extensive command-line options to configure various aspects of i
     --language     # Default language code
     --log-level    # Log level (1-5): Error, Warn, Info, Debug, Trace
     ```
+    ***Note:***
+    The default language is set to "en" for English. The log level is set to 3 (Info) by default, providing information, errors and warnings.
 
 - **Setup and Initialization:**
-  - Options for initializing the database, setting up the admin user, and defining paths.
+  - Options for initializing the database, setting up the admin user, and defining the importing path.
     ```bash
     --setup        # Initialize the database
     --setup-user   # Admin username during setup
     --setup-pass   # Admin password during setup
     --setup-path   # Setup files path
     ```
+    ***Note:***
+      If `--setup-path` is not provided, the embedded assets will be used to import the default modules.
+      The admin user is set to `admin` by default, you can customize it using `--setup-user`.
+      If only `--setup` is passed, the admin username and password will be prompted directly from the terminal during setup.
 
 - **Web Service Configuration:**
   - Configuration options for starting the web service, specifying the host, port, path, and SSL/TLS certificates.
@@ -65,7 +73,12 @@ Tibula provides extensive command-line options to configure various aspects of i
     --web-tls-private  # SSL/TLS private certificate
     --web-tls-public   # SSL/TLS public certificate
     ```
+    ***Note:***
+      By default, the host is set to `localhost` and the port is set to `35248`.
+      If both TLS options are provided, the web service will default to `https`.
+      If `--web-path` is not provided, the embedded assets will be used instead.
 
+  
 - **General Options:**
   - The `-help` option provides a summary of available command-line options.
     ```bash
