@@ -54,8 +54,8 @@ Tibula provides extensive command-line options to configure various aspects of i
   - Options for initializing the database, setting up the admin user, and defining the importing path.
     ```bash
     --setup        # Initialize the database
-    --setup-user   # Admin username during setup
-    --setup-pass   # Admin password during setup
+    --setup-user   # Admin username
+    --setup-pass   # Admin password
     --setup-path   # Setup files path
     ```
     ***Note:***
@@ -93,7 +93,7 @@ Tibula provides extensive command-line options to configure various aspects of i
     --config          # Specify a JSON config file
     ```
 
-- **Note:** Replace '-' with '_' and remove '--' for each command when using JSON configuration.
+- **Note:** Replace '-' with '_' and remove '--' for each command option when using JSON configuration.
 
 
 ## License
