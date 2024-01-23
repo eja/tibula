@@ -8,6 +8,7 @@ import (
 	"golang.org/x/term"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
@@ -61,16 +62,25 @@ func runCommand(command string, args ...string) error {
 }
 
 func main() {
-	var tibulaCommand = "./tibula"
+	var cwd = filepath.Dir(os.Args[0])
+	var tibulaCommand = filepath.Join(cwd, "tibula")
+	var tibulaJson = filepath.Join(cwd, "tibula.json")
+	var tibulaDb = filepath.Join(cwd, "tibula.db")
+
 	if osType() == "windows" {
-		tibulaCommand = ".\tibula.exe"
+		tibulaCommand += ".exe"
+	}
+
+	if _, err := os.Stat(tibulaCommand); err != nil {
+		fmt.Println("Cannot find tibula on the current folder, please copy it here and try again.")
+		exit()
 	}
 
 	sys.Configure()
-	if _, err := os.Stat("tibula.json"); err == nil {
+	if _, err := os.Stat(tibulaJson); err == nil {
 		start := prompt("A configuration file already exists. Do you want to start Tibula instead? (Y/n)")
 		if strings.ToLower(start) != "n" {
-			if err := sys.ConfigRead("tibula.json"); err != nil {
+			if err := sys.ConfigRead(tibulaJson); err != nil {
 				fmt.Println(err)
 				exit()
 			}
@@ -79,7 +89,7 @@ func main() {
 			} else {
 				openBrowser(fmt.Sprintf("http://%s:%d", sys.Options.WebHost, sys.Options.WebPort))
 			}
-			runCommand(tibulaCommand, "--config", "tibula.json", "--start")
+			runCommand(tibulaCommand, "--config", tibulaJson, "--start")
 			exit()
 		}
 	}
@@ -132,8 +142,10 @@ func main() {
 		}
 	} else {
 		sys.Options.DbPort = 0
-		dbName := prompt("Database file name (tibula.db)")
-		if dbName != "" {
+		dbName := prompt(fmt.Sprintf("Database file name (%s)", tibulaDb))
+		if dbName == "" {
+			sys.Options.DbName = tibulaDb
+		} else {
 			sys.Options.DbName = dbName
 		}
 	}
@@ -146,9 +158,9 @@ func main() {
 	if logLevel != "" {
 		sys.Options.LogLevel, _ = strconv.Atoi(logLevel)
 	}
-	jsonFile := prompt("Config file (tibula.json)")
+	jsonFile := prompt(fmt.Sprintf("Config file (%s)", tibulaJson))
 	if jsonFile == "" {
-		jsonFile = "tibula.json"
+		jsonFile = tibulaJson
 	}
 
 	//setup
