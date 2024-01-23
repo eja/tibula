@@ -18,13 +18,13 @@ import (
 var assets embed.FS
 
 var Router = http.NewServeMux()
-var RouterPathRun = "/"
+var RouterPathCore = "/"
 var RouterPathStatic = "/static/"
 
 func Start() error {
 	address := fmt.Sprintf("%s:%d", sys.Options.WebHost, sys.Options.WebPort)
 
-	Router.HandleFunc(RouterPathRun, Core)
+	Router.HandleFunc(RouterPathCore, Core)
 
 	if sys.Options.WebPath != "" {
 		staticDir := http.Dir(filepath.Join(sys.Options.WebPath, "static"))
