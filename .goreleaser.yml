@@ -5,8 +5,33 @@ before:
     - apt-get install -y gcc-multilib
 
 builds:
+  - id: "tibula-setup-linux"
+    main: ./cmd/setup
+    binary: setup
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+      - arm
+      - 386
+    goarm:
+      - 7
+    ldflags:
+      - -s -w 
+  - id: "tibula-setup-others"
+    main: ./cmd/setup
+    binary: setup
+    goos:
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w 
   - id: "tibula-darwin-amd64"
-    main: ./
+    main: ./cmd/tibula
     binary: tibula
     env:
       - CGO_ENABLED=1
@@ -21,7 +46,7 @@ builds:
     ldflags:
       - -s -w 
   - id: "tibula-darwin-arm64"
-    main: ./
+    main: ./cmd/tibula
     binary: tibula
     env:
       - CGO_ENABLED=1
@@ -36,7 +61,7 @@ builds:
     ldflags:
       - -s -w 
   - id: "tibula-linux-amd64"
-    main: ./
+    main: ./cmd/tibula
     binary: tibula
     env:
       - CGO_ENABLED=1
@@ -51,7 +76,7 @@ builds:
     ldflags:
       - -s -w -extldflags "-static"
   - id: "tibula-linux-i386"
-    main: ./
+    main: ./cmd/tibula
     binary: tibula
     env:
       - CGO_ENABLED=1
@@ -66,7 +91,7 @@ builds:
     ldflags:
       - -s -w -extldflags "-static"
   - id: "tibula-linux-armhf"
-    main: ./
+    main: ./cmd/tibula
     binary: tibula
     goos:
       - linux
@@ -86,7 +111,7 @@ builds:
     ldflags:
       - -s -w -extldflags "-static"
   - id: "tibula-linux-arm64"
-    main: ./
+    main: ./cmd/tibula
     binary: tibula
     env:
       - CGO_ENABLED=1
@@ -101,7 +126,7 @@ builds:
     ldflags:
       - -s -w -extldflags "-static"
   - id: "tibula-windows-amd64"
-    main: ./
+    main: ./cmd/tibula
     binary: tibula
     env:
       - CGO_ENABLED=1
@@ -117,7 +142,7 @@ builds:
     ldflags:
       - -s -w 
   - id: "tibula-windows-arm64"
-    main: ./
+    main: ./cmd/tibula
     binary: tibula
     goos:
       - windows
@@ -138,6 +163,8 @@ archives:
       - goos: windows
         format: zip
     builds:
+      - tibula-setup-linux
+      - tibula-setup-others
       - tibula-darwin-amd64
       - tibula-darwin-arm64
       - tibula-linux-amd64

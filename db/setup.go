@@ -3,17 +3,12 @@
 package db
 
 import (
-	"bufio"
-	"bytes"
 	"embed"
 	"encoding/json"
 	"errors"
-	"fmt"
-	"golang.org/x/term"
 	"io/fs"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 //go:embed all:assets
@@ -27,41 +22,6 @@ func Setup(setupPath string, setupUser string, setupPass string) error {
 	var files []string
 	var err error
 
-	if setupPass == "" {
-		fd := int(os.Stdin.Fd())
-		if term.IsTerminal(fd) {
-			if setupUser == "admin" {
-				reader := bufio.NewReader(os.Stdin)
-				fmt.Print("Username (admin): ")
-				user, err := reader.ReadString('\n')
-				if err != nil {
-					return err
-				}
-				user = strings.TrimSpace(user)
-				if user != "" {
-					setupUser = user
-				}
-			}
-			fmt.Print("Password: ")
-			if pass, err := term.ReadPassword(fd); err != nil {
-				return err
-			} else if len(pass) == 0 {
-				fmt.Println()
-				return errors.New("Password cannot be empty")
-			} else {
-				fmt.Printf("\nRepeat password: ")
-				if passCheck, err := term.ReadPassword(fd); err != nil {
-					return err
-				} else {
-					fmt.Println()
-					if !bytes.Equal(pass, passCheck) {
-						return errors.New("Passwords do not match")
-					}
-				}
-				setupPass = string(pass)
-			}
-		}
-	}
 	if setupPass == "" {
 		return errors.New("Setup admin user/pass are mandatory")
 	}

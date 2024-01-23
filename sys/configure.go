@@ -3,10 +3,8 @@
 package sys
 
 import (
-	"encoding/json"
 	"flag"
 	"log"
-	"os"
 )
 
 func Configure() {
@@ -33,13 +31,8 @@ func Configure() {
 	flag.Parse()
 
 	if Options.ConfigFile != "" {
-		jsonData, err := os.ReadFile(Options.ConfigFile)
-		if err != nil {
-			log.Fatalf("Error reading configuration file: %v", err)
-		}
-		err = json.Unmarshal(jsonData, &Options)
-		if err != nil {
-			log.Fatalf("Error unmarshaling configuration file: %v", err)
+		if err := ConfigRead(Options.ConfigFile); err != nil {
+			log.Fatalf("Cannot open config file: %v\n", err)
 		}
 	}
 

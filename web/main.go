@@ -17,38 +17,40 @@ import (
 //go:embed assets
 var assets embed.FS
 
+var Router = http.NewServeMux()
+var RouterPathRun = "/"
+var RouterPathStatic = "/static/"
+
 func Start() error {
-	mux := http.NewServeMux()
 	address := fmt.Sprintf("%s:%d", sys.Options.WebHost, sys.Options.WebPort)
 
-	mux.HandleFunc("/", home)
+	Router.HandleFunc(RouterPathRun, Core)
 
 	if sys.Options.WebPath != "" {
-		mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(filepath.Join(sys.Options.WebPath, "static")))))
+		staticDir := http.Dir(filepath.Join(sys.Options.WebPath, "static"))
+		Router.Handle(RouterPathStatic, http.StripPrefix(RouterPathStatic, http.FileServer(staticDir)))
 	} else {
 		staticFs, err := fs.Sub(assets, "assets/static")
 		if err != nil {
 			return err
 		}
-		mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.FS(staticFs))))
+		Router.Handle(RouterPathStatic, http.StripPrefix(RouterPathStatic, http.FileServer(http.FS(staticFs))))
 	}
 
 	if sys.Options.WebTlsPrivate != "" && sys.Options.WebTlsPublic != "" {
 		if _, err := os.Stat(sys.Options.WebTlsPrivate); err != nil {
-			return errors.New("cannot open private certificate")
+			return errors.New("failed to open private certificate")
+		} else if _, err := os.Stat(sys.Options.WebTlsPublic); err != nil {
+			return errors.New("failed to open public certificate")
 		} else {
-			if _, err := os.Stat(sys.Options.WebTlsPublic); err != nil {
-				return errors.New("cannot open public certificate")
-			} else {
-				log.Printf("Starting server on https://%s\n", address)
-				if err := http.ListenAndServeTLS(address, sys.Options.WebTlsPublic, sys.Options.WebTlsPrivate, mux); err != nil {
-					return err
-				}
+			log.Printf("Starting server on https://%s\n", address)
+			if err := http.ListenAndServeTLS(address, sys.Options.WebTlsPublic, sys.Options.WebTlsPrivate, Router); err != nil {
+				return err
 			}
 		}
 	} else {
 		log.Printf("Starting server on http://%s\n", address)
-		if err := http.ListenAndServe(address, mux); err != nil {
+		if err := http.ListenAndServe(address, Router); err != nil {
 			return err
 		}
 	}

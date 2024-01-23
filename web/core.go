@@ -14,7 +14,7 @@ import (
 	"strings"
 )
 
-func home(w http.ResponseWriter, r *http.Request) {
+func Core(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Server", sys.Name+"/"+sys.Version)
 	templateFile := "Login.html"
 	var err error
