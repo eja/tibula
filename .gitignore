@@ -2,3 +2,5 @@ tibula
 tibula.db
 tibula.exe
 tibula.json
+
+!cmd/tibula
