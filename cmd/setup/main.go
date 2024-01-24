@@ -35,17 +35,6 @@ func password(message string) string {
 	return strings.TrimSpace(string(pass))
 }
 
-func openBrowser(url string) {
-	switch os := osType(); os {
-	case "darwin":
-		exec.Command("open", url).Start()
-	case "linux":
-		exec.Command("xdg-open", url).Start()
-	case "windows":
-		exec.Command("cmd", "/c", "start", url).Start()
-	}
-}
-
 func osType() string {
 	return strings.ToLower(runtime.GOOS)
 }
@@ -69,6 +58,14 @@ func main() {
 
 	if osType() == "windows" {
 		tibulaCommand += ".exe"
+	} else if tibulaCommand == "tibula" {
+		tibulaCommand = "./tibula"
+	}
+
+	if osType() == "linux" && !term.IsTerminal(int(os.Stdout.Fd())) {
+		fmt.Println("No terminal available, use setup.sh instead.")
+		os.WriteFile(cwd+"/setup.sh", []byte(fmt.Sprintf("#!/bin/sh\n\n%s/setup\n", cwd)), 0755)
+		exit()
 	}
 
 	if _, err := os.Stat(tibulaCommand); err != nil {
@@ -78,21 +75,10 @@ func main() {
 
 	sys.Configure()
 	if _, err := os.Stat(tibulaJson); err == nil {
-		start := prompt("A configuration file already exists. Do you want to start Tibula instead? (Y/n)")
-		if strings.ToLower(start) != "n" {
-			if err := sys.ConfigRead(tibulaJson); err != nil {
-				fmt.Println(err)
-				exit()
-			}
-			if sys.Options.WebTlsPrivate != "" && sys.Options.WebTlsPublic != "" {
-				openBrowser(fmt.Sprintf("https://%s:%d", sys.Options.WebHost, sys.Options.WebPort))
-			} else {
-				openBrowser(fmt.Sprintf("http://%s:%d", sys.Options.WebHost, sys.Options.WebPort))
-			}
-			runCommand(tibulaCommand, "--config", tibulaJson, "--start")
-			exit()
-		}
+		fmt.Println("A configuration file already exists, remove it and try again.")
+		exit()
 	}
+
 	//setup
 	setupUser := prompt("Choose an administrator username (admin)")
 	if setupUser != "" {
@@ -148,6 +134,10 @@ func main() {
 		} else {
 			sys.Options.DbName = dbName
 		}
+		if _, err := os.Stat(sys.Options.DbName); err == nil {
+			fmt.Println("An sqlite database with the same name already exists, remove it and try again.")
+			exit()
+		}
 	}
 	//misc
 	language := prompt("Choose default language (en)")
@@ -178,13 +168,21 @@ func main() {
 		exit()
 	}
 
+	switch osType() {
+	case "windows":
+		os.WriteFile(cwd+"/start.bat", []byte(fmt.Sprintf("#@echo off\n%s --config %s --start\n", tibulaCommand, jsonFile)), 0755)
+	case "darwin":
+		os.WriteFile(cwd+"/start.command", []byte(fmt.Sprintf("#!/bin/sh\n\n%s --config %s --start\n", tibulaCommand, jsonFile)), 0755)
+	case "linux":
+		os.WriteFile(cwd+"/start.sh", []byte(fmt.Sprintf("#!/bin/sh\n\n%s --config %s --start\n", tibulaCommand, jsonFile)), 0755)
+	}
+
 	//start
-	if sys.Options.WebTlsPrivate != "" && sys.Options.WebTlsPublic != "" {
-		openBrowser(fmt.Sprintf("https://%s:%d", sys.Options.WebHost, sys.Options.WebPort))
-	} else {
-		openBrowser(fmt.Sprintf("http://%s:%d", sys.Options.WebHost, sys.Options.WebPort))
+	start := prompt("Do you want to start it now? (Y/n)")
+	if start != "n" {
+		if err := runCommand(tibulaCommand, "--config", jsonFile, "--start"); err != nil {
+			exit()
+		}
 	}
-	if err := runCommand(tibulaCommand, "--config", jsonFile, "--start"); err != nil {
-		exit()
-	}
+	exit()
 }
