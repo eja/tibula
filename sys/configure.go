@@ -4,13 +4,16 @@ package sys
 
 import (
 	"flag"
+	"fmt"
 	"log"
+	"os"
 )
 
 func Configure() {
 	help := flag.Bool("help", false, "show this message")
+	wizard := flag.Bool("wizard", false, "guided setup")
 	flag.StringVar(&Options.DbType, "db-type", "sqlite", "database type: sqlite/mysql")
-	flag.StringVar(&Options.DbName, "db-name", "tibula.db", "database name or filename")
+	flag.StringVar(&Options.DbName, "db-name", "", "database name or filename")
 	flag.StringVar(&Options.DbUser, "db-user", "", "database username")
 	flag.StringVar(&Options.DbPass, "db-pass", "", "database password")
 	flag.StringVar(&Options.DbHost, "db-host", "", "database hostname")
@@ -36,7 +39,16 @@ func Configure() {
 		}
 	}
 
+	if *wizard {
+		if err := wizardSetup(); err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		os.Exit(0)
+	}
+
 	if *help {
 		Help()
+		os.Exit(0)
 	}
 }

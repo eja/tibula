@@ -1,13 +1,13 @@
-.PHONY: clean test lint tibula setup release-dry-run release
+.PHONY: clean test lint tibula release-dry-run release
 
 PACKAGE_NAME := github.com/eja/tibula
 GOLANG_CROSS_VERSION := v1.20
 GOPATH ?= '$(HOME)/go'
 
-all: lint tibula setup
+all: lint tibula
 
 clean:
-	@rm -f tibula tibula.exe setup setup.exe
+	@rm -f tibula tibula.exe
 
 lint:
 	@gofmt -w .
@@ -17,10 +17,6 @@ test:
 	@go mod verify
 	@go vet ./...
 	@go test -v ./test
-
-setup:
-	@go build -ldflags "-s -w" -o setup cmd/setup/main.go
-	@strip setup
 
 tibula:
 	@go build -ldflags "-s -w" -o tibula cmd/tibula/main.go
