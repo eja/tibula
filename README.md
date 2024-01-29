@@ -18,7 +18,7 @@ To get started with Tibula, simply clone the repository and build the project us
 git clone https://github.com/eja/tibula
 cd tibula
 go build
-./tibula --setup
+./tibula --wizard
 ./tibula --start
 ```
 
@@ -61,7 +61,6 @@ Tibula provides extensive command-line options to configure various aspects of i
     ***Note:***
       If `--setup-path` is not provided, the embedded assets will be used to import the default modules.
       The admin user is set to `admin` by default, you can customize it using `--setup-user`.
-      If only `--setup` is passed, the admin username and password will be prompted directly from the terminal during setup.
 
 - **Web Service Configuration:**
   - Configuration options for starting the web service, specifying the host, port, path, and SSL/TLS certificates.
@@ -78,6 +77,11 @@ Tibula provides extensive command-line options to configure various aspects of i
       If both TLS options are provided, the web service will default to `https`.
       If `--web-path` is not provided, the embedded assets will be used instead.
 
+- **Wizard Option:**
+  - The `--wizard` option guides you through a step-by-step setup configuration.
+    ```bash
+    --wizard           # Use the wizard for step-by-step setup configuration
+    ```
   
 - **General Options:**
   - The `-help` option provides a summary of available command-line options.
