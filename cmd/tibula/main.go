@@ -9,7 +9,9 @@ import (
 )
 
 func main() {
-	sys.Configure()
+	if err := sys.Configure(); err != nil {
+		log.Fatal(err)
+	}
 	if sys.Commands.Start {
 		if sys.Options.DbName == "" && sys.Options.ConfigFile == "" {
 			if err := sys.ConfigRead("tibula.json", &sys.Options); err != nil {

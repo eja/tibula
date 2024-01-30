@@ -4,12 +4,9 @@ package sys
 
 import (
 	"flag"
-	"fmt"
-	"log"
-	"os"
 )
 
-func Configure() {
+func Configure() error {
 	flag.BoolVar(&Commands.Start, "start", false, "start the web service")
 	flag.BoolVar(&Commands.DbSetup, "db-setup", false, "initialize the database")
 	flag.BoolVar(&Commands.Wizard, "wizard", false, "guided setup")
@@ -36,27 +33,24 @@ func Configure() {
 
 	if Options.ConfigFile != "" {
 		if err := ConfigRead(Options.ConfigFile, &Options); err != nil {
-			log.Fatalf("Cannot open config file: %v\n", err)
+			return err
 		}
 	}
 
 	if Commands.DbSetup {
 		if err := Setup(); err != nil {
-			log.Fatal(err)
+			return err
 		}
-		os.Exit(0)
 	}
 
 	if Commands.Wizard {
 		if err := wizardSetup(); err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			return err
 		}
-		os.Exit(0)
 	}
 
 	if Commands.Help {
 		Help()
-		os.Exit(0)
 	}
+	return nil
 }
