@@ -6,3 +6,4 @@ const Name = "Tibula"
 const Version = "17.1.26"
 
 var Options TypeConfig
+var Commands TypeCommand

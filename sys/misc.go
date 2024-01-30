@@ -7,13 +7,13 @@ import (
 	"os"
 )
 
-func ConfigRead(filename string) error {
+func ConfigRead(filename string, instance interface{}) error {
 	jsonData, err := os.ReadFile(filename)
 	if err != nil {
 		return err
 	}
 
-	err = json.Unmarshal(jsonData, &Options)
+	err = json.Unmarshal(jsonData, instance)
 	if err != nil {
 		return err
 	}
@@ -21,8 +21,8 @@ func ConfigRead(filename string) error {
 	return nil
 }
 
-func ConfigWrite(filename string) error {
-	jsonData, err := json.MarshalIndent(&Options, "", "  ")
+func ConfigWrite(filename string, instance interface{}) error {
+	jsonData, err := json.MarshalIndent(instance, "", "  ")
 	if err != nil {
 		return err
 	}

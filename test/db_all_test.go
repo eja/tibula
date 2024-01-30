@@ -22,7 +22,7 @@ func TestModule(t *testing.T) {
 	})
 
 	t.Run("Populate db core", func(t *testing.T) {
-		if err := db.Setup("../"+sys.Options.SetupPath, "test", "test"); err != nil {
+		if err := db.Setup("../"+sys.Options.DbSetupPath, "test", "test"); err != nil {
 			t.Error("Setup error", err)
 		}
 	})

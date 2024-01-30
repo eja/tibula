@@ -10,13 +10,9 @@ import (
 
 func main() {
 	sys.Configure()
-	if sys.Options.Setup {
-		if err := sys.Setup(); err != nil {
-			log.Fatal(err)
-		}
-	} else if sys.Options.Start {
+	if sys.Commands.Start {
 		if sys.Options.DbName == "" && sys.Options.ConfigFile == "" {
-			if err := sys.ConfigRead("tibula.json"); err != nil {
+			if err := sys.ConfigRead("tibula.json", &sys.Options); err != nil {
 				log.Fatal("Config file missing or not enough parameters to continue.")
 			}
 		}

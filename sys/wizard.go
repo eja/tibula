@@ -39,14 +39,14 @@ func wizardSetup() error {
 	//admin
 	setupUser := wizardPrompt("Choose an administrator username (admin)")
 	if setupUser != "" {
-		Options.SetupUser = setupUser
+		Options.DbSetupUser = setupUser
 	}
-	Options.SetupPass = wizardPassword("Enter the administrator password")
-	if Options.SetupPass == "" {
+	Options.DbSetupPass = wizardPassword("Enter the administrator password")
+	if Options.DbSetupPass == "" {
 		return errors.New("Password cannot be empty.")
 	}
 	passConfirm := wizardPassword("Repeat password")
-	if passConfirm != Options.SetupPass {
+	if passConfirm != Options.DbSetupPass {
 		return errors.New("Passwords do not match.")
 	}
 	//web
@@ -112,10 +112,9 @@ func wizardSetup() error {
 	}
 
 	Options.ConfigFile = ""
-	Options.SetupUser = ""
-	Options.SetupPass = ""
-	Options.Setup = false
-	if err := ConfigWrite(jsonFile); err != nil {
+	Options.DbSetupUser = ""
+	Options.DbSetupPass = ""
+	if err := ConfigWrite(jsonFile, &Options); err != nil {
 		return fmt.Errorf("Cannot write the configuration file, %w\n", err)
 	}
 
