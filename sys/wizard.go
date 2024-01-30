@@ -13,14 +13,14 @@ import (
 	"syscall"
 )
 
-func wizardPrompt(message string) string {
+func WizardPrompt(message string) string {
 	fmt.Printf("%s: ", message)
 	var input string
 	fmt.Scanln(&input)
 	return input
 }
 
-func wizardPassword(message string) string {
+func WizardPassword(message string) string {
 	fmt.Printf("%s: ", message)
 	pass, _ := term.ReadPassword(int(syscall.Stdin))
 	fmt.Println()
@@ -37,53 +37,53 @@ func wizardSetup() error {
 	}
 
 	//admin
-	setupUser := wizardPrompt("Choose an administrator username (admin)")
+	setupUser := WizardPrompt("Choose an administrator username (admin)")
 	if setupUser != "" {
 		Options.DbSetupUser = setupUser
 	}
-	Options.DbSetupPass = wizardPassword("Enter the administrator password")
+	Options.DbSetupPass = WizardPassword("Enter the administrator password")
 	if Options.DbSetupPass == "" {
 		return errors.New("Password cannot be empty.")
 	}
-	passConfirm := wizardPassword("Repeat password")
+	passConfirm := WizardPassword("Repeat password")
 	if passConfirm != Options.DbSetupPass {
 		return errors.New("Passwords do not match.")
 	}
 	//web
-	webHost := wizardPrompt("Web address to listen to (localhost)")
+	webHost := WizardPrompt("Web address to listen to (localhost)")
 	if webHost != "" {
 		Options.WebHost = webHost
 	}
-	webPort := wizardPrompt("Web port to listen to (35248)")
+	webPort := WizardPrompt("Web port to listen to (35248)")
 	if webPort != "" {
 		Options.WebPort, _ = strconv.Atoi(webPort)
 	}
-	webPrivate := wizardPrompt("Web https private certificate path (none)")
+	webPrivate := WizardPrompt("Web https private certificate path (none)")
 	if webPrivate != "" {
 		Options.WebTlsPrivate = webPrivate
-		webPublic := wizardPrompt("Web https public certificate path (none)")
+		webPublic := WizardPrompt("Web https public certificate path (none)")
 		if webPublic != "" {
 			Options.WebTlsPublic = webPublic
 		}
 	}
 	//db
-	dbType := wizardPrompt("Choose a database engine between sqlite and mysql (sqlite)")
+	dbType := WizardPrompt("Choose a database engine between sqlite and mysql (sqlite)")
 	if dbType == "mysql" {
 		Options.DbType = dbType
-		Options.DbName = wizardPrompt("Database name")
-		Options.DbUser = wizardPrompt("Database username")
-		Options.DbPass = wizardPassword("Database password")
-		dbHost := wizardPrompt("Database hostname (localhost)")
+		Options.DbName = WizardPrompt("Database name")
+		Options.DbUser = WizardPrompt("Database username")
+		Options.DbPass = WizardPassword("Database password")
+		dbHost := WizardPrompt("Database hostname (localhost)")
 		if dbHost != "" {
 			Options.DbHost = dbHost
 		}
-		dbPort := wizardPrompt("Database port (3306)")
+		dbPort := WizardPrompt("Database port (3306)")
 		if dbPort != "" {
 			Options.DbPort, _ = strconv.Atoi(dbPort)
 		}
 	} else {
 		Options.DbPort = 0
-		dbName := wizardPrompt(fmt.Sprintf("Database file name (%s)", tibulaDb))
+		dbName := WizardPrompt(fmt.Sprintf("Database file name (%s)", tibulaDb))
 		if dbName == "" {
 			Options.DbName = tibulaDb
 		} else {
@@ -94,15 +94,15 @@ func wizardSetup() error {
 		}
 	}
 	//misc
-	language := wizardPrompt("Choose default language (en)")
+	language := WizardPrompt("Choose default language (en)")
 	if language != "" {
 		Options.Language = language
 	}
-	logLevel := wizardPrompt("Choose log level between 1=Error, 2=Warn, 3=Info, 4=Debug, 5=Trace (3)")
+	logLevel := WizardPrompt("Choose log level between 1=Error, 2=Warn, 3=Info, 4=Debug, 5=Trace (3)")
 	if logLevel != "" {
 		Options.LogLevel, _ = strconv.Atoi(logLevel)
 	}
-	jsonFile := wizardPrompt(fmt.Sprintf("Config file (%s)", tibulaJson))
+	jsonFile := WizardPrompt(fmt.Sprintf("Config file (%s)", tibulaJson))
 	if jsonFile == "" {
 		jsonFile = tibulaJson
 	}
@@ -117,6 +117,7 @@ func wizardSetup() error {
 	if err := ConfigWrite(jsonFile, &Options); err != nil {
 		return fmt.Errorf("Cannot write the configuration file, %w\n", err)
 	}
+	Options.ConfigFile = jsonFile
 
 	return nil
 }
