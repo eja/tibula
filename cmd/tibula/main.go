@@ -14,7 +14,7 @@ func main() {
 	}
 	if sys.Commands.Start {
 		if sys.Options.DbName == "" && sys.Options.ConfigFile == "" {
-			if err := sys.ConfigRead("tibula.json", &sys.Options); err != nil {
+			if err := sys.ConfigRead(sys.ConfigFileName(), &sys.Options); err != nil {
 				log.Fatal("Config file missing or not enough parameters to continue.")
 			}
 		}

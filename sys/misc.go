@@ -5,6 +5,8 @@ package sys
 import (
 	"encoding/json"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 func ConfigRead(filename string, instance interface{}) error {
@@ -33,4 +35,17 @@ func ConfigWrite(filename string, instance interface{}) error {
 	}
 
 	return nil
+}
+
+func ConfigFileName() string {
+	executablePath, _ := os.Executable()
+
+	name := strings.ToLower(filepath.Base(executablePath))
+	name = strings.TrimSuffix(name, ".exe")
+
+	if name == "" {
+		return "tibula.json"
+	} else {
+		return name + ".json"
+	}
 }

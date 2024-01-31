@@ -29,7 +29,7 @@ func WizardPassword(message string) string {
 
 func wizardSetup() error {
 	var cwd = filepath.Dir(os.Args[0])
-	var tibulaJson = filepath.Join(cwd, "tibula.json")
+	var tibulaJson = ConfigFileName()
 	var tibulaDb = filepath.Join(cwd, "tibula.db")
 
 	if _, err := os.Stat(tibulaJson); err == nil {
