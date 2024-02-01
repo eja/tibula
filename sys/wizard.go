@@ -102,6 +102,7 @@ func wizardSetup() error {
 	if logLevel != "" {
 		Options.LogLevel, _ = strconv.Atoi(logLevel)
 	}
+	Options.LogFile = WizardPrompt("Choose a log file (stderr)")
 	jsonFile := WizardPrompt(fmt.Sprintf("Config file (%s)", tibulaJson))
 	if jsonFile == "" {
 		jsonFile = tibulaJson

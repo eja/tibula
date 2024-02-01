@@ -20,6 +20,7 @@ type TypeConfig struct {
 	ConfigFile    string `json:"config_file,omitempty"`
 	Language      string `json:"language,omitempty"`
 	LogLevel      int    `json:"log_level,omitempty"`
+	LogFile       string `json:"log_file,omitempty"`
 }
 
 type TypeCommand struct {

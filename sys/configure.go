@@ -4,9 +4,12 @@ package sys
 
 import (
 	"flag"
+	"log"
+	"os"
 )
 
 func Configure() error {
+	log.SetFlags(0)
 	flag.BoolVar(&Commands.Start, "start", false, "start the web service")
 	flag.BoolVar(&Commands.DbSetup, "db-setup", false, "initialize the database")
 	flag.BoolVar(&Commands.Wizard, "wizard", false, "guided setup")
@@ -28,6 +31,7 @@ func Configure() error {
 	flag.StringVar(&Options.WebTlsPrivate, "web-tls-private", "", "web ssl/tls private certificate")
 	flag.StringVar(&Options.ConfigFile, "config", "", "json config file")
 	flag.StringVar(&Options.Language, "language", "en", "default language code")
+	flag.StringVar(&Options.LogFile, "log-file", "", "log file")
 	flag.IntVar(&Options.LogLevel, "log-level", 3, "set the log level (1-5): 1=Error, 2=Warn, 3=Info, 4=Debug, 5=Trace")
 	flag.Parse()
 
@@ -35,6 +39,17 @@ func Configure() error {
 		if err := ConfigRead(Options.ConfigFile, &Options); err != nil {
 			return err
 		}
+	} else {
+		ConfigRead(ConfigFileName(), &Options)
+	}
+
+	if Options.LogFile != "" {
+		file, err := os.OpenFile(Options.LogFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)
+		if err != nil {
+			return err
+		}
+		log.SetOutput(file)
+		log.SetFlags(log.Ldate | log.Ltime)
 	}
 
 	if Commands.DbSetup {
