@@ -29,3 +29,11 @@ type TypeCommand struct {
 	Wizard  bool `json:"wizard,omitempty"`
 	Help    bool `json:"help,omitempty"`
 }
+
+const (
+	LogLevelError = 1
+	LogLeveLWarn  = 2
+	LogLevelInfo  = 3
+	LogLevelDebug = 4
+	LogLevelTrace = 5
+)
