@@ -12,7 +12,7 @@ import (
 )
 
 //go:embed all:assets
-var assets embed.FS
+var Assets embed.FS
 
 // Setup initializes the database with modules, fields, and commands.
 // It reads JSON files from the specified setupPath or embeded assets, and populates the database accordingly.
@@ -36,7 +36,7 @@ func Setup(setupPath string) error {
 			return err
 		}
 	} else {
-		entries, err := fs.ReadDir(assets, "assets")
+		entries, err := fs.ReadDir(Assets, "assets")
 		if err != nil {
 			return err
 		}
@@ -53,7 +53,7 @@ func Setup(setupPath string) error {
 			if setupPath != "" {
 				fileContent, err = os.ReadFile(file)
 			} else {
-				fileContent, err = assets.ReadFile(file)
+				fileContent, err = Assets.ReadFile(file)
 			}
 			if err != nil {
 				return err
