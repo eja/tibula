@@ -17,14 +17,10 @@ var assets embed.FS
 // Setup initializes the database with modules, fields, and commands.
 // It reads JSON files from the specified setupPath or embeded assets, and populates the database accordingly.
 // The admin user credentials are used for setup.
-func Setup(setupPath string, setupUser string, setupPass string) error {
+func Setup(setupPath string) error {
 	var modules []TypeModule
 	var files []string
 	var err error
-
-	if setupPass == "" {
-		return errors.New("Setup admin user/pass are mandatory")
-	}
 
 	if setupPath != "" {
 		err := filepath.WalkDir(setupPath, func(path string, d fs.DirEntry, err error) error {
@@ -152,9 +148,23 @@ func Setup(setupPath string, setupUser string, setupPass string) error {
 		return err
 	}
 
-	// add admin user
-	if _, err := Run("INSERT INTO ejaUsers (ejaOwner,ejaLog,username,password,defaultModuleId,ejaLanguage) VALUES (1,?,?,?,?,?)", Now(), setupUser, Password(setupPass), ModuleGetIdByName("eja"), "en"); err != nil {
-		return err
+	return nil
+}
+
+func SetupAdmin(setupUser string, setupPass string) error {
+	if setupPass == "" {
+		return errors.New("password is mandatory")
+	} else {
+		Run("DELETE FROM ejaUsers WHERE ejaId=1")
+		if _, err := Run("INSERT INTO ejaUsers (ejaOwner,ejaLog,username,password,defaultModuleId,ejaLanguage) VALUES (1,?,?,?,?,?)",
+			Now(),
+			setupUser,
+			Password(setupPass),
+			ModuleGetIdByName("eja"),
+			"en",
+		); err != nil {
+			return err
+		}
 	}
 
 	return nil

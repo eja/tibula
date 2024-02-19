@@ -52,20 +52,5 @@ func Configure() error {
 		log.SetFlags(log.Ldate | log.Ltime)
 	}
 
-	if Commands.DbSetup {
-		if err := Setup(); err != nil {
-			return err
-		}
-	}
-
-	if Commands.Wizard {
-		if err := wizardSetup(); err != nil {
-			return err
-		}
-	}
-
-	if Commands.Help {
-		Help()
-	}
 	return nil
 }

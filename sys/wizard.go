@@ -27,7 +27,7 @@ func WizardPassword(message string) string {
 	return strings.TrimSpace(string(pass))
 }
 
-func wizardSetup() error {
+func WizardSetup() error {
 	var cwd = filepath.Dir(os.Args[0])
 	var tibulaJson = ConfigFileName()
 	var tibulaDb = filepath.Join(cwd, "tibula.db")

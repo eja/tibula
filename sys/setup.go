@@ -10,8 +10,12 @@ func Setup() error {
 	if err := db.Open(Options.DbType, Options.DbName, Options.DbUser, Options.DbPass, Options.DbHost, Options.DbPort); err != nil {
 		return err
 	}
-	if err := db.Setup(Options.DbSetupPath, Options.DbSetupUser, Options.DbSetupPass); err != nil {
+	if err := db.Setup(Options.DbSetupPath); err != nil {
 		return err
 	}
+	if err := db.SetupAdmin(Options.DbSetupUser, Options.DbSetupPass); err != nil {
+		return err
+	}
+
 	return nil
 }

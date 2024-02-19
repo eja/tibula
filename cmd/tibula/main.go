@@ -12,7 +12,16 @@ func main() {
 	if err := sys.Configure(); err != nil {
 		log.Fatal(err)
 	}
-	if sys.Commands.Start {
+
+	if sys.Commands.DbSetup {
+		if err := sys.Setup(); err != nil {
+			log.Fatal(err)
+		}
+	} else if sys.Commands.Wizard {
+		if err := sys.WizardSetup(); err != nil {
+			log.Fatal(err)
+		}
+	} else if sys.Commands.Start {
 		if sys.Options.DbName == "" {
 			log.Fatal("Database name/file is mandatory.")
 		}
