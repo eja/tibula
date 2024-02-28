@@ -8,6 +8,8 @@ package db
 import (
 	"database/sql"
 	"errors"
+
+	"github.com/eja/tibula/log"
 )
 
 // DbHandler is the database handler representing the open database connection.
@@ -43,7 +45,7 @@ func Open(engine string, database string, username string, password string, host
 	if err == nil {
 		DbEngine = engine
 		DbConnectionId += 1
-		Debug("db open", DbEngine)
+		log.Debug("[db]", "open", DbEngine)
 	}
 	return err
 }
@@ -51,7 +53,7 @@ func Open(engine string, database string, username string, password string, host
 // Close closes the open database connection.
 func Close() error {
 	if DbHandler != nil {
-		Debug("db close", DbEngine)
+		log.Debug("[db]", "close", DbEngine)
 		return DbHandler.Close()
 	}
 	return errors.New("no database connection to close")
@@ -69,9 +71,9 @@ func Run(query string, args ...interface{}) (result TypeRun, err error) {
 	}
 
 	if err != nil {
-		Error(err, query, args, err)
+		log.Error("[db]", err, query, args, err)
 	} else {
-		Trace(query, args)
+		log.Trace("[db]", query, args)
 	}
 	return
 }
@@ -91,9 +93,9 @@ func Value(query string, args ...interface{}) (result string, err error) {
 	}
 
 	if err != nil {
-		Error(err, query, args)
+		log.Error("[db]", err, query, args)
 	} else {
-		Trace(query, args)
+		log.Trace("[db]", query, args)
 	}
 	return
 }
@@ -113,9 +115,9 @@ func Row(query string, args ...interface{}) (result TypeRow, err error) {
 	}
 
 	if err != nil {
-		Error(err, query, args)
+		log.Error("[db]", err, query, args)
 	} else {
-		Trace(query, args)
+		log.Trace("[db]", query, args)
 	}
 	return
 }
@@ -135,9 +137,9 @@ func Rows(query string, args ...interface{}) (result TypeRows, err error) {
 	}
 
 	if err != nil {
-		Error(err, query, args)
+		log.Error("[db]", err, query, args)
 	} else {
-		Trace(query, args)
+		log.Trace("[db]", query, args)
 	}
 	return
 }

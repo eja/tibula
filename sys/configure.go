@@ -4,12 +4,11 @@ package sys
 
 import (
 	"flag"
-	"log"
-	"os"
+
+	"github.com/eja/tibula/log"
 )
 
 func Configure() error {
-	log.SetFlags(0)
 	flag.BoolVar(&Commands.Start, "start", false, "start the web service")
 	flag.BoolVar(&Commands.DbSetup, "db-setup", false, "initialize the database")
 	flag.BoolVar(&Commands.Wizard, "wizard", false, "guided setup")
@@ -35,22 +34,23 @@ func Configure() error {
 	flag.IntVar(&Options.LogLevel, "log-level", 3, "set the log level (1-5): 1=Error, 2=Warn, 3=Info, 4=Debug, 5=Trace")
 	flag.Parse()
 
+	parse := false
+
 	if Options.ConfigFile != "" {
 		if err := ConfigRead(Options.ConfigFile, &Options); err != nil {
 			return err
 		}
+		parse = true
 	} else {
-		ConfigRead(ConfigFileName(), &Options)
+		if err := ConfigRead(ConfigFileName(), &Options); err == nil {
+			parse = true
+		}
+	}
+	if parse {
+		flag.Parse()
 	}
 
-	if Options.LogFile != "" {
-		file, err := os.OpenFile(Options.LogFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)
-		if err != nil {
-			return err
-		}
-		log.SetOutput(file)
-		log.SetFlags(log.Ldate | log.Ltime)
-	}
+	log.Init(Options.LogLevel, Options.LogFile)
 
 	return nil
 }

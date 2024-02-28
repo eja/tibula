@@ -6,6 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+
+	"github.com/eja/tibula/log"
 )
 
 // ModuleImport imports a module into the database based on the provided TypeModule and module name.
@@ -150,7 +152,7 @@ func ModuleImport(module TypeModule, moduleName string) error {
 			}
 			query := fmt.Sprintf("INSERT INTO %s (ejaId, ejaOwner, %s) VALUES (NULL,1,%s)", moduleName, strings.Join(keys, ", "), strings.Join(values, ","))
 			if _, err := Run(query, args...); err != nil {
-				Error("module import", err)
+				log.Error("[db]", "module import", err)
 			}
 		}
 

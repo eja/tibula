@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	"github.com/eja/tibula/api"
 	"github.com/eja/tibula/db"
+	"github.com/eja/tibula/log"
 	"github.com/eja/tibula/sys"
 	"html/template"
-	"log"
 	"net/http"
 	"path/filepath"
 	"strings"
@@ -24,13 +24,13 @@ func Core(w http.ResponseWriter, r *http.Request) {
 		decoder := json.NewDecoder(r.Body)
 		err := decoder.Decode(&eja)
 		if err != nil {
-			log.Println(r.RemoteAddr, err)
+			log.Error("[web]", r.RemoteAddr, err)
 			http.Error(w, "JSON structure is not valid", http.StatusBadRequest)
 			return
 		}
 		eja, err = api.Run(eja, false)
 		if err != nil {
-			log.Println(r.RemoteAddr, err)
+			log.Error("[web]", r.RemoteAddr, err)
 			if err.Error() == "ejaNotAuthorized" {
 				http.Error(w, "Unauthorized: Access Denied", http.StatusUnauthorized)
 			} else {
@@ -127,7 +127,7 @@ func Core(w http.ResponseWriter, r *http.Request) {
 
 		eja, err = api.Run(eja, true)
 		if err != nil {
-			log.Println(r.RemoteAddr, err)
+			log.Error("[web]", r.RemoteAddr, err)
 		} else {
 			templateFile = eja.ActionType + ".html"
 		}
@@ -144,6 +144,6 @@ func Core(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
-		log.Println(r.RemoteAddr, err)
+		log.Error("[web]", r.RemoteAddr, err)
 	}
 }

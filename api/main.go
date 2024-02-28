@@ -24,7 +24,6 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 	var user map[string]string
 
 	//open db connection
-	db.LogLevel = sys.Options.LogLevel
 	if err = db.Open(sys.Options.DbType, sys.Options.DbName, sys.Options.DbUser, sys.Options.DbPass, sys.Options.DbHost, sys.Options.DbPort); err != nil {
 		return
 	}

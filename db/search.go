@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+
+	"github.com/eja/tibula/log"
 )
 
 // TypeSearchColumn represents a mapping of column names to their properties and values.
@@ -212,7 +214,7 @@ func SearchQueryOrderAndLimit(order string, limit int64, offset int64) string {
 	pattern := `^\s*(\w+\s+(ASC|DESC)\s*,\s*)*\w+\s+(ASC|DESC)\s*$`
 	regexpPattern := regexp.MustCompile(pattern)
 	if !regexpPattern.MatchString(order) {
-		Warn("order by is not regex compatible", order)
+		log.Warn("[db]", "order by is not regex compatible", order)
 		return fmt.Sprintf("LIMIT %d OFFSET %d", limit, offset)
 	}
 	return fmt.Sprintf("ORDER BY %s LIMIT %d OFFSET %d", order, limit, offset)

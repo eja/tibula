@@ -3,9 +3,9 @@
 package main
 
 import (
+	"github.com/eja/tibula/log"
 	"github.com/eja/tibula/sys"
 	"github.com/eja/tibula/web"
-	"log"
 )
 
 func main() {

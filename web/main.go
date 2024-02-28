@@ -6,9 +6,9 @@ import (
 	"embed"
 	"errors"
 	"fmt"
+	"github.com/eja/tibula/log"
 	"github.com/eja/tibula/sys"
 	"io/fs"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -43,13 +43,13 @@ func Start() error {
 		} else if _, err := os.Stat(sys.Options.WebTlsPublic); err != nil {
 			return errors.New("failed to open public certificate")
 		} else {
-			log.Printf("Starting server on https://%s\n", address)
+			log.Info("Starting server on https://" + address)
 			if err := http.ListenAndServeTLS(address, sys.Options.WebTlsPublic, sys.Options.WebTlsPrivate, Router); err != nil {
 				return err
 			}
 		}
 	} else {
-		log.Printf("Starting server on http://%s\n", address)
+		log.Info("Starting server on http://" + address)
 		if err := http.ListenAndServe(address, Router); err != nil {
 			return err
 		}
