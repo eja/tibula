@@ -18,6 +18,7 @@ var Assets embed.FS
 // It reads JSON files from the specified setupPath or embeded assets, and populates the database accordingly.
 // The admin user credentials are used for setup.
 func Setup(setupPath string) error {
+	moduleIdMap := map[string]int64{}
 	var modules []TypeModule
 	var files []string
 	var err error
@@ -121,10 +122,13 @@ func Setup(setupPath string) error {
 	for _, module := range modules {
 		moduleParentId := ModuleGetIdByName(module.Module.ParentName)
 		moduleId := ModuleGetIdByName(module.Name)
-		if moduleId > 0 && moduleParentId > 0 {
-			_, err := Run("UPDATE ejaModules SET parentId=? WHERE ejaId=?", moduleParentId, moduleId)
-			if err != nil {
-				return err
+		if moduleId > 0 {
+			moduleIdMap[module.Name] = moduleId
+			if moduleParentId > 0 {
+				_, err := Run("UPDATE ejaModules SET parentId=? WHERE ejaId=?", moduleParentId, moduleId)
+				if err != nil {
+					return err
+				}
 			}
 		}
 	}
@@ -135,19 +139,30 @@ func Setup(setupPath string) error {
 	}
 
 	// add module links
-	if _, err := Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", Now(), ModuleGetIdByName("ejaGroups"), ModuleGetIdByName("ejaPermissions"), 2); err != nil {
-		return err
+	if moduleIdMap["ejaGroups"] > 0 {
+		if moduleIdMap["ejaPermissions"] > 0 {
+			if _, err := Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", Now(), moduleIdMap["ejaGroups"], moduleIdMap["ejaPermissions"], 2); err != nil {
+				return err
+			}
+		}
+		if moduleIdMap["ejaModules"] > 0 {
+			if _, err := Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", Now(), moduleIdMap["ejaGroups"], moduleIdMap["ejaModules"], 1); err != nil {
+				return err
+			}
+		}
 	}
-	if _, err := Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", Now(), ModuleGetIdByName("ejaGroups"), ModuleGetIdByName("ejaModules"), 1); err != nil {
-		return err
+	if moduleIdMap["ejaUsers"] > 0 {
+		if moduleIdMap["ejaGroups"] > 0 {
+			if _, err := Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", Now(), moduleIdMap["ejaUsers"], moduleIdMap["ejaGroups"], 1); err != nil {
+				return err
+			}
+		}
+		if moduleIdMap["ejaPermissions"] > 0 {
+			if _, err := Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", Now(), moduleIdMap["ejaUsers"], moduleIdMap["ejaPermissions"], 2); err != nil {
+				return err
+			}
+		}
 	}
-	if _, err := Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", Now(), ModuleGetIdByName("ejaUsers"), ModuleGetIdByName("ejaGroups"), 1); err != nil {
-		return err
-	}
-	if _, err := Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", Now(), ModuleGetIdByName("ejaUsers"), ModuleGetIdByName("ejaPermissions"), 2); err != nil {
-		return err
-	}
-
 	return nil
 }
 
