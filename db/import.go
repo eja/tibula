@@ -48,8 +48,8 @@ func ModuleImport(module TypeModule, moduleName string) error {
 			return err
 		}
 
-		if module.Module.SqlCreated > 0 {
-			for _, field := range module.Field {
+		for _, field := range module.Field {
+			if module.Module.SqlCreated > 0 {
 				if check, err := FieldExists(moduleName, field.Name); !check {
 					if err != nil {
 						return err
@@ -58,15 +58,15 @@ func ModuleImport(module TypeModule, moduleName string) error {
 						return err
 					}
 				}
-				_, err = Run(`
+			}
+			_, err = Run(`
 					INSERT INTO ejaFields 
 						(ejaId, ejaOwner, ejaLog, ejaModuleId, name, type, value, translate, powerSearch, powerList, powerEdit) 
           VALUES 
 						(NULL,?,?,?,?,?,?,?,?,?,?)
 					`, owner, Now(), moduleId, field.Name, field.Type, field.Value, field.Translate, field.PowerSearch, field.PowerList, field.PowerEdit)
-				if err != nil {
-					return err
-				}
+			if err != nil {
+				return err
 			}
 		}
 
