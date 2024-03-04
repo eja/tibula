@@ -1,5 +1,6 @@
 // Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
 
+
 function tableRowCheck(obj) {
 	input = obj.querySelector('input')
 	input.checked = !input.checked
@@ -60,7 +61,6 @@ function fieldDownload(o, name) {
  }
 }
 
-
 function fieldEditor(name) {
 	var o = document.getElementsByName('ejaValues['+name+']')[0]
 	if (! editors.hasOwnProperty(name)) {
@@ -90,6 +90,13 @@ toasts.forEach(function (toast) {
 		toastInstance.hide();
 	}, 5000);
 });
+
+var formElements = document.querySelectorAll('input, textarea, select');
+if (formElements.length <= 3 && formElements[0].tagName === 'TEXTAREA') {
+	var screenHeight = window.innerHeight;
+	var screenWidth = window.innerWidth;
+	formElements[0].style.height = screenHeight / 2 + 'px';
+}
 
 document.getElementById('ejaForm').addEventListener('submit', function(event) {
 	for (var key in editors) {
