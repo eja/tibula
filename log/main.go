@@ -21,14 +21,14 @@ const (
 	LevelTrace = 5
 )
 
-var logLevel = LevelInfo
+var Level = LevelInfo
 var logStderr = true
 
 func Init(level int, filename string) error {
 	if level < LevelFatal || level > LevelTrace {
 		return fmt.Errorf("invalid log level")
 	}
-	logLevel = level
+	Level = level
 	log.SetFlags(log.Ldate | log.Ltime | log.LUTC)
 	if filename != "" {
 		file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)
@@ -75,7 +75,7 @@ func Log(level int, args ...interface{}) {
 			log.Fatal(msg)
 		}
 	}
-	if level <= logLevel && level >= LevelError && level <= LevelTrace {
+	if level <= Level && level >= LevelError && level <= LevelTrace {
 		log.Println(msg)
 	}
 }

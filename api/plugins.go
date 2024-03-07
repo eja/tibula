@@ -23,8 +23,10 @@ var Plugins = TypePlugins{
 				if pass != user["password"] {
 					alert(&eja.Alert, db.Translate("passwordOldError", eja.Owner))
 				} else {
-					db.Put(eja.Owner, db.ModuleGetIdByName("ejaUsers"), db.Number(user["ejaId"]), "password", db.Password(eja.Values["passwordNew"]))
-					info(&eja.Info, db.Translate("passwordUpdated", eja.Owner))
+					_, err := db.Run("UPDATE ejaUsers SET password=? WHERE ejaId=?", db.Password(eja.Values["passwordNew"]), eja.Owner)
+					if err == nil {
+						info(&eja.Info, db.Translate("passwordUpdated", eja.Owner))
+					}
 				}
 			}
 		}
