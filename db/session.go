@@ -14,6 +14,7 @@ import (
 // SessionInit generates a new session for the specified user and updates the database.
 func SessionInit(userId int64) string {
 	var seed int64
+	maxValue := int(math.MaxUint32)
 	randBytes := make([]byte, 8)
 	n, err := randCrypto.Read(randBytes)
 	if err != nil || n != 8 {
@@ -23,7 +24,7 @@ func SessionInit(userId int64) string {
 	}
 	randMath.Seed(seed)
 
-	session := Sha256(fmt.Sprintf("%d%d", randMath.Intn(math.MaxUint32), randMath.Intn(math.MaxUint32)))
+	session := Sha256(fmt.Sprintf("%d%d", randMath.Intn(maxValue), randMath.Intn(maxValue)))
 	Run("UPDATE ejaUsers SET ejaSession=? WHERE ejaId=?", session, userId)
 	Run("DELETE FROM ejaSessions WHERE ejaOwner=?", userId)
 	return session
