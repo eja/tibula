@@ -23,7 +23,7 @@ func SessionInit(userId int64) string {
 	}
 	randMath.Seed(seed)
 
-	session := Sha256(fmt.Sprintf("%s%s", randMath.Intn(math.MaxUint32), randMath.Intn(math.MaxUint32)))
+	session := Sha256(fmt.Sprintf("%d%d", randMath.Intn(math.MaxUint32), randMath.Intn(math.MaxUint32)))
 	Run("UPDATE ejaUsers SET ejaSession=? WHERE ejaId=?", session, userId)
 	Run("DELETE FROM ejaSessions WHERE ejaOwner=?", userId)
 	return session
