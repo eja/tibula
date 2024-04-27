@@ -3,13 +3,27 @@
 package db
 
 import (
-	"math/rand"
-	"strconv"
+	randCrypto "crypto/rand"
+	"encoding/binary"
+	"fmt"
+	"math"
+	randMath "math/rand"
+	"time"
 )
 
 // SessionInit generates a new session for the specified user and updates the database.
 func SessionInit(userId int64) string {
-	session := Sha256(strconv.Itoa(rand.Int()) + strconv.Itoa(rand.Int()))
+	var seed int64
+	randBytes := make([]byte, 8)
+	n, err := randCrypto.Read(randBytes)
+	if err != nil || n != 8 {
+		seed = time.Now().Unix()
+	} else {
+		seed = int64(binary.LittleEndian.Uint64(randBytes))
+	}
+	randMath.Seed(seed)
+
+	session := Sha256(fmt.Sprintf("%s%s", randMath.Intn(math.MaxUint32), randMath.Intn(math.MaxUint32)))
 	Run("UPDATE ejaUsers SET ejaSession=? WHERE ejaId=?", session, userId)
 	Run("DELETE FROM ejaSessions WHERE ejaOwner=?", userId)
 	return session
