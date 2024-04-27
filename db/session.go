@@ -6,7 +6,6 @@ import (
 	randCrypto "crypto/rand"
 	"encoding/binary"
 	"fmt"
-	"math"
 	randMath "math/rand"
 	"time"
 )
@@ -14,7 +13,7 @@ import (
 // SessionInit generates a new session for the specified user and updates the database.
 func SessionInit(userId int64) string {
 	var seed int64
-	maxValue := int(math.MaxUint32)
+	maxValue := 1000 * 1000 * 1000
 	randBytes := make([]byte, 8)
 	n, err := randCrypto.Read(randBytes)
 	if err != nil || n != 8 {
