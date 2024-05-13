@@ -20,20 +20,20 @@
 						{{end}}
 					</select>
 				</div>
-        {{else if eq .Type "label"}}
-        <h6 class="text-center mt-5">
-          {{.Label}}
-        </h6>
+				{{else if eq .Type "label"}}
+				<h6 class="text-center mt-5">
+					{{.Label}}
+				</h6>
 				{{else if (eq .Type "boolean") }}
 				<div class="col-md-4 mt-3">
-          <label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
-          <select id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" class="form-select">
+					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
+					<select id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" class="form-select">
 						{{if eq $fieldValue ""}}
 						<option></option>
 						<option value="1">&#x2705; True</option>
 						<option value="0">&#x274C; False</option>
 						{{else if eq $fieldValue "1"}}
-            <option value="1" selected>&#x2705; True</option>
+						<option value="1" selected>&#x2705; True</option>
 						<option value="0">&#x274C; False</option>
 						{{else}}
 						<option value="1">&#x2705; True</option>
@@ -43,13 +43,13 @@
 				</div>
 				{{else if or (eq .Type "textArea") (eq .Type "htmlArea")}}
 				<div class="col-md-12 mt-3">
-				 <label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
-          <span class="lead position-absolute end-0 me-3">
-						<a href="#" onclick="fieldEditor('{{.Name}}')" title="rich text"><i class="bi bi-text-left"></i></a> &nbsp;
-            <a href="#" onclick="fieldUpload('{{.Name}}')" title="upload"><i class="bi bi-cloud-arrow-up-fill"></i></a>
-            <a href="#" onclick="fieldDownload(this, '{{.Name}}')" title="download"><i class="bi bi-cloud-arrow-down-fill"></i></a>
-          </span>
-				 <textarea class="form-control" id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" rows="3">{{$fieldValue}}</textarea>
+					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
+						<span class="lead position-absolute end-0 me-3">
+							<a href="#" onclick="fieldEditor('{{.Name}}')" title="rich text"><i class="bi bi-text-left"></i></a> &nbsp;
+							<a href="#" onclick="fieldUpload('{{.Name}}')" title="upload"><i class="bi bi-cloud-arrow-up-fill"></i></a>
+							<a href="#" onclick="fieldDownload(this, '{{.Name}}')" title="download"><i class="bi bi-cloud-arrow-down-fill"></i></a>
+						</span>
+					<textarea class="form-control" id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" rows="3">{{$fieldValue}}</textarea>
 				</div>
 				{{else if eq .Type "password"}}
 				<div class="col-md-4 mt-3">
@@ -57,32 +57,39 @@
 					<input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{$fieldValue}}" type="password" class="form-control">
 				</div>
 				{{else if or (eq .Type "integer") (eq .Type "decimal")}}
-          <div class="col-md-4 mt-3">
-            <label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
-            <input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{$fieldValue}}" type="number" class="form-control" step="any">
-          </div>
+				<div class="col-md-4 mt-3">
+					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
+					<input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{$fieldValue}}" type="number" class="form-control" step="any">
+				</div>
 				{{else if or (eq .Type "datetime")}}
-          <div class="col-md-4 mt-3">
-            <label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
-            <input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{if ge (len $fieldValue) 19}}{{slice $fieldValue 0 19}}{{end}}" type="datetime-local" class="form-control">
-          </div>
+				<div class="col-md-4 mt-3">
+					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
+					<input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{if ge (len $fieldValue) 19}}{{slice $fieldValue 0 19}}{{end}}" type="datetime-local" class="form-control">
+				</div>
 				{{else if or (eq .Type "date")}}
-          <div class="col-md-4 mt-3">
-            <label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
-            <input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{if ge (len $fieldValue) 10}}{{slice $fieldValue 0 10}}{{end}}" type="date" class="form-control">
-          </div>
+				<div class="col-md-4 mt-3">
+					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
+					<input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{if ge (len $fieldValue) 10}}{{slice $fieldValue 0 10}}{{end}}" type="date" class="form-control">
+				</div>
 				{{else if or (eq .Type "time")}}
-          <div class="col-md-4 mt-3">
-            <label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
-            <input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{$fieldValue}}" type="time" class="form-control">
-          </div>
+				<div class="col-md-4 mt-3">
+					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
+					<input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{$fieldValue}}" type="time" class="form-control">
+				</div>
 				{{else if eq .Type "view"}}
 				<div class="col-md-4 mt-3">
 					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
 					<input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{$fieldValue}}" type="text" class="form-control" readonly>
 				</div>
-				{{else if or (eq .Type "hidden") (eq .Type "sqlHidden")}}
+				{{else if eq .Type "sqlValue"}}
+				<div class="col-md-4 mt-3">
+					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
+					<input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{.Value}}" type="text" class="form-control" readonly>
+				</div>
+				{{else if eq .Type "hidden"}}
 					<input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{$fieldValue}}" type="hidden">
+				{{else if eq .Type "sqlHidden"}}
+					<input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{.Value}}" type="hidden">
 				{{else}}
 				<div class="col-md-4 mt-3">
 					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
