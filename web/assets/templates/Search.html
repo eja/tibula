@@ -94,13 +94,13 @@
 					</div>
 				{{else if eq .Type "view"}}
 				<div class="col-md-4 mt-3">
-					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
-					<div id="ejaValues[{{.Name}}]" class="form-control" readonly>{{$fieldValue}}"</div>
+					<label for="ejaView[{{.Name}}]" class="form-label">{{.Label}}</label>
+					<input id="ejaView[{{.Name}}]" value="{{$fieldValue}}" type="text" class="form-control" readonly>
 				</div>
 				{{else if eq .Type "sqlValue"}}
 				<div class="col-md-4 mt-3">
-					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
-					<div id="ejaValues[{{.Name}}]" class="form-control" readonly>{{.Value}}</div>
+					<label for="ejaView[{{.Name}}]" class="form-label">{{.Label}}</label>
+					<input id="ejaView[{{.Name}}]" value="{{.Value}}" type="text" class="form-control" readonly>
 				</div>
 				{{else if eq .Type "hidden"}}
 					<input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{$fieldValue}}" type="hidden">
