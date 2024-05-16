@@ -79,7 +79,7 @@
 				{{else if eq .Type "view"}}
 				<div class="col-md-4 mt-3">
 					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
-					<div id="ejaValues[{{.Name}}]" class="form-control" readonly>{{.$fieldValue}}</div>
+					<div id="ejaValues[{{.Name}}]" class="form-control" readonly>{{$fieldValue}}</div>
 				</div>
 				{{else if eq .Type "sqlValue"}}
 				<div class="col-md-4 mt-3">

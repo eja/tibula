@@ -81,6 +81,10 @@ func Fields(ownerId int64, moduleId int64, actionType string, values map[string]
 
 // FieldAdd adds a new field to the specified table with the given name and type.
 func FieldAdd(tableName string, fieldName string, fieldType string) error {
+	if fieldType == "label" || fieldType == "sqlValue" {
+		return nil
+	}
+
 	check, err := TableExists(tableName)
 	if err != nil {
 		return err

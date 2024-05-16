@@ -55,7 +55,7 @@ func SearchQuery(ownerId int64, tableName string, values map[string]string) (str
 
 	sql = append(sql, "SELECT ejaId")
 
-	rows, err := Rows("SELECT * FROM ejaFields WHERE ejaModuleId=? ORDER BY powerList", moduleId)
+	rows, err := Rows("SELECT * FROM ejaFields WHERE ejaModuleId=? AND type NOT IN ('label') ORDER BY powerList", moduleId)
 	if err != nil {
 		return "", nil, err
 	}
