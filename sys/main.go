@@ -3,7 +3,7 @@
 package sys
 
 const Name = "Tibula"
-const Version = "17.5.13"
+const Version = "17.5.18"
 
 var Options TypeConfig
 var Commands TypeCommand

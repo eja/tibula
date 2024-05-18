@@ -6,8 +6,8 @@
 				{{$fieldName := .Name }}
 				{{$fieldLabel := .Label }}
 				{{$fieldValue := index $.Values .Name }}
-				{{$Cols := .EditSize}}{{if eq $Cols 0}}{{$Cols = 4}}{{end}}
-				{{$Rows := .EditSize}}{{if eq $Rows 0}}{{$Rows = 3}}{{end}}
+				{{$Cols := .SearchSize}}{{if eq $Cols 0}}{{$Cols = 4}}{{end}}
+				{{$Rows := .SearchSize}}{{if eq $Rows 0}}{{$Rows = 3}}{{end}}
 				{{if or (eq .Type "select") (eq .Type "sqlMatrix")}}
 				<div class="col-md-{{$Cols}} mt-3">
 					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
