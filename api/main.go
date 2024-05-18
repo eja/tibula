@@ -336,9 +336,9 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 				eja.ActionType = "Search"
 				db.SessionCleanSearch(eja.Owner)
 			}
-			eja.Fields, _ = db.Fields(eja.Owner, eja.ModuleId, eja.ActionType, eja.Values)
 		}
 		eja.Commands, _ = db.Commands(eja.Owner, eja.ModuleId, eja.ActionType)
+		eja.Fields, _ = db.Fields(eja.Owner, eja.ModuleId, eja.ActionType, eja.Values)
 		eja.Path = db.ModulePath(eja.Owner, eja.ModuleId)
 		eja.Tree = db.ModuleTree(eja.Owner, eja.ModuleId, eja.Path)
 	}

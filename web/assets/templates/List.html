@@ -1,5 +1,6 @@
 {{template "head.html" . }}
 {{template "navbar.html" . }}
+{{$Fields := .Fields }}
 	<div class="container-fluid">
 		<table class="table table-bordered table-hover mt-4">
 			<caption class="text-center border-start border-bottom border-end"><small>{{.SearchOffset}}/{{.SearchLast}} - {{.SearchCount}}</small></caption>
@@ -12,7 +13,13 @@
 						<th width="30px" class="text-center"><i class="bi bi-link-45deg"></i></th>
 						{{end}}					
 					{{else}}
-					<th>
+						{{$colSpan := 0}}
+						{{range $field := $Fields}}
+							{{if eq $field.Name $key}}
+								{{$colSpan = $field.ListSize}}
+							{{end}}
+						{{end}} 
+						<th{{if gt $colSpan 0}}class="col-{{$colSpan}}"{{end}}>
 						<select name="ejaSearchOrder[{{$key}}]" class="text-secondary" style="appearance:none; border:0;outline:none;padding-right:5px;">
 							<option value="NONE">&#x21C5;</option>
 							{{if eq (index $.SearchOrder $key) "ASC"}}
@@ -27,7 +34,7 @@
 							{{end}}
 						</select>
 						{{index $.SearchLabels $key}}
-					</th>
+						</th>
 					{{end}}
 				{{end}}
 				</tr>
@@ -49,6 +56,12 @@
 										</td>
 								{{end}}
 							{{else}}
+							{{$colSpan := 1}}
+							{{range $field := $Fields}}
+								{{if and (eq $field.Name $key) (gt $field.ListSize 0)}}
+									{{$colSpan = $field.ListSize }}
+								{{end}}
+							{{end}} 
 							<td>{{index $rowValues $key}}</td>
 							{{end}}
 						{{end}}
