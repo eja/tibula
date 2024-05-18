@@ -91,13 +91,6 @@ toasts.forEach(function (toast) {
 	}, 5000);
 });
 
-var formElements = document.querySelectorAll('input, textarea, select');
-if (formElements.length <= 3 && formElements[0].tagName === 'TEXTAREA') {
-	var screenHeight = window.innerHeight;
-	var screenWidth = window.innerWidth;
-	formElements[0].style.height = screenHeight / 2 + 'px';
-}
-
 document.getElementById('ejaForm').addEventListener('submit', function(event) {
 	for (var key in editors) {
 		editors[key].save()

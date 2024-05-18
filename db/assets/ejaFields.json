@@ -1,10 +1,9 @@
 {
   "module": {
-    "sqlCreated": 1,
-    "sortList": "",
     "parentName": "ejaStructure",
     "power": 3,
-    "searchLimit": 0
+    "searchLimit": 0,
+    "sqlCreated": 1
   },
   "command": [
     "logout",
@@ -12,11 +11,11 @@
     "edit",
     "previous",
     "next",
-    "search",
-    "save",
     "copy",
-    "list",
-    "delete"
+    "delete",
+    "save",
+    "search",
+    "list"
   ],
   "field": [
     {
@@ -48,8 +47,8 @@
     },
     {
       "value": "",
-      "powerEdit": 7,
-      "powerList": 201,
+      "powerEdit": 11,
+      "powerList": 32,
       "type": "integer",
       "translate": 0,
       "powerSearch": 0,
@@ -57,8 +56,8 @@
     },
     {
       "value": "",
-      "powerEdit": 8,
-      "powerList": 202,
+      "powerEdit": 12,
+      "powerList": 34,
       "type": "integer",
       "translate": 0,
       "powerSearch": 0,
@@ -66,8 +65,8 @@
     },
     {
       "value": "",
-      "powerEdit": 6,
-      "powerList": 200,
+      "powerEdit": 10,
+      "powerList": 30,
       "type": "integer",
       "translate": 0,
       "powerSearch": 0,
@@ -75,8 +74,8 @@
     },
     {
       "value": "SELECT ejaId,name FROM ejaModules ORDER BY name",
-      "powerEdit": 2,
-      "powerList": 2,
+      "powerEdit": 3,
+      "powerList": 3,
       "type": "sqlMatrix",
       "translate": 0,
       "powerSearch": 3,
@@ -99,6 +98,33 @@
       "translate": 0,
       "powerSearch": 0,
       "name": "ejaGroup"
+    },
+    {
+      "value": "",
+      "powerEdit": 20,
+      "powerList": 31,
+      "type": "integer",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "sizeSearch"
+    },
+    {
+      "value": "",
+      "powerEdit": 21,
+      "powerList": 33,
+      "type": "integer",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "sizeList"
+    },
+    {
+      "value": "",
+      "powerEdit": 22,
+      "powerList": 35,
+      "type": "integer",
+      "translate": 0,
+      "powerSearch": 0,
+      "name": "sizeEdit"
     }
   ],
   "translation": [
@@ -129,19 +155,19 @@
       "ejaLanguage": "en",
       "ejaModuleName": "ejaFields",
       "word": "powerEdit",
-      "translation": "Edit Power"
+      "translation": "Edit Index"
     },
     {
       "ejaLanguage": "en",
       "ejaModuleName": "ejaFields",
       "word": "powerList",
-      "translation": "List Power"
+      "translation": "List Index"
     },
     {
       "ejaLanguage": "en",
       "ejaModuleName": "ejaFields",
       "word": "powerSearch",
-      "translation": "Search Power"
+      "translation": "Search Index"
     },
     {
       "ejaLanguage": "en",
@@ -172,7 +198,26 @@
       "ejaModuleName": "ejaFields",
       "word": "ejaSqlFieldCreated",
       "translation": "Sql field created"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaFields",
+      "word": "sizeSearch",
+      "translation": "Search Size"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaFields",
+      "word": "sizeList",
+      "translation": "List Size"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaFields",
+      "word": "sizeEdit",
+      "translation": "Edit Size"
     }
   ],
-  "name": "ejaFields"
+  "name": "ejaFields",
+  "data": null
 }

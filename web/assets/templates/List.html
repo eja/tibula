@@ -15,15 +15,15 @@
 					<th>
 						<select name="ejaSearchOrder[{{$key}}]" class="text-secondary" style="appearance:none; border:0;outline:none;padding-right:5px;">
 							<option value="NONE">&#x21C5;</option>
-							{{if eq (index $.SearchOrder $key) "DESC"}}
-								<option value="DESC" selected>&#x2191;</option>
-							{{else}}
-								<option value="DESC">&#x2191;</option>
-							{{end}}
 							{{if eq (index $.SearchOrder $key) "ASC"}}
-								<option value="ASC" selected>&#x2193;</option>
+								<option value="ASC" selected>&#x2191;</option>
 							{{else}}
-								<option value="ASC" >&#x2193;</option>
+								<option value="ASC">&#x2191;</option>
+							{{end}}
+							{{if eq (index $.SearchOrder $key) "DESC"}}
+								<option value="DESC" selected>&#x2193;</option>
+							{{else}}
+								<option value="DESC" >&#x2193;</option>
 							{{end}}
 						</select>
 						{{index $.SearchLabels $key}}

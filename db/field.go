@@ -9,11 +9,17 @@ import (
 
 // TypeField represents a field in a database with metadata.
 type TypeField struct {
-	Type    string
-	Name    string
-	Label   string
-	Value   string
-	Options []TypeSelect
+	Type        string
+	Name        string
+	Label       string
+	Value       string
+	SearchIndex int64
+	SearchSize  int64
+	ListIndex   int64
+	ListSize    int64
+	EditIndex   int64
+	EditSize    int64
+	Options     []TypeSelect
 }
 
 // FieldNameList retrieves a list of field names based on the provided module ID and action type.
@@ -67,11 +73,17 @@ func Fields(ownerId int64, moduleId int64, actionType string, values map[string]
 		}
 
 		field := TypeField{
-			Type:    rowType,
-			Name:    rowName,
-			Label:   Translate(rowName, ownerId),
-			Value:   rowValue,
-			Options: rowOptions,
+			Type:        rowType,
+			Name:        rowName,
+			Label:       Translate(rowName, ownerId),
+			Value:       rowValue,
+			Options:     rowOptions,
+			SearchIndex: Number(row["powerSearch"]),
+			SearchSize:  Number(row["sizeSearch"]),
+			ListIndex:   Number(row["powerList"]),
+			ListSize:    Number(row["sizeList"]),
+			EditIndex:   Number(row["powerEdit"]),
+			EditSize:    Number(row["sizeEdit"]),
 		}
 		res = append(res, field)
 	}
