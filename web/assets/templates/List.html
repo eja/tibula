@@ -19,7 +19,7 @@
 								{{$colSpan = $field.ListSize}}
 							{{end}}
 						{{end}} 
-						<th{{if gt $colSpan 0}}class="col-{{$colSpan}}"{{end}}>
+						<th{{if gt $colSpan 0}} class="col-{{$colSpan}}"{{end}}>
 						<select name="ejaSearchOrder[{{$key}}]" class="text-secondary" style="appearance:none; border:0;outline:none;padding-right:5px;">
 							<option value="NONE">&#x21C5;</option>
 							{{if eq (index $.SearchOrder $key) "ASC"}}
