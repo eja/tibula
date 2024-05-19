@@ -59,7 +59,7 @@ func ModuleImport(module TypeModule, moduleName string) error {
 					}
 				}
 			}
-			_, err = Run(`
+			run, err := Run(`
 					INSERT INTO ejaFields 
 						(ejaId, ejaOwner, ejaLog, ejaModuleId, name, type, value, translate, powerSearch, powerList, powerEdit) 
           VALUES 
@@ -68,6 +68,9 @@ func ModuleImport(module TypeModule, moduleName string) error {
 			if err != nil {
 				return err
 			}
+			Run(`UPDATE ejaFields SET sizeSearch=? WHERE ejaId=?`, field.SizeSearch, run.LastId)
+			Run(`UPDATE ejaFields SET sizeList=? WHERE ejaId=?`, field.SizeList, run.LastId)
+			Run(`UPDATE ejaFields SET sizeEdit=? WHERE ejaId=?`, field.SizeEdit, run.LastId)
 		}
 
 		ejaPermissionsId := ModuleGetIdByName("ejaPermissions")

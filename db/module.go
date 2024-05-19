@@ -30,6 +30,9 @@ type TypeModuleField struct {
 	Translate   int64  `json:"translate"`
 	PowerSearch int64  `json:"powerSearch"`
 	Name        string `json:"name"`
+	SizeSearch  int64  `json:"sizeSearch"`
+	SizeList    int64  `json:"sizeList"`
+	SizeEdit    int64  `json:"sizeEdit"`
 }
 
 // TypeModuleTranslation represents translation information within a TypeModule.

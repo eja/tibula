@@ -20,7 +20,7 @@ func ModuleExport(moduleId int64, data bool) (module TypeModule, err error) {
 		SortList:    row["sortList"],
 	}
 
-	rows, err = Rows("SELECT translate, powerEdit, name, type, powerList, powerSearch, value FROM ejaFields WHERE ejaModuleId=?", moduleId)
+	rows, err = Rows("SELECT * FROM ejaFields WHERE ejaModuleId=?", moduleId)
 	if err != nil {
 		return
 	}
@@ -31,6 +31,9 @@ func ModuleExport(moduleId int64, data bool) (module TypeModule, err error) {
 			PowerSearch: Number(row["powerSearch"]),
 			PowerList:   Number(row["powerList"]),
 			PowerEdit:   Number(row["powerEdit"]),
+			SizeSearch:  Number(row["sizeSearch"]),
+			SizeList:    Number(row["sizeList"]),
+			SizeEdit:    Number(row["sizeEdit"]),
 			Type:        row["type"],
 			Translate:   Number(row["translate"]),
 		})
