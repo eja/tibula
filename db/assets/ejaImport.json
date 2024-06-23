@@ -17,16 +17,22 @@
       "type": "text",
       "translate": 0,
       "powerSearch": 1,
-      "name": "moduleName"
+      "name": "moduleName",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
     },
     {
-      "value": "",
+      "value": "0|No\r\n1|Yes\r\n2|Data only",
       "powerEdit": 0,
       "powerList": 0,
-      "type": "boolean",
+      "type": "select",
       "translate": 0,
       "powerSearch": 2,
-      "name": "dataImport"
+      "name": "dataImport",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
     },
     {
       "value": "",
@@ -35,7 +41,10 @@
       "type": "textArea",
       "translate": 0,
       "powerSearch": 3,
-      "name": "import"
+      "name": "import",
+      "sizeSearch": 10,
+      "sizeList": 0,
+      "sizeEdit": 0
     }
   ],
   "translation": [
@@ -46,7 +55,7 @@
     },
     {
       "ejaLanguage": "en",
-			"ejaModuleName": "ejaImport",
+      "ejaModuleName": "ejaImport",
       "word": "moduleName",
       "translation": "Module Name"
     },
@@ -67,7 +76,7 @@
       "ejaModuleName": "ejaImport",
       "word": "ejaImportJsonError",
       "translation": "Json structure is not compatible"
-     },
+    },
     {
       "ejaLanguage": "en",
       "ejaModuleName": "ejaImport",
@@ -87,5 +96,6 @@
       "translation": "Import"
     }
   ],
-  "name": "ejaImport"
+  "name": "ejaImport",
+  "data": null
 }

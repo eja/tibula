@@ -10,6 +10,37 @@ import (
 	"github.com/eja/tibula/log"
 )
 
+// ModuleAppend appends data to an existing module
+func ModuleAppend(module TypeModule, moduleName string) error {
+	const owner = 1
+	if moduleName == "" {
+		moduleName = String(module.Name)
+	}
+	moduleId := ModuleGetIdByName(moduleName)
+
+	if moduleId < 1 {
+		err := fmt.Errorf("Cannot append data, module does not exists")
+		log.Error("[db]", err)
+		return err
+	} else {
+		for _, data := range module.Data {
+			var keys = []string{"ejaLog"}
+			var values = []string{"?"}
+			var args = []interface{}{Now()}
+			for key, val := range data {
+				keys = append(keys, key)
+				values = append(values, "?")
+				args = append(args, val)
+			}
+			query := fmt.Sprintf("INSERT INTO %s (ejaId, ejaOwner, %s) VALUES (NULL,1,%s)", moduleName, strings.Join(keys, ", "), strings.Join(values, ","))
+			if _, err := Run(query, args...); err != nil {
+				log.Error("[db]", "data append", err)
+			}
+		}
+	}
+	return nil
+}
+
 // ModuleImport imports a module into the database based on the provided TypeModule and module name.
 func ModuleImport(module TypeModule, moduleName string) error {
 	const owner = 1

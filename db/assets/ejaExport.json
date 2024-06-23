@@ -17,7 +17,10 @@
       "type": "sqlMatrix",
       "translate": 0,
       "powerSearch": 1,
-      "name": "ejaModuleId"
+      "name": "ejaModuleId",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
     },
     {
       "value": "",
@@ -26,7 +29,10 @@
       "type": "boolean",
       "translate": 0,
       "powerSearch": 2,
-      "name": "dataExport"
+      "name": "dataExport",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
     },
     {
       "value": "",
@@ -35,7 +41,10 @@
       "type": "textArea",
       "translate": 0,
       "powerSearch": 3,
-      "name": "export"
+      "name": "export",
+      "sizeSearch": 10,
+      "sizeList": 0,
+      "sizeEdit": 0
     }
   ],
   "translation": [
@@ -46,7 +55,7 @@
     },
     {
       "ejaLanguage": "en",
-			"ejaModuleName": "ejaExport",
+      "ejaModuleName": "ejaExport",
       "word": "ejaModuleId",
       "translation": "Module"
     },
@@ -81,5 +90,6 @@
       "translation": "Export"
     }
   ],
-  "name": "ejaExport"
+  "name": "ejaExport",
+  "data": null
 }

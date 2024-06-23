@@ -36,16 +36,22 @@ var Plugins = TypePlugins{
 		if eja.Action == "run" {
 			moduleName := eja.Values["moduleName"]
 			moduleData := eja.Values["import"]
-			dataImport := db.Number(eja.Values["dataImport"]) > 0
+			dataImport := db.Number(eja.Values["dataImport"])
 			if moduleData != "" {
 				var module db.TypeModule
 				if err := json.Unmarshal([]byte(moduleData), &module); err != nil {
 					alert(&eja.Alert, db.Translate("ejaImportJsonError", eja.Owner))
 				} else {
-					if !dataImport {
-						module.Data = nil
+					var err error
+					if dataImport == 2 {
+						err = db.ModuleAppend(module, moduleName)
+					} else {
+						if dataImport < 1 {
+							module.Data = nil
+						}
+						err = db.ModuleImport(module, moduleName)
 					}
-					if err := db.ModuleImport(module, moduleName); err != nil {
+					if err != nil {
 						alert(&eja.Alert, db.Translate("ejaImportError", eja.Owner))
 					} else {
 						eja.Values["import"] = ""
