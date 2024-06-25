@@ -134,7 +134,7 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 				}
 				if eja.Action == "link" || eja.Action == "unlink" {
 					eja.IdList = []int64{}
-					eja.Action = "search"
+					eja.ActionType = "List"
 				}
 			}
 			//edit
@@ -224,7 +224,7 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 						}
 					}
 				}
-				eja.Action = "search"
+				eja.ActionType = "List"
 			}
 
 			//list
@@ -235,7 +235,7 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 			}
 
 			//search
-			if eja.Action == "search" || eja.Action == "previous" || eja.Action == "next" || eja.Action == "list" {
+			if eja.Action == "search" || eja.Action == "previous" || eja.Action == "next" || eja.Action == "list" || eja.ActionType == "List" {
 				var sqlQuery string
 				var sqlArgs []interface{}
 				var sqlOrderFields = db.FieldNameList(eja.ModuleId, "List")
