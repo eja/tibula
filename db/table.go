@@ -8,20 +8,20 @@ import (
 )
 
 // TableExists checks if a table with the specified name exists in the database.
-func TableExists(name string) (bool, error) {
-	switch DbEngine {
+func (session *TypeSession) TableExists(name string) (bool, error) {
+	switch session.Engine {
 	case "sqlite":
-		return sqliteTableExists(name)
+		return session.sqliteTableExists(name)
 	case "mysql":
-		return mysqlTableExists(name)
+		return session.mysqlTableExists(name)
 	default:
 		return false, errors.New("engine not found")
 	}
 }
 
 // TableNameIsValid checks if a table name is valid according to the current database engine's conventions.
-func TableNameIsValid(name string) error {
-	switch DbEngine {
+func (session *TypeSession) TableNameIsValid(name string) error {
+	switch session.Engine {
 	case "sqlite":
 		return sqliteTableNameIsValid(name)
 	case "mysql":
@@ -34,8 +34,8 @@ func TableNameIsValid(name string) error {
 // TableAdd creates a new table with the specified name in the database.
 // If the table already exists, it does nothing.
 // The optional 'tmp' parameter specifies whether the table is temporary.
-func TableAdd(name string, tmp ...bool) error {
-	check, err := TableExists(name)
+func (session *TypeSession) TableAdd(name string, tmp ...bool) error {
+	check, err := session.TableExists(name)
 	if err != nil {
 		return err
 	}
@@ -44,13 +44,13 @@ func TableAdd(name string, tmp ...bool) error {
 		if len(tmp) > 0 {
 			temporary = "TEMPORARY"
 		}
-		switch DbEngine {
+		switch session.Engine {
 		case "sqlite":
-			if _, err := Run(fmt.Sprintf("CREATE %s TABLE %s (ejaId INTEGER PRIMARY KEY, ejaOwner INTEGER, ejaLog DATETIME)", temporary, name)); err != nil {
+			if _, err := session.Run(fmt.Sprintf("CREATE %s TABLE %s (ejaId INTEGER PRIMARY KEY, ejaOwner INTEGER, ejaLog DATETIME)", temporary, name)); err != nil {
 				return err
 			}
 		case "mysql":
-			if _, err := Run(fmt.Sprintf("CREATE %s TABLE %s (ejaId INTEGER AUTO_INCREMENT PRIMARY KEY, ejaOwner INTEGER, ejaLog DATETIME)", temporary, name)); err != nil {
+			if _, err := session.Run(fmt.Sprintf("CREATE %s TABLE %s (ejaId INTEGER AUTO_INCREMENT PRIMARY KEY, ejaOwner INTEGER, ejaLog DATETIME)", temporary, name)); err != nil {
 				return err
 			}
 		default:
@@ -62,22 +62,22 @@ func TableAdd(name string, tmp ...bool) error {
 
 // TableDel deletes the table with the specified name from the database.
 // If the table does not exist, it returns an error.
-func TableDel(name string) error {
-	check, err := TableExists(name)
+func (session *TypeSession) TableDel(name string) error {
+	check, err := session.TableExists(name)
 	if err != nil {
 		return err
 	}
 	if !check {
 		return errors.New("table does not exists")
 	}
-	if _, err := Run(fmt.Sprintf("DROP TABLE %s", name)); err != nil {
+	if _, err := session.Run(fmt.Sprintf("DROP TABLE %s", name)); err != nil {
 		return err
 	}
 	return nil
 }
 
 // TableGetAllById retrieves a row from the specified table based on the ejaId field.
-func TableGetAllById(tableName string, ejaId int64) TypeRow {
-	row, _ := Row("SELECT * FROM "+tableName+" WHERE ejaId=?", ejaId)
+func (session *TypeSession) TableGetAllById(tableName string, ejaId int64) TypeRow {
+	row, _ := session.Row("SELECT * FROM "+tableName+" WHERE ejaId=?", ejaId)
 	return row
 }

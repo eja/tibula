@@ -4,14 +4,15 @@ package web
 
 import (
 	"encoding/json"
-	"github.com/eja/tibula/api"
-	"github.com/eja/tibula/db"
-	"github.com/eja/tibula/log"
-	"github.com/eja/tibula/sys"
 	"html/template"
 	"net/http"
 	"path/filepath"
 	"strings"
+
+	"github.com/eja/tibula/api"
+	"github.com/eja/tibula/db"
+	"github.com/eja/tibula/log"
+	"github.com/eja/tibula/sys"
 )
 
 func Core(w http.ResponseWriter, r *http.Request) {
@@ -66,15 +67,15 @@ func Core(w http.ResponseWriter, r *http.Request) {
 			case "ejaSession":
 				eja.Session = value
 			case "ejaId":
-				eja.Id = db.Number(value)
+				eja.Id = sys.Number(value)
 			case "ejaModuleId":
-				eja.ModuleId = db.Number(value)
+				eja.ModuleId = sys.Number(value)
 			case "ejaLink":
 				parts := strings.Split(value, ".")
 				if len(parts) == 3 {
 					eja.Link = db.TypeLink{
-						ModuleId: db.Number(parts[0]),
-						FieldId:  db.Number(parts[1]),
+						ModuleId: sys.Number(parts[0]),
+						FieldId:  sys.Number(parts[1]),
 						Label:    parts[2],
 					}
 					eja.Action = "search"
@@ -89,15 +90,15 @@ func Core(w http.ResponseWriter, r *http.Request) {
 			value := values[0]
 			switch key {
 			case "ejaId":
-				eja.Id = db.Number(value)
+				eja.Id = sys.Number(value)
 			case "ejaModuleId":
-				eja.ModuleId = db.Number(value)
+				eja.ModuleId = sys.Number(value)
 			case "ejaAction":
 				eja.Action = value
 			case "ejaSession":
 				eja.Session = value
 			case "ejaSearchLink":
-				if db.Number(value) > 0 {
+				if sys.Number(value) > 0 {
 					eja.SearchLink = true
 				} else {
 					eja.SearchLink = false
@@ -115,7 +116,7 @@ func Core(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 			if strings.HasPrefix(key, "ejaIdList") {
-				id := db.Number(arrayKeyNameExtract(key))
+				id := sys.Number(arrayKeyNameExtract(key))
 				if id > 0 {
 					if len(eja.IdList) == 0 {
 						eja.Id = id

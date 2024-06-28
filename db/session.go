@@ -11,7 +11,7 @@ import (
 )
 
 // SessionInit generates a new session for the specified user and updates the database.
-func SessionInit(userId int64) string {
+func (session *TypeSession) SessionInit(userId int64) string {
 	var seed int64
 	maxValue := 1000 * 1000 * 1000
 	randBytes := make([]byte, 8)
@@ -23,69 +23,69 @@ func SessionInit(userId int64) string {
 	}
 	randMath.Seed(seed)
 
-	session := Sha256(fmt.Sprintf("%d%d", randMath.Intn(maxValue), randMath.Intn(maxValue)))
-	Run("UPDATE ejaUsers SET ejaSession=? WHERE ejaId=?", session, userId)
-	Run("DELETE FROM ejaSessions WHERE ejaOwner=?", userId)
-	return session
+	sessionHash := session.Sha256(fmt.Sprintf("%d%d", randMath.Intn(maxValue), randMath.Intn(maxValue)))
+	session.Run("UPDATE ejaUsers SET ejaSession=? WHERE ejaId=?", sessionHash, userId)
+	session.Run("DELETE FROM ejaSessions WHERE ejaOwner=?", userId)
+	return sessionHash
 }
 
 // SessionLoad loads session data for a specified user and module from the database.
-func SessionLoad(userId int64, moduleId int64) (TypeRows, error) {
-	if DbEngine == "mysql" {
-		Run("SET @ejaOwner = " + String(userId))
+func (session *TypeSession) SessionLoad(userId int64, moduleId int64) (TypeRows, error) {
+	if session.Engine == "mysql" {
+		session.Run("SET @ejaOwner = " + session.String(userId))
 	}
-	TableAdd("ejaSession", true)
-	FieldAdd("ejaSession", "name", "text")
-	FieldAdd("ejaSession", "value", "text")
-	FieldAdd("ejaSession", "sub", "text")
-	Run("DELETE FROM ejaSessions WHERE ejaOwner=? AND name in ('ejaId','ejaOwners')", userId)
-	Run("INSERT INTO ejaSession SELECT * FROM ejaSessions WHERE ejaOwner=?", userId)
-	user := UserGetAllById(userId)
-	SessionPut(userId, "ejaModuleId", String(moduleId))
-	SessionPut(userId, "ejaModuleName", ModuleGetNameById(moduleId))
-	SessionPut(userId, "ejaOwner", String(user["ejaId"]))
-	SessionPut(userId, "ejaLanguage", user["ejaLanguage"])
-	for _, val := range Owners(userId, moduleId) {
-		SessionPut(userId, "ejaOwners", String(val), String(val))
+	session.TableAdd("ejaSession", true)
+	session.FieldAdd("ejaSession", "name", "text")
+	session.FieldAdd("ejaSession", "value", "text")
+	session.FieldAdd("ejaSession", "sub", "text")
+	session.Run("DELETE FROM ejaSessions WHERE ejaOwner=? AND name in ('ejaId','ejaOwners')", userId)
+	session.Run("INSERT INTO ejaSession SELECT * FROM ejaSessions WHERE ejaOwner=?", userId)
+	user := session.UserGetAllById(userId)
+	session.SessionPut(userId, "ejaModuleId", session.String(moduleId))
+	session.SessionPut(userId, "ejaModuleName", session.ModuleGetNameById(moduleId))
+	session.SessionPut(userId, "ejaOwner", session.String(user["ejaId"]))
+	session.SessionPut(userId, "ejaLanguage", user["ejaLanguage"])
+	for _, val := range session.Owners(userId, moduleId) {
+		session.SessionPut(userId, "ejaOwners", session.String(val), session.String(val))
 	}
-	return Rows("SELECT * FROM ejaSession ORDER BY ejaLog ASC, ejaId ASC")
+	return session.Rows("SELECT * FROM ejaSession ORDER BY ejaLog ASC, ejaId ASC")
 }
 
 // SessionPut stores a session variable for a specified user in the database.
-func SessionPut(userId int64, name string, value string, subName ...string) (err error) {
+func (session *TypeSession) SessionPut(userId int64, name string, value string, subName ...string) (err error) {
 	var sub string
 	if len(subName) > 0 {
 		sub = subName[0]
 	}
-	if _, err = Run("DELETE FROM ejaSession WHERE ejaOwner=? AND name=? AND sub=?", userId, name, sub); err != nil {
+	if _, err = session.Run("DELETE FROM ejaSession WHERE ejaOwner=? AND name=? AND sub=?", userId, name, sub); err != nil {
 		return
 	}
-	if _, err = Run("INSERT INTO ejaSession (ejaId, ejaOwner, ejaLog, name, value, sub) VALUES (NULL,?,?,?,?,?)", userId, Now(), name, value, sub); err != nil {
+	if _, err = session.Run("INSERT INTO ejaSession (ejaId, ejaOwner, ejaLog, name, value, sub) VALUES (NULL,?,?,?,?,?)", userId, session.Now(), name, value, sub); err != nil {
 		return
 	}
-	if _, err = Run("DELETE FROM ejaSessions WHERE ejaOwner=? AND name=? AND sub=?", userId, name, sub); err != nil {
+	if _, err = session.Run("DELETE FROM ejaSessions WHERE ejaOwner=? AND name=? AND sub=?", userId, name, sub); err != nil {
 		return
 	}
-	if _, err = Run("INSERT INTO ejaSessions (ejaId, ejaOwner, ejaLog, name, value, sub) VALUES (NULL,?,?,?,?,?)", userId, Now(), name, value, sub); err != nil {
+	if _, err = session.Run("INSERT INTO ejaSessions (ejaId, ejaOwner, ejaLog, name, value, sub) VALUES (NULL,?,?,?,?,?)", userId, session.Now(), name, value, sub); err != nil {
 		return err
 	}
 	return
 }
 
 // SessionCleanLink removes specific session variables related to links for a specified user.
-func SessionCleanLink(userId int64) error {
-	_, err := Run("DELETE FROM ejaSessions WHERE ejaOwner=? AND name in ('Link','SqlQuery64','SqlQueryArgs','SearchLimit','SearchOffset','SearchOrder')", userId)
+func (session *TypeSession) SessionCleanLink(userId int64) error {
+	_, err := session.Run("DELETE FROM ejaSessions WHERE ejaOwner=? AND name in ('Link','SqlQuery64','SqlQueryArgs','SearchLimit','SearchOffset','SearchOrder')", userId)
 	return err
 }
 
 // SessionCleanSearch removes specific session variables related to searches for a specified user.
-func SessionCleanSearch(userId int64) error {
-	_, err := Run("DELETE FROM ejaSessions WHERE ejaOwner=? AND name in ('SqlQuery64','SqlQueryArgs','SearchLimit','SearchOffset','SearchOrder')", userId)
+func (session *TypeSession) SessionCleanSearch(userId int64) error {
+	_, err := session.Run("DELETE FROM ejaSessions WHERE ejaOwner=? AND name in ('SqlQuery64','SqlQueryArgs','SearchLimit','SearchOffset','SearchOrder')", userId)
 	return err
 }
 
 // SessionReset removes all session variables for a specified user from the database.
-func SessionReset(userId int64) error {
-	_, err := Run("DELETE FROM ejaSessions WHERE ejaOwner=?", userId)
+func (session *TypeSession) SessionReset(userId int64) error {
+	_, err := session.Run("DELETE FROM ejaSessions WHERE ejaOwner=?", userId)
 	return err
 }

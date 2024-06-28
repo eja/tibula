@@ -12,18 +12,21 @@ import (
 	"github.com/eja/tibula/log"
 )
 
-// DbHandler is the database handler representing the open database connection.
-var DbHandler *sql.DB
+const tag = "[db]"
 
-// DbEngine holds the current database engine in use (e.g., "sqlite", "mysql").
-var DbEngine string
+type TypeSession struct {
+	Handler      *sql.DB
+	Engine       string
+	ConnectionId int64
+}
 
-// DbConnectionId holds the current database connection
-var DbConnectionId int64
+// Session start a new database session
+func Session() TypeSession {
+	return TypeSession{}
+}
 
 // Open initializes a connection to the specified database using the provided parameters.
-func Open(engine string, database string, username string, password string, host string, port int) error {
-	var err error
+func (session *TypeSession) Open(engine string, database string, username string, password string, host string, port int) (err error) {
 
 	if database == "" {
 		return errors.New("database name/file is mandatory")
@@ -31,10 +34,10 @@ func Open(engine string, database string, username string, password string, host
 
 	switch engine {
 	case "sqlite":
-		DbHandler, err = sqliteOpen(database)
+		session.Handler, err = sqliteOpen(database)
 	case "mysql":
 		if username != "" && password != "" {
-			DbHandler, err = mysqlOpen(database, username, password, host, port)
+			session.Handler, err = mysqlOpen(database, username, password, host, port)
 		} else {
 			return errors.New("username/password missing")
 		}
@@ -43,48 +46,49 @@ func Open(engine string, database string, username string, password string, host
 	}
 
 	if err == nil {
-		DbEngine = engine
-		DbConnectionId += 1
-		log.Debug("[db]", "open", DbEngine)
+		session.Engine = engine
+		session.ConnectionId += 1
+		log.Debug(tag, "open", session.Engine)
 	}
-	return err
+
+	return
 }
 
 // Close closes the open database connection.
-func Close() error {
-	if DbHandler != nil {
-		log.Debug("[db]", "close", DbEngine)
-		return DbHandler.Close()
+func (session *TypeSession) Close() error {
+	if session.Handler != nil {
+		log.Debug(tag, "close", session.Engine)
+		return session.Handler.Close()
 	}
 	return errors.New("no database connection to close")
 }
 
 // Run executes a query with optional parameters and returns a TypeRun containing information about the execution.
-func Run(query string, args ...interface{}) (result TypeRun, err error) {
-	switch DbEngine {
+func (session *TypeSession) Run(query string, args ...interface{}) (result TypeRun, err error) {
+	switch session.Engine {
 	case "sqlite":
-		result, err = sqliteRun(query, args...)
+		result, err = session.sqliteRun(query, args...)
 	case "mysql":
-		result, err = mysqlRun(query, args...)
+		result, err = session.mysqlRun(query, args...)
 	default:
 		err = errors.New("engine not found")
 	}
 
 	if err != nil {
-		log.Error("[db]", err, query, args, err)
+		log.Error(tag, err, query, args, err)
 	} else {
-		log.Trace("[db]", query, args)
+		log.Trace(tag, query, args)
 	}
 	return
 }
 
 // Value executes a query with optional parameters and returns a single result as a string.
-func Value(query string, args ...interface{}) (result string, err error) {
-	switch DbEngine {
+func (session *TypeSession) Value(query string, args ...interface{}) (result string, err error) {
+	switch session.Engine {
 	case "sqlite":
-		result, err = sqliteValue(query, args...)
+		result, err = session.sqliteValue(query, args...)
 	case "mysql":
-		result, err = mysqlValue(query, args...)
+		result, err = session.mysqlValue(query, args...)
 	default:
 		err = errors.New("engine not found")
 	}
@@ -93,20 +97,20 @@ func Value(query string, args ...interface{}) (result string, err error) {
 	}
 
 	if err != nil {
-		log.Error("[db]", err, query, args)
+		log.Error(tag, err, query, args)
 	} else {
-		log.Trace("[db]", query, args)
+		log.Trace(tag, query, args)
 	}
 	return
 }
 
 // Row executes a query with optional parameters and returns a single row of results as a TypeRow.
-func Row(query string, args ...interface{}) (result TypeRow, err error) {
-	switch DbEngine {
+func (session *TypeSession) Row(query string, args ...interface{}) (result TypeRow, err error) {
+	switch session.Engine {
 	case "sqlite":
-		result, err = sqliteRow(query, args...)
+		result, err = session.sqliteRow(query, args...)
 	case "mysql":
-		result, err = mysqlRow(query, args...)
+		result, err = session.mysqlRow(query, args...)
 	default:
 		err = errors.New("engine not found")
 	}
@@ -115,20 +119,20 @@ func Row(query string, args ...interface{}) (result TypeRow, err error) {
 	}
 
 	if err != nil {
-		log.Error("[db]", err, query, args)
+		log.Error(tag, err, query, args)
 	} else {
-		log.Trace("[db]", query, args)
+		log.Trace(tag, query, args)
 	}
 	return
 }
 
 // Rows executes a query with optional parameters and returns multiple rows of results as a TypeRows.
-func Rows(query string, args ...interface{}) (result TypeRows, err error) {
-	switch DbEngine {
+func (session *TypeSession) Rows(query string, args ...interface{}) (result TypeRows, err error) {
+	switch session.Engine {
 	case "sqlite":
-		result, err = sqliteRows(query, args...)
+		result, err = session.sqliteRows(query, args...)
 	case "mysql":
-		result, err = mysqlRows(query, args...)
+		result, err = session.mysqlRows(query, args...)
 	default:
 		err = errors.New("engine not found")
 	}
@@ -137,20 +141,20 @@ func Rows(query string, args ...interface{}) (result TypeRows, err error) {
 	}
 
 	if err != nil {
-		log.Error("[db]", err, query, args)
+		log.Error(tag, err, query, args)
 	} else {
-		log.Trace("[db]", query, args)
+		log.Trace(tag, query, args)
 	}
 	return
 }
 
 // Cols executes a query with optional parameters and returns the column names of the result set.
-func Cols(query string, args ...interface{}) ([]string, error) {
-	switch DbEngine {
+func (session *TypeSession) Cols(query string, args ...interface{}) ([]string, error) {
+	switch session.Engine {
 	case "sqlite":
-		return sqliteCols(query, args...)
+		return session.sqliteCols(query, args...)
 	case "mysql":
-		return mysqlCols(query, args...)
+		return session.mysqlCols(query, args...)
 	default:
 		return nil, errors.New("engine not found")
 	}

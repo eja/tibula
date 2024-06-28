@@ -4,13 +4,12 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/eja/tibula/db"
 )
 
-type TypePlugins map[string]func(TypeApi) TypeApi
+type TypePlugins map[string]func(TypeApi, dbTypeSession) TypeApi
 
 var Plugins = TypePlugins{
-	"ejaProfile": func(eja TypeApi) TypeApi {
+	"ejaProfile": func(eja TypeApi, db dbTypeSession) TypeApi {
 		eja.Alert = nil
 		if eja.Action == "run" {
 			if eja.Values["passwordOld"] == "" || eja.Values["passwordNew"] == "" || eja.Values["passwordRepeat"] == "" {
@@ -32,13 +31,13 @@ var Plugins = TypePlugins{
 		}
 		return eja
 	},
-	"ejaImport": func(eja TypeApi) TypeApi {
+	"ejaImport": func(eja TypeApi, db dbTypeSession) TypeApi {
 		if eja.Action == "run" {
 			moduleName := eja.Values["moduleName"]
 			moduleData := eja.Values["import"]
 			dataImport := db.Number(eja.Values["dataImport"])
 			if moduleData != "" {
-				var module db.TypeModule
+				var module dbTypeModule
 				if err := json.Unmarshal([]byte(moduleData), &module); err != nil {
 					alert(&eja.Alert, db.Translate("ejaImportJsonError", eja.Owner))
 				} else {
@@ -62,7 +61,7 @@ var Plugins = TypePlugins{
 		}
 		return eja
 	},
-	"ejaExport": func(eja TypeApi) TypeApi {
+	"ejaExport": func(eja TypeApi, db dbTypeSession) TypeApi {
 		if eja.Action == "run" {
 			moduleId := db.Number(eja.Values["ejaModuleId"])
 			dataExport := db.Number(eja.Values["dataExport"]) > 0

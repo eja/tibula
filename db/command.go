@@ -16,17 +16,17 @@ type TypeCommand struct {
 
 // Commands retrieves a list of commands based on user and module information.
 // It checks permissions and builds the command list accordingly.
-func Commands(userId int64, moduleId int64, actionType string) ([]TypeCommand, error) {
+func (session *TypeSession) Commands(userId int64, moduleId int64, actionType string) ([]TypeCommand, error) {
 	commandList := []TypeCommand{}
 	actionTypeSql := ""
 
-	moduleName := ModuleGetNameById(moduleId)
+	moduleName := session.ModuleGetNameById(moduleId)
 	if moduleName == "" {
 		return nil, errors.New("module does not exist")
 	}
 
 	if moduleName == "ejaLogin" {
-		commandList = append(commandList, TypeCommand{Name: "login", Label: Translate("login", userId)})
+		commandList = append(commandList, TypeCommand{Name: "login", Label: session.Translate("login", userId)})
 	}
 
 	if actionType != "" {
@@ -48,28 +48,28 @@ func Commands(userId int64, moduleId int64, actionType string) ([]TypeCommand, e
             )
         )
     ) %s`,
-		UserGroupCsv(userId), actionTypeSql)
+		session.UserGroupCsv(userId), actionTypeSql)
 
-	rows, err := Rows(
+	rows, err := session.Rows(
 		query,
 		moduleId,
-		ModuleGetIdByName("ejaPermissions"),
-		ModuleGetIdByName("ejaUsers"),
+		session.ModuleGetIdByName("ejaPermissions"),
+		session.ModuleGetIdByName("ejaUsers"),
 		userId,
-		ModuleGetIdByName("ejaGroups"),
+		session.ModuleGetIdByName("ejaGroups"),
 	)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, row := range rows {
-		commandList = append(commandList, TypeCommand{Name: row["name"], Label: Translate(row["name"], userId), Linker: Number(row["linking"]) > 0})
+		commandList = append(commandList, TypeCommand{Name: row["name"], Label: session.Translate(row["name"], userId), Linker: session.Number(row["linking"]) > 0})
 	}
 	return commandList, nil
 }
 
 // CommandExists checks if a given command exists in the provided list of commands.
-func CommandExists(commands []TypeCommand, commandName string) bool {
+func (session *TypeSession) CommandExists(commands []TypeCommand, commandName string) bool {
 	for _, row := range commands {
 		if row.Name == commandName {
 			return true

@@ -14,19 +14,19 @@ type TypeModulePath struct {
 }
 
 // ModulePath retrieves the path of module hierarchy from the specified module to its root for a given user.
-func ModulePath(ownerId int64, moduleId int64) (result []TypeModulePath) {
+func (session *TypeSession) ModulePath(ownerId int64, moduleId int64) (result []TypeModulePath) {
 	id := moduleId
-	ejaPermissions := ModuleGetIdByName("ejaPermissions")
-	ejaUsers := ModuleGetIdByName("ejaUsers")
-	ejaGroups := ModuleGetIdByName("ejaGroups")
-	owners := NumbersToCsv(UserGroupList(ownerId))
+	ejaPermissions := session.ModuleGetIdByName("ejaPermissions")
+	ejaUsers := session.ModuleGetIdByName("ejaUsers")
+	ejaGroups := session.ModuleGetIdByName("ejaGroups")
+	owners := session.NumbersToCsv(session.UserGroupList(ownerId))
 
 	for id != 0 {
-		row, _ := Row("SELECT ejaId, parentId, name FROM ejaModules WHERE ejaId=?", id)
+		row, _ := session.Row("SELECT ejaId, parentId, name FROM ejaModules WHERE ejaId=?", id)
 		result = append(result, TypeModulePath{
-			Id:    Number(row["ejaId"]),
+			Id:    session.Number(row["ejaId"]),
 			Name:  row["name"],
-			Label: Translate(row["name"], ownerId),
+			Label: session.Translate(row["name"], ownerId),
 		})
 		id = 0
 		if len(row) > 0 {
@@ -38,9 +38,9 @@ func ModulePath(ownerId int64, moduleId int64) (result []TypeModulePath) {
 					AND ((dstFieldId=? AND dstModuleId=?) || (dstModuleId=? AND dstFieldId IN (%s)))
 				LIMIT 1
 				`, owners)
-			checkId, _ := Value(query, ejaPermissions, Number(row["ejaId"]), ownerId, ejaUsers, ejaGroups)
-			if (ownerId == 1 || Number(checkId) > 0) && Number(row["parentId"]) > 0 {
-				id = Number(row["parentId"])
+			checkId, _ := session.Value(query, ejaPermissions, session.Number(row["ejaId"]), ownerId, ejaUsers, ejaGroups)
+			if (ownerId == 1 || session.Number(checkId) > 0) && session.Number(row["parentId"]) > 0 {
+				id = session.Number(row["parentId"])
 			}
 		}
 	}

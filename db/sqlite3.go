@@ -17,8 +17,8 @@ func sqliteOpen(path string) (*sql.DB, error) {
 }
 
 // sqliteRun executes a SQL query with optional arguments and returns information about the execution.
-func sqliteRun(query string, args ...interface{}) (TypeRun, error) {
-	result, err := DbHandler.Exec(query, args...)
+func (session *TypeSession) sqliteRun(query string, args ...interface{}) (TypeRun, error) {
+	result, err := session.Handler.Exec(query, args...)
 	if err != nil {
 		return TypeRun{}, err
 	}
@@ -28,8 +28,8 @@ func sqliteRun(query string, args ...interface{}) (TypeRun, error) {
 }
 
 // sqliteValue executes a SQL query with optional arguments and returns a single string result.
-func sqliteValue(query string, args ...interface{}) (result string, err error) {
-	err = DbHandler.QueryRow(query, args...).Scan(&result)
+func (session *TypeSession) sqliteValue(query string, args ...interface{}) (result string, err error) {
+	err = session.Handler.QueryRow(query, args...).Scan(&result)
 	if err != nil {
 		return
 	}
@@ -37,9 +37,9 @@ func sqliteValue(query string, args ...interface{}) (result string, err error) {
 }
 
 // sqliteRow executes a SQL query with optional arguments and returns a single row of results.
-func sqliteRow(query string, args ...interface{}) (TypeRow, error) {
+func (session *TypeSession) sqliteRow(query string, args ...interface{}) (TypeRow, error) {
 	var result TypeRow
-	rows, err := sqliteRows(query, args...)
+	rows, err := session.sqliteRows(query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -50,8 +50,8 @@ func sqliteRow(query string, args ...interface{}) (TypeRow, error) {
 }
 
 // sqliteRows executes a SQL query with optional arguments and returns multiple rows of results.
-func sqliteRows(query string, args ...interface{}) (TypeRows, error) {
-	rows, err := DbHandler.Query(query, args...)
+func (session *TypeSession) sqliteRows(query string, args ...interface{}) (TypeRows, error) {
+	rows, err := session.Handler.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -87,8 +87,8 @@ func sqliteRows(query string, args ...interface{}) (TypeRows, error) {
 }
 
 // sqliteCols executes a SQL query with optional arguments and returns the column names.
-func sqliteCols(query string, args ...interface{}) ([]string, error) {
-	rows, err := DbHandler.Query(query, args...)
+func (session *TypeSession) sqliteCols(query string, args ...interface{}) ([]string, error) {
+	rows, err := session.Handler.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -98,12 +98,12 @@ func sqliteCols(query string, args ...interface{}) ([]string, error) {
 }
 
 // sqliteTableExists checks if a table with the specified name exists in the database.
-func sqliteTableExists(name string) (bool, error) {
+func (session *TypeSession) sqliteTableExists(name string) (bool, error) {
 	if err := sqliteTableNameIsValid(name); err != nil {
 		return false, err
 	}
-	if _, err := sqliteValue("SELECT name FROM sqlite_master WHERE type='table' AND name=?", name); err != nil {
-		if _, err := sqliteValue("SELECT name FROM sqlite_temp_master WHERE type='table' AND name=?", name); err != nil {
+	if _, err := session.sqliteValue("SELECT name FROM sqlite_master WHERE type='table' AND name=?", name); err != nil {
+		if _, err := session.sqliteValue("SELECT name FROM sqlite_temp_master WHERE type='table' AND name=?", name); err != nil {
 			return false, nil
 		}
 	}
@@ -111,7 +111,7 @@ func sqliteTableExists(name string) (bool, error) {
 }
 
 // sqliteFieldExists checks if a field with the specified name exists in the specified table.
-func sqliteFieldExists(tableName, fieldName string) (bool, error) {
+func (session *TypeSession) sqliteFieldExists(tableName, fieldName string) (bool, error) {
 	if err := sqliteTableNameIsValid(tableName); err != nil {
 		return false, err
 	}
@@ -120,7 +120,7 @@ func sqliteFieldExists(tableName, fieldName string) (bool, error) {
 		return false, err
 	}
 
-	rows, err := sqliteRows(fmt.Sprintf("PRAGMA table_info(%s)", tableName))
+	rows, err := session.sqliteRows(fmt.Sprintf("PRAGMA table_info(%s)", tableName))
 	if err != nil {
 		return false, err
 	}

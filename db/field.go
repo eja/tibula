@@ -23,8 +23,8 @@ type TypeField struct {
 }
 
 // FieldNameList retrieves a list of field names based on the provided module ID and action type.
-func FieldNameList(moduleId int64, actionType string) (fields []string) {
-	rows, err := Rows(fmt.Sprintf("SELECT name FROM ejaFields WHERE ejaModuleId=%d AND power%s>0 AND power%s!='' ORDER BY power%s ASC;", moduleId, actionType, actionType, actionType))
+func (session *TypeSession) FieldNameList(moduleId int64, actionType string) (fields []string) {
+	rows, err := session.Rows(fmt.Sprintf("SELECT name FROM ejaFields WHERE ejaModuleId=%d AND power%s>0 AND power%s!='' ORDER BY power%s ASC;", moduleId, actionType, actionType, actionType))
 	if err == nil {
 		for _, row := range rows {
 			fields = append(fields, row["name"])
@@ -34,10 +34,10 @@ func FieldNameList(moduleId int64, actionType string) (fields []string) {
 }
 
 // Fields retrieves a list of TypeField objects based on the provided module ID, action type, and field values.
-func Fields(ownerId int64, moduleId int64, actionType string, values map[string]string) ([]TypeField, error) {
+func (session *TypeSession) Fields(ownerId int64, moduleId int64, actionType string, values map[string]string) ([]TypeField, error) {
 	var res []TypeField
 
-	rows, err := Rows(fmt.Sprintf("SELECT * FROM ejaFields WHERE ejaModuleId=%d AND power%s>0 AND power%s!='' ORDER BY power%s ASC;", moduleId, actionType, actionType, actionType))
+	rows, err := session.Rows(fmt.Sprintf("SELECT * FROM ejaFields WHERE ejaModuleId=%d AND power%s>0 AND power%s!='' ORDER BY power%s ASC;", moduleId, actionType, actionType, actionType))
 	if err != nil {
 		return res, err
 	}
@@ -55,35 +55,35 @@ func Fields(ownerId int64, moduleId int64, actionType string, values map[string]
 		}
 
 		if rowType == "select" {
-			rowOptions = SelectToRows(row["value"])
+			rowOptions = session.SelectToRows(row["value"])
 		}
 		if rowType == "sqlMatrix" {
-			rowOptions = SelectSqlToRows(row["value"])
+			rowOptions = session.SelectSqlToRows(row["value"])
 		}
 		if rowType == "sqlValue" || rowType == "sqlHidden" {
-			rowValue, _ = Value(row["value"])
+			rowValue, _ = session.Value(row["value"])
 		}
 
-		if Number(row["translate"]) > 0 {
-			rowValue = Translate(rowValue, ownerId)
+		if session.Number(row["translate"]) > 0 {
+			rowValue = session.Translate(rowValue, ownerId)
 		}
 
-		if actionType == "Edit" && rowName == "ejaOwner" && Number(rowValue) < 1 {
-			rowValue = String(ownerId)
+		if actionType == "Edit" && rowName == "ejaOwner" && session.Number(rowValue) < 1 {
+			rowValue = session.String(ownerId)
 		}
 
 		field := TypeField{
 			Type:        rowType,
 			Name:        rowName,
-			Label:       Translate(rowName, ownerId),
+			Label:       session.Translate(rowName, ownerId),
 			Value:       rowValue,
 			Options:     rowOptions,
-			SearchIndex: Number(row["powerSearch"]),
-			SearchSize:  Number(row["sizeSearch"]),
-			ListIndex:   Number(row["powerList"]),
-			ListSize:    Number(row["sizeList"]),
-			EditIndex:   Number(row["powerEdit"]),
-			EditSize:    Number(row["sizeEdit"]),
+			SearchIndex: session.Number(row["powerSearch"]),
+			SearchSize:  session.Number(row["sizeSearch"]),
+			ListIndex:   session.Number(row["powerList"]),
+			ListSize:    session.Number(row["sizeList"]),
+			EditIndex:   session.Number(row["powerEdit"]),
+			EditSize:    session.Number(row["sizeEdit"]),
 		}
 		res = append(res, field)
 	}
@@ -92,12 +92,12 @@ func Fields(ownerId int64, moduleId int64, actionType string, values map[string]
 }
 
 // FieldAdd adds a new field to the specified table with the given name and type.
-func FieldAdd(tableName string, fieldName string, fieldType string) error {
+func (session *TypeSession) FieldAdd(tableName string, fieldName string, fieldType string) error {
 	if fieldType == "label" || fieldType == "sqlValue" {
 		return nil
 	}
 
-	check, err := TableExists(tableName)
+	check, err := session.TableExists(tableName)
 	if err != nil {
 		return err
 	}
@@ -105,7 +105,7 @@ func FieldAdd(tableName string, fieldName string, fieldType string) error {
 		return errors.New("table does not exist")
 	}
 
-	check, err = FieldExists(tableName, fieldName)
+	check, err = session.FieldExists(tableName, fieldName)
 	if err != nil {
 		return err
 	}
@@ -114,7 +114,7 @@ func FieldAdd(tableName string, fieldName string, fieldType string) error {
 	}
 
 	sqlFieldType := FieldType(fieldType)
-	_, err = Run(fmt.Sprintf("ALTER TABLE %s ADD %s %s", tableName, fieldName, sqlFieldType))
+	_, err = session.Run(fmt.Sprintf("ALTER TABLE %s ADD %s %s", tableName, fieldName, sqlFieldType))
 	if err != nil {
 		return err
 	}
@@ -123,20 +123,20 @@ func FieldAdd(tableName string, fieldName string, fieldType string) error {
 }
 
 // FieldExists checks whether a field with the given name already exists in the specified table.
-func FieldExists(tableName string, fieldName string) (bool, error) {
-	switch DbEngine {
+func (session *TypeSession) FieldExists(tableName string, fieldName string) (bool, error) {
+	switch session.Engine {
 	case "sqlite":
-		return sqliteFieldExists(tableName, fieldName)
+		return session.sqliteFieldExists(tableName, fieldName)
 	case "mysql":
-		return mysqlFieldExists(tableName, fieldName)
+		return session.mysqlFieldExists(tableName, fieldName)
 	default:
 		return false, errors.New("engine not found")
 	}
 }
 
 // FieldNameIsValid checks the validity of a field name based on the current database engine.
-func FieldNameIsValid(name string) error {
-	switch DbEngine {
+func (session *TypeSession) FieldNameIsValid(name string) error {
+	switch session.Engine {
 	case "sqlite":
 		return sqliteFieldNameIsValid(name)
 	case "mysql":
@@ -165,7 +165,7 @@ func FieldType(name string) string {
 }
 
 // FieldTypeGet retrieves the field type for a specific field in a module based on module ID and field name.
-func FieldTypeGet(moduleId int64, fieldName string) string {
-	value, _ := Value("SELECT type FROM ejaFields WHERE ejaModuleId=? AND name=?", moduleId, fieldName)
+func (session *TypeSession) FieldTypeGet(moduleId int64, fieldName string) string {
+	value, _ := session.Value("SELECT type FROM ejaFields WHERE ejaModuleId=? AND name=?", moduleId, fieldName)
 	return value
 }

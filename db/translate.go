@@ -8,14 +8,14 @@ import (
 
 // Translate retrieves the translation for the specified word based on the current session's language and module context.
 // If a translation is not found, it returns a placeholder string indicating that the translation is missing.
-func Translate(value string, user ...int64) string {
+func (session *TypeSession) Translate(value string, user ...int64) string {
 	var userId int64
 	var result string
 	if len(user) > 0 {
 		userId = user[0]
 	}
 	if userId > 0 {
-		result, _ = Value(`
+		result, _ = session.Value(`
 			SELECT translation
 			FROM ejaTranslations
 			WHERE word = ?
@@ -30,7 +30,7 @@ func Translate(value string, user ...int64) string {
 			LIMIT 1
 			`, value, userId, userId)
 	} else {
-		result, _ = Value("SELECT translation FROM ejaTranslations WHERE word=? AND (ejaLanguage=0 OR ejaLanguage='') LIMIT 1", value)
+		result, _ = session.Value("SELECT translation FROM ejaTranslations WHERE word=? AND (ejaLanguage=0 OR ejaLanguage='') LIMIT 1", value)
 	}
 	if result == "" {
 		if log.Level >= log.LevelDebug {

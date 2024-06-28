@@ -8,6 +8,7 @@ import (
 )
 
 func TestDbOperations(t *testing.T) {
+	db := db.Session()
 	t.Run("DbOpen", func(t *testing.T) {
 		err := db.Open("sqlite", ":memory:", "", "", "", 0)
 		if err != nil {

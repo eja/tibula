@@ -15,6 +15,8 @@ func TestModule(t *testing.T) {
 
 	sys.Configure()
 
+	db := db.Session()
+
 	t.Run("Open db", func(t *testing.T) {
 		if err := db.Open("sqlite", ":memory:", "", "", "", 0); err != nil {
 			t.Error("Cannot open database:", err)

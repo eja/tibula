@@ -11,30 +11,30 @@ import (
 )
 
 // ModuleAppend appends data to an existing module
-func ModuleAppend(module TypeModule, moduleName string) error {
+func (session *TypeSession) ModuleAppend(module TypeModule, moduleName string) error {
 	const owner = 1
 	if moduleName == "" {
-		moduleName = String(module.Name)
+		moduleName = session.String(module.Name)
 	}
-	moduleId := ModuleGetIdByName(moduleName)
+	moduleId := session.ModuleGetIdByName(moduleName)
 
 	if moduleId < 1 {
 		err := fmt.Errorf("Cannot append data, module does not exists")
-		log.Error("[db]", err)
+		log.Error(tag, err)
 		return err
 	} else {
 		for _, data := range module.Data {
 			var keys = []string{"ejaLog"}
 			var values = []string{"?"}
-			var args = []interface{}{Now()}
+			var args = []interface{}{session.Now()}
 			for key, val := range data {
 				keys = append(keys, key)
 				values = append(values, "?")
 				args = append(args, val)
 			}
 			query := fmt.Sprintf("INSERT INTO %s (ejaId, ejaOwner, %s) VALUES (NULL,1,%s)", moduleName, strings.Join(keys, ", "), strings.Join(values, ","))
-			if _, err := Run(query, args...); err != nil {
-				log.Error("[db]", "data append", err)
+			if _, err := session.Run(query, args...); err != nil {
+				log.Error(tag, "data append", err)
 			}
 		}
 	}
@@ -42,72 +42,72 @@ func ModuleAppend(module TypeModule, moduleName string) error {
 }
 
 // ModuleImport imports a module into the database based on the provided TypeModule and module name.
-func ModuleImport(module TypeModule, moduleName string) error {
+func (session *TypeSession) ModuleImport(module TypeModule, moduleName string) error {
 	const owner = 1
 	if moduleName == "" {
-		moduleName = String(module.Name)
+		moduleName = session.String(module.Name)
 	}
 
-	moduleId := ModuleGetIdByName(moduleName)
+	moduleId := session.ModuleGetIdByName(moduleName)
 
 	if moduleId < 1 {
-		moduleIdRun, err := Run(`
+		moduleIdRun, err := session.Run(`
 			INSERT INTO ejaModules 
 				(ejaId, ejaOwner, ejaLog, name, power, searchLimit, sqlCreated, sortList, parentId) 
       VALUES 
 				(NULL,?,?,?,?,?,?,?,?)
-			`, owner, Now(), moduleName,
+			`, owner, session.Now(), moduleName,
 			module.Module.Power,
 			module.Module.SearchLimit,
 			module.Module.SqlCreated,
 			module.Module.SortList,
-			ModuleGetIdByName(module.Module.ParentName),
+			session.ModuleGetIdByName(module.Module.ParentName),
 		)
 		if err != nil {
 			return err
 		}
 		moduleId = moduleIdRun.LastId
-		if err := TableAdd(moduleName); err != nil {
+		if err := session.TableAdd(moduleName); err != nil {
 			return err
 		}
 
 	}
 
 	if moduleId > 0 {
-		_, err := Run(`DELETE FROM ejaFields WHERE ejaModuleId=?`, moduleId)
+		_, err := session.Run(`DELETE FROM ejaFields WHERE ejaModuleId=?`, moduleId)
 		if err != nil {
 			return err
 		}
 
 		for _, field := range module.Field {
 			if module.Module.SqlCreated > 0 {
-				if check, err := FieldExists(moduleName, field.Name); !check {
+				if check, err := session.FieldExists(moduleName, field.Name); !check {
 					if err != nil {
 						return err
 					}
-					if err := FieldAdd(moduleName, field.Name, field.Type); err != nil {
+					if err := session.FieldAdd(moduleName, field.Name, field.Type); err != nil {
 						return err
 					}
 				}
 			}
-			run, err := Run(`
+			run, err := session.Run(`
 					INSERT INTO ejaFields 
 						(ejaId, ejaOwner, ejaLog, ejaModuleId, name, type, value, translate, powerSearch, powerList, powerEdit) 
           VALUES 
 						(NULL,?,?,?,?,?,?,?,?,?,?)
-					`, owner, Now(), moduleId, field.Name, field.Type, field.Value, field.Translate, field.PowerSearch, field.PowerList, field.PowerEdit)
+					`, owner, session.Now(), moduleId, field.Name, field.Type, field.Value, field.Translate, field.PowerSearch, field.PowerList, field.PowerEdit)
 			if err != nil {
 				return err
 			}
-			Run(`UPDATE ejaFields SET sizeSearch=? WHERE ejaId=?`, field.SizeSearch, run.LastId)
-			Run(`UPDATE ejaFields SET sizeList=? WHERE ejaId=?`, field.SizeList, run.LastId)
-			Run(`UPDATE ejaFields SET sizeEdit=? WHERE ejaId=?`, field.SizeEdit, run.LastId)
+			session.Run(`UPDATE ejaFields SET sizeSearch=? WHERE ejaId=?`, field.SizeSearch, run.LastId)
+			session.Run(`UPDATE ejaFields SET sizeList=? WHERE ejaId=?`, field.SizeList, run.LastId)
+			session.Run(`UPDATE ejaFields SET sizeEdit=? WHERE ejaId=?`, field.SizeEdit, run.LastId)
 		}
 
-		ejaPermissionsId := ModuleGetIdByName("ejaPermissions")
-		ejaUsersId := ModuleGetIdByName("ejaUsers")
+		ejaPermissionsId := session.ModuleGetIdByName("ejaPermissions")
+		ejaUsersId := session.ModuleGetIdByName("ejaUsers")
 
-		_, err = Run(`
+		_, err = session.Run(`
 			DELETE FROM ejaLinks 
 			WHERE dstModuleId=? 
 				AND srcModuleId=? 
@@ -118,42 +118,42 @@ func ModuleImport(module TypeModule, moduleName string) error {
 			return err
 		}
 
-		_, err = Run(`DELETE FROM ejaPermissions WHERE ejaModuleId=?`, moduleId)
+		_, err = session.Run(`DELETE FROM ejaPermissions WHERE ejaModuleId=?`, moduleId)
 		if err != nil {
 			return err
 		}
 
 		for _, command := range module.Command {
-			run, err := Run(`
+			run, err := session.Run(`
 				INSERT INTO ejaPermissions 
 					(ejaId, ejaOwner, ejaLog, ejaModuleId, ejaCommandId) 
 				VALUES 
 					(NULL,?,?,?,(SELECT t.ejaId FROM ejaCommands AS t WHERE t.name=? LIMIT 1))
-				`, owner, Now(), moduleId, command)
+				`, owner, session.Now(), moduleId, command)
 			if err != nil {
 				return err
 			}
 			id := run.LastId
 
 			if id > 0 {
-				_, err := Run(`
+				_, err := session.Run(`
 					INSERT INTO ejaLinks 
 						(ejaId, ejaOwner, ejaLog, srcModuleId, srcFieldId, dstModuleId, dstFieldId, power) 
           VALUES 
 						(NULL,?,?,?,?,?,?,1)
-					`, owner, Now(), ejaPermissionsId, id, ejaUsersId, owner)
+					`, owner, session.Now(), ejaPermissionsId, id, ejaUsersId, owner)
 				if err != nil {
 					return err
 				}
 			}
 		}
 
-		_, err = Run(`DELETE FROM ejaTranslations WHERE ejaModuleId=?`, moduleId)
+		_, err = session.Run(`DELETE FROM ejaTranslations WHERE ejaModuleId=?`, moduleId)
 		if err != nil {
 			return err
 		}
 
-		_, err = Run(`DELETE FROM ejaTranslations WHERE word=? AND ejaModuleId < 1`, moduleName)
+		_, err = session.Run(`DELETE FROM ejaTranslations WHERE word=? AND ejaModuleId < 1`, moduleName)
 		if err != nil {
 			return err
 		}
@@ -164,12 +164,12 @@ func ModuleImport(module TypeModule, moduleName string) error {
 				moduleTmpId = 0
 			}
 
-			_, err := Run(`
+			_, err := session.Run(`
 				INSERT INTO ejaTranslations 
 					(ejaId, ejaOwner, ejaLog, ejaModuleId, ejaLanguage, word, translation) 
         VALUES 
 					(NULL,?,?,?,?,?,?)
-				`, owner, Now(), moduleTmpId, field.EjaLanguage, field.Word, field.Translation)
+				`, owner, session.Now(), moduleTmpId, field.EjaLanguage, field.Word, field.Translation)
 			if err != nil {
 				return err
 			}
@@ -178,15 +178,15 @@ func ModuleImport(module TypeModule, moduleName string) error {
 		for _, data := range module.Data {
 			var keys = []string{"ejaLog"}
 			var values = []string{"?"}
-			var args = []interface{}{Now()}
+			var args = []interface{}{session.Now()}
 			for key, val := range data {
 				keys = append(keys, key)
 				values = append(values, "?")
 				args = append(args, val)
 			}
 			query := fmt.Sprintf("INSERT INTO %s (ejaId, ejaOwner, %s) VALUES (NULL,1,%s)", moduleName, strings.Join(keys, ", "), strings.Join(values, ","))
-			if _, err := Run(query, args...); err != nil {
-				log.Error("[db]", "module import", err)
+			if _, err := session.Run(query, args...); err != nil {
+				log.Error(tag, "module import", err)
 			}
 		}
 

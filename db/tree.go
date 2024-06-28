@@ -14,21 +14,21 @@ type TypeModuleTree struct {
 }
 
 // ModuleTree generates a tree structure of modules accessible to a user based on permissions and ownership.
-func ModuleTree(ownerId int64, moduleId int64, modulePath []TypeModulePath) (result []TypeModuleTree) {
-	ejaPermissions := ModuleGetIdByName("ejaPermissions")
-	ejaUsers := ModuleGetIdByName("ejaUsers")
-	ejaGroups := ModuleGetIdByName("ejaGroups")
+func (session *TypeSession) ModuleTree(ownerId int64, moduleId int64, modulePath []TypeModulePath) (result []TypeModuleTree) {
+	ejaPermissions := session.ModuleGetIdByName("ejaPermissions")
+	ejaUsers := session.ModuleGetIdByName("ejaUsers")
+	ejaGroups := session.ModuleGetIdByName("ejaGroups")
 
-	owners := NumbersToCsv(UserGroupList(ownerId))
+	owners := session.NumbersToCsv(session.UserGroupList(ownerId))
 
-	rows, err := Rows("SELECT ejaId, name FROM ejaModules WHERE parentId=? ORDER BY power ASC", moduleId)
+	rows, err := session.Rows("SELECT ejaId, name FROM ejaModules WHERE parentId=? ORDER BY power ASC", moduleId)
 	if err != nil {
 		return
 	}
 
 	if len(rows) == 0 {
 		if len(modulePath) == 0 {
-			rows, err = Rows("SELECT ejaId, name FROM ejaModules WHERE parentId=0 AND ejaId!=? ORDER BY power ASC", moduleId)
+			rows, err = session.Rows("SELECT ejaId, name FROM ejaModules WHERE parentId=0 AND ejaId!=? ORDER BY power ASC", moduleId)
 			if err != nil {
 				return
 			}
@@ -52,9 +52,9 @@ func ModuleTree(ownerId int64, moduleId int64, modulePath []TypeModulePath) (res
     			)
 				LIMIT 1
 			`, owners)
-			checkId, _ := Value(query, ejaPermissions, Number(row["ejaId"]), ownerId, ejaUsers, ejaGroups)
-			if ownerId == 1 || Number(checkId) > 0 {
-				result = append(result, TypeModuleTree{Id: Number(row["ejaId"]), Name: row["name"], Label: Translate(row["name"], ownerId)})
+			checkId, _ := session.Value(query, ejaPermissions, session.Number(row["ejaId"]), ownerId, ejaUsers, ejaGroups)
+			if ownerId == 1 || session.Number(checkId) > 0 {
+				result = append(result, TypeModuleTree{Id: session.Number(row["ejaId"]), Name: row["name"], Label: session.Translate(row["name"], ownerId)})
 			}
 		}
 	}

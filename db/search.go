@@ -14,60 +14,60 @@ import (
 type TypeSearchColumn map[string]map[string]interface{}
 
 // SearchMatrix performs a search on a specified database module using a dynamic SQL query.
-func SearchMatrix(ownerId int64, moduleId int64, query string, queryArgs []interface{}) (resultRows TypeRows, resultCols []string, resultLabels map[string]string, err error) {
+func (session *TypeSession) SearchMatrix(ownerId int64, moduleId int64, query string, queryArgs []interface{}) (resultRows TypeRows, resultCols []string, resultLabels map[string]string, err error) {
 	var sqlResult TypeRows
 	var queryHead TypeSearchColumn
 	resultLabels = make(map[string]string)
 
-	queryHead, query, err = searchHeader(query, moduleId)
+	queryHead, query, err = session.searchHeader(query, moduleId)
 	if err != nil {
 		return
 	}
 
-	sqlResult, err = Rows(query, queryArgs...)
+	sqlResult, err = session.Rows(query, queryArgs...)
 	if err != nil {
 		return
 	}
 
-	resultCols, err = Cols(query, queryArgs...)
+	resultCols, err = session.Cols(query, queryArgs...)
 	if err != nil {
 		return
 	}
 
 	for _, val := range resultCols {
-		resultLabels[val] = Translate(val, ownerId)
+		resultLabels[val] = session.Translate(val, ownerId)
 	}
 
 	for _, row := range sqlResult {
-		resultRows = append(resultRows, searchRow(ownerId, queryHead, row))
+		resultRows = append(resultRows, session.searchRow(ownerId, queryHead, row))
 	}
 
 	return
 }
 
 // SearchQuery generates a SQL query for searching records in a specified table based on provided criteria.
-func SearchQuery(ownerId int64, tableName string, values map[string]string) (string, []interface{}, error) {
+func (session *TypeSession) SearchQuery(ownerId int64, tableName string, values map[string]string) (string, []interface{}, error) {
 	var sql []string
 	var args []interface{}
 
-	moduleId := ModuleGetIdByName(tableName)
+	moduleId := session.ModuleGetIdByName(tableName)
 	sqlType := make(map[string]string)
 
 	sql = append(sql, "SELECT ejaId")
 
-	rows, err := Rows("SELECT * FROM ejaFields WHERE ejaModuleId=? AND type NOT IN ('label') ORDER BY powerList", moduleId)
+	rows, err := session.Rows("SELECT * FROM ejaFields WHERE ejaModuleId=? AND type NOT IN ('label') ORDER BY powerList", moduleId)
 	if err != nil {
 		return "", nil, err
 	}
 	for _, row := range rows {
-		if Number(row["powerList"]) > 0 {
+		if session.Number(row["powerList"]) > 0 {
 			sql = append(sql, ",")
 			sql = append(sql, row["name"])
 		}
 		sqlType[row["name"]] = row["type"]
 	}
 
-	sql = append(sql, fmt.Sprintf(" FROM %s WHERE ejaOwner IN ("+NumbersToCsv(Owners(ownerId, moduleId))+") ", tableName))
+	sql = append(sql, fmt.Sprintf(" FROM %s WHERE ejaOwner IN ("+session.NumbersToCsv(session.Owners(ownerId, moduleId))+") ", tableName))
 
 	for keyRaw, val := range values {
 		keyMode := ""
@@ -76,8 +76,8 @@ func SearchQuery(ownerId int64, tableName string, values map[string]string) (str
 		if len(keySplit) == 2 {
 			keyMode = keySplit[1]
 		}
-		if FieldNameIsValid(key) == nil && val != "" {
-			sqlTypeThis := String(sqlType[key])
+		if session.FieldNameIsValid(key) == nil && val != "" {
+			sqlTypeThis := session.String(sqlType[key])
 			sqlAnd := ""
 			arg := ""
 
@@ -120,7 +120,7 @@ func SearchQuery(ownerId int64, tableName string, values map[string]string) (str
 }
 
 // SearchCount calculates the number of records for a given search query and arguments.
-func SearchCount(query string, args []interface{}) int64 {
+func (session *TypeSession) SearchCount(query string, args []interface{}) int64 {
 	var queryCount string
 	start := strings.Index(strings.ToUpper(query), "FROM")
 	stop := strings.LastIndex(strings.ToUpper(query), "LIMIT")
@@ -130,20 +130,20 @@ func SearchCount(query string, args []interface{}) int64 {
 		} else {
 			queryCount = query[start:]
 		}
-		if result, err := Value("SELECT COUNT(*) "+queryCount, args...); err != nil {
+		if result, err := session.Value("SELECT COUNT(*) "+queryCount, args...); err != nil {
 			return 0
 		} else {
-			return Number(result)
+			return session.Number(result)
 		}
 	}
 	return 0
 }
 
 // searchHeader retrieves column information for constructing search queries.
-func searchHeader(query string, moduleId int64) (TypeSearchColumn, string, error) {
+func (session *TypeSession) searchHeader(query string, moduleId int64) (TypeSearchColumn, string, error) {
 	colValues := make(TypeSearchColumn)
 
-	rows, err := Rows("SELECT * FROM ejaFields WHERE ejaModuleId=? AND powerList>0 ORDER BY powerList", moduleId)
+	rows, err := session.Rows("SELECT * FROM ejaFields WHERE ejaModuleId=? AND powerList>0 ORDER BY powerList", moduleId)
 	if err != nil {
 		return nil, "", err
 	}
@@ -157,15 +157,15 @@ func searchHeader(query string, moduleId int64) (TypeSearchColumn, string, error
 		case "boolean":
 			colValues[rowName]["value"] = []TypeSelect{{Key: "0", Value: "FALSE"}, {Key: "1", Value: "TRUE"}}
 		case "select":
-			colValues[rowName]["value"] = SelectToRows(field["value"])
+			colValues[rowName]["value"] = session.SelectToRows(field["value"])
 		case "sqlMatrix":
-			colValues[rowName]["value"] = SelectSqlToRows(field["value"])
+			colValues[rowName]["value"] = session.SelectSqlToRows(field["value"])
 		case "sqlValue", "sqlHidden":
 			query = strings.Replace(query, field["name"], fmt.Sprintf("(%s) AS %s", field["value"], field["name"]), 1)
 		}
 
 		colValues[field["name"]]["translation"] = 0
-		if Number(field["translate"]) > 0 {
+		if session.Number(field["translate"]) > 0 {
 			colValues[field["name"]]["translation"] = 1
 		}
 	}
@@ -173,7 +173,7 @@ func searchHeader(query string, moduleId int64) (TypeSearchColumn, string, error
 }
 
 // searchRow filters and transforms a row based on the search column information.
-func searchRow(ownerId int64, queryHead TypeSearchColumn, row TypeRow) TypeRow {
+func (session *TypeSession) searchRow(ownerId int64, queryHead TypeSearchColumn, row TypeRow) TypeRow {
 	filteredRow := row
 	for colName := range queryHead {
 		if queryHead[colName]["value"] != nil && row[colName] != "" {
@@ -201,8 +201,8 @@ func searchRow(ownerId int64, queryHead TypeSearchColumn, row TypeRow) TypeRow {
 				filteredRow[colName] = row[colName][11:19]
 			}
 		}
-		if Number(queryHead[colName]["translation"]) > 0 {
-			filteredRow[colName] = Translate(row[colName], ownerId)
+		if session.Number(queryHead[colName]["translation"]) > 0 {
+			filteredRow[colName] = session.Translate(row[colName], ownerId)
 		}
 	}
 
@@ -210,20 +210,20 @@ func searchRow(ownerId int64, queryHead TypeSearchColumn, row TypeRow) TypeRow {
 }
 
 // SearchQueryOrderAndLimit generates an ORDER BY, LIMIT, and OFFSET clause for search queries.
-func SearchQueryOrderAndLimit(order string, limit int64, offset int64) string {
+func (session *TypeSession) SearchQueryOrderAndLimit(order string, limit int64, offset int64) string {
 	pattern := `^\s*(\w+\s+(ASC|DESC)\s*,\s*)*\w+\s+(ASC|DESC)\s*$`
 	regexpPattern := regexp.MustCompile(pattern)
 	if !regexpPattern.MatchString(order) {
-		log.Warn("[db]", "order by is not regex compatible", order)
+		log.Warn(tag, "order by is not regex compatible", order)
 		return fmt.Sprintf("LIMIT %d OFFSET %d", limit, offset)
 	}
 	return fmt.Sprintf("ORDER BY %s LIMIT %d OFFSET %d", order, limit, offset)
 }
 
 // SearchQueryLinks generates a condition for searching based on related links.
-func SearchQueryLinks(ownerId, srcModuleId, srcFieldId, dstModuleId int64) string {
+func (session *TypeSession) SearchQueryLinks(ownerId, srcModuleId, srcFieldId, dstModuleId int64) string {
 	result := ""
-	links := SearchLinks(ownerId, srcModuleId, srcFieldId, dstModuleId)
+	links := session.SearchLinks(ownerId, srcModuleId, srcFieldId, dstModuleId)
 	if len(links) > 0 {
 		result = " AND ejaId IN (" + strings.Join(links, ",") + ") "
 	}

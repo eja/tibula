@@ -8,15 +8,15 @@ import (
 
 // Owners retrieves a list of user IDs who are owners of the specified module ID and have certain group associations.
 // The function recursively checks group memberships up to a certain depth.
-func Owners(ownerId int64, moduleId int64) (result []int64) {
+func (session *TypeSession) Owners(ownerId int64, moduleId int64) (result []int64) {
 	const maxDepth = 10
 	var groupOwners []int64
 
-	ejaGroups := ModuleGetIdByName("ejaGroups")
-	ejaUsers := ModuleGetIdByName("ejaUsers")
-	ejaModules := ModuleGetIdByName("ejaModules")
+	ejaGroups := session.ModuleGetIdByName("ejaGroups")
+	ejaUsers := session.ModuleGetIdByName("ejaUsers")
+	ejaModules := session.ModuleGetIdByName("ejaModules")
 
-	groupOwners, err := IncludeList(`
+	groupOwners, err := session.IncludeList(`
 		SELECT dstFieldId
 		FROM ejaLinks
 		WHERE srcModuleId = ? AND dstModuleId = ? AND srcFieldId IN (
@@ -39,8 +39,8 @@ func Owners(ownerId int64, moduleId int64) (result []int64) {
 	userOwners := []int64{ownerId}
 	for deep > 0 {
 		deep--
-		csv := NumbersToCsv(userOwners)
-		users, err := IncludeList(fmt.Sprintf("SELECT ejaId FROM ejaUsers WHERE ejaOwner IN (%s) AND ejaId NOT IN (%s)", csv, csv))
+		csv := session.NumbersToCsv(userOwners)
+		users, err := session.IncludeList(fmt.Sprintf("SELECT ejaId FROM ejaUsers WHERE ejaOwner IN (%s) AND ejaId NOT IN (%s)", csv, csv))
 		if err != nil {
 			return
 		}
@@ -76,6 +76,6 @@ func Owners(ownerId int64, moduleId int64) (result []int64) {
 }
 
 // OwnersCsv retrieves a comma-separated string of user IDs who are owners of the specified module ID and have certain group associations.
-func OwnersCsv(ownerId int64, moduleId int64) string {
-	return NumbersToCsv(Owners(ownerId, moduleId))
+func (session *TypeSession) OwnersCsv(ownerId int64, moduleId int64) string {
+	return session.NumbersToCsv(session.Owners(ownerId, moduleId))
 }

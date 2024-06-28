@@ -3,24 +3,24 @@
 package db
 
 // ModuleExport exports a module.
-func ModuleExport(moduleId int64, data bool) (module TypeModule, err error) {
+func (session *TypeSession) ModuleExport(moduleId int64, data bool) (module TypeModule, err error) {
 	var row TypeRow
 	var rows TypeRows
-	moduleName := ModuleGetNameById(moduleId)
+	moduleName := session.ModuleGetNameById(moduleId)
 	module.Name = moduleName
-	row, err = Row("SELECT a.searchLimit, a.sqlCreated, a.power, a.sortList, (SELECT x.name FROM ejaModules AS x WHERE x.ejaId=a.parentId) AS parentName FROM ejaModules AS a WHERE ejaId=?", moduleId)
+	row, err = session.Row("SELECT a.searchLimit, a.sqlCreated, a.power, a.sortList, (SELECT x.name FROM ejaModules AS x WHERE x.ejaId=a.parentId) AS parentName FROM ejaModules AS a WHERE ejaId=?", moduleId)
 	if err != nil {
 		return
 	}
 	module.Module = TypeModuleModule{
 		ParentName:  row["parentName"],
-		Power:       Number(row["power"]),
-		SearchLimit: Number(row["searchLimit"]),
-		SqlCreated:  Number(row["sqlCreated"]),
+		Power:       session.Number(row["power"]),
+		SearchLimit: session.Number(row["searchLimit"]),
+		SqlCreated:  session.Number(row["sqlCreated"]),
 		SortList:    row["sortList"],
 	}
 
-	rows, err = Rows("SELECT * FROM ejaFields WHERE ejaModuleId=?", moduleId)
+	rows, err = session.Rows("SELECT * FROM ejaFields WHERE ejaModuleId=?", moduleId)
 	if err != nil {
 		return
 	}
@@ -28,18 +28,18 @@ func ModuleExport(moduleId int64, data bool) (module TypeModule, err error) {
 		module.Field = append(module.Field, TypeModuleField{
 			Name:        row["name"],
 			Value:       row["value"],
-			PowerSearch: Number(row["powerSearch"]),
-			PowerList:   Number(row["powerList"]),
-			PowerEdit:   Number(row["powerEdit"]),
-			SizeSearch:  Number(row["sizeSearch"]),
-			SizeList:    Number(row["sizeList"]),
-			SizeEdit:    Number(row["sizeEdit"]),
+			PowerSearch: session.Number(row["powerSearch"]),
+			PowerList:   session.Number(row["powerList"]),
+			PowerEdit:   session.Number(row["powerEdit"]),
+			SizeSearch:  session.Number(row["sizeSearch"]),
+			SizeList:    session.Number(row["sizeList"]),
+			SizeEdit:    session.Number(row["sizeEdit"]),
 			Type:        row["type"],
-			Translate:   Number(row["translate"]),
+			Translate:   session.Number(row["translate"]),
 		})
 	}
 
-	rows, err = Rows(`
+	rows, err = session.Rows(`
 		SELECT ejaLanguage, word, translation, (SELECT ejaModules.name FROM ejaModules WHERE ejaModules.ejaId=ejaModuleId) AS ejaModuleName 
 		FROM ejaTranslations 
 		WHERE ejaModuleId=? OR word=?
@@ -57,7 +57,7 @@ func ModuleExport(moduleId int64, data bool) (module TypeModule, err error) {
 	}
 
 	module.Command = []string{}
-	rows, err = Rows("SELECT name from ejaCommands WHERE ejaId IN (SELECT ejaCommandId FROM ejaPermissions WHERE ejaModuleId=?)", moduleId)
+	rows, err = session.Rows("SELECT name from ejaCommands WHERE ejaId IN (SELECT ejaCommandId FROM ejaPermissions WHERE ejaModuleId=?)", moduleId)
 	if err != nil {
 		return
 	}
@@ -66,7 +66,7 @@ func ModuleExport(moduleId int64, data bool) (module TypeModule, err error) {
 	}
 
 	if data {
-		rows, err = Rows("SELECT * FROM " + moduleName)
+		rows, err = session.Rows("SELECT * FROM " + moduleName)
 		if err != nil {
 			return
 		}

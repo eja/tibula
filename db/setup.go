@@ -17,7 +17,7 @@ var Assets embed.FS
 // Setup initializes the database with modules, fields, and commands.
 // It reads JSON files from the specified setupPath or embeded assets, and populates the database accordingly.
 // The admin user credentials are used for setup.
-func Setup(setupPath string) error {
+func (session *TypeSession) Setup(setupPath string) error {
 	moduleIdMap := map[string]int64{}
 	var modules []TypeModule
 	var files []string
@@ -65,7 +65,7 @@ func Setup(setupPath string) error {
 				return err
 			}
 
-			if err := TableAdd(module.Name); err != nil {
+			if err := session.TableAdd(module.Name); err != nil {
 				return err
 			}
 
@@ -74,7 +74,7 @@ func Setup(setupPath string) error {
 				case "ejaId", "ejaOwner", "ejaLog":
 					continue
 				default:
-					if err := FieldAdd(module.Name, field.Name, field.Type); err != nil {
+					if err := session.FieldAdd(module.Name, field.Name, field.Type); err != nil {
 						return err
 					}
 				}
@@ -83,9 +83,9 @@ func Setup(setupPath string) error {
 			// add commands
 			if module.Name == "ejaCommands" {
 				for _, data := range module.Data {
-					_, err := Run(
+					_, err := session.Run(
 						"INSERT INTO ejaCommands (ejaId, ejaOwner, ejaLog, name, powerSearch, powerList, powerEdit, linking, defaultCommand) VALUES (NULL,1,?,?,?,?,?,?,?)",
-						Now(),
+						session.Now(),
 						data["name"],
 						data["powerSearch"],
 						data["powerList"],
@@ -106,9 +106,9 @@ func Setup(setupPath string) error {
 
 	// add modules
 	for _, module := range modules {
-		_, err = Run(
+		_, err = session.Run(
 			"INSERT INTO ejaModules (ejaId, ejaOwner, ejaLog, name, power, searchLimit, sqlCreated, sortList, parentId) VALUES (NULL, 1, ?, ?, ?, ?, ?, ?, 0)",
-			Now(),
+			session.Now(),
 			module.Name,
 			module.Module.Power,
 			module.Module.SearchLimit,
@@ -120,12 +120,12 @@ func Setup(setupPath string) error {
 		}
 	}
 	for _, module := range modules {
-		moduleParentId := ModuleGetIdByName(module.Module.ParentName)
-		moduleId := ModuleGetIdByName(module.Name)
+		moduleParentId := session.ModuleGetIdByName(module.Module.ParentName)
+		moduleId := session.ModuleGetIdByName(module.Name)
 		if moduleId > 0 {
 			moduleIdMap[module.Name] = moduleId
 			if moduleParentId > 0 {
-				_, err := Run("UPDATE ejaModules SET parentId=? WHERE ejaId=?", moduleParentId, moduleId)
+				_, err := session.Run("UPDATE ejaModules SET parentId=? WHERE ejaId=?", moduleParentId, moduleId)
 				if err != nil {
 					return err
 				}
@@ -133,7 +133,7 @@ func Setup(setupPath string) error {
 		}
 	}
 	for _, module := range modules {
-		if err := ModuleImport(module, module.Name); err != nil {
+		if err := session.ModuleImport(module, module.Name); err != nil {
 			return err
 		}
 	}
@@ -141,24 +141,24 @@ func Setup(setupPath string) error {
 	// add module links
 	if moduleIdMap["ejaGroups"] > 0 {
 		if moduleIdMap["ejaPermissions"] > 0 {
-			if _, err := Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", Now(), moduleIdMap["ejaGroups"], moduleIdMap["ejaPermissions"], 2); err != nil {
+			if _, err := session.Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", session.Now(), moduleIdMap["ejaGroups"], moduleIdMap["ejaPermissions"], 2); err != nil {
 				return err
 			}
 		}
 		if moduleIdMap["ejaModules"] > 0 {
-			if _, err := Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", Now(), moduleIdMap["ejaGroups"], moduleIdMap["ejaModules"], 1); err != nil {
+			if _, err := session.Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", session.Now(), moduleIdMap["ejaGroups"], moduleIdMap["ejaModules"], 1); err != nil {
 				return err
 			}
 		}
 	}
 	if moduleIdMap["ejaUsers"] > 0 {
 		if moduleIdMap["ejaGroups"] > 0 {
-			if _, err := Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", Now(), moduleIdMap["ejaUsers"], moduleIdMap["ejaGroups"], 1); err != nil {
+			if _, err := session.Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", session.Now(), moduleIdMap["ejaUsers"], moduleIdMap["ejaGroups"], 1); err != nil {
 				return err
 			}
 		}
 		if moduleIdMap["ejaPermissions"] > 0 {
-			if _, err := Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", Now(), moduleIdMap["ejaUsers"], moduleIdMap["ejaPermissions"], 2); err != nil {
+			if _, err := session.Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", session.Now(), moduleIdMap["ejaUsers"], moduleIdMap["ejaPermissions"], 2); err != nil {
 				return err
 			}
 		}
@@ -166,16 +166,16 @@ func Setup(setupPath string) error {
 	return nil
 }
 
-func SetupAdmin(setupUser string, setupPass string) error {
+func (session *TypeSession) SetupAdmin(setupUser string, setupPass string) error {
 	if setupPass == "" {
 		return errors.New("password is mandatory")
 	} else {
-		Run("DELETE FROM ejaUsers WHERE ejaId=1")
-		if _, err := Run("INSERT INTO ejaUsers (ejaOwner,ejaLog,username,password,defaultModuleId,ejaLanguage) VALUES (1,?,?,?,?,?)",
-			Now(),
+		session.Run("DELETE FROM ejaUsers WHERE ejaId=1")
+		if _, err := session.Run("INSERT INTO ejaUsers (ejaOwner,ejaLog,username,password,defaultModuleId,ejaLanguage) VALUES (1,?,?,?,?,?)",
+			session.Now(),
 			setupUser,
-			Password(setupPass),
-			ModuleGetIdByName("eja"),
+			session.Password(setupPass),
+			session.ModuleGetIdByName("eja"),
 			"en",
 		); err != nil {
 			return err

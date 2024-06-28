@@ -18,8 +18,8 @@ func mysqlOpen(database string, username string, password string, host string, p
 }
 
 // mysqlRun executes a SQL query on the MySQL database and returns information about the execution.
-func mysqlRun(query string, args ...interface{}) (TypeRun, error) {
-	result, err := DbHandler.Exec(query, args...)
+func (session *TypeSession) mysqlRun(query string, args ...interface{}) (TypeRun, error) {
+	result, err := session.Handler.Exec(query, args...)
 	if err != nil {
 		return TypeRun{}, err
 	}
@@ -29,8 +29,8 @@ func mysqlRun(query string, args ...interface{}) (TypeRun, error) {
 }
 
 // mysqlValue executes a SQL query on the MySQL database and returns a single result as a string.
-func mysqlValue(query string, args ...interface{}) (result string, err error) {
-	row := DbHandler.QueryRow(query, args...)
+func (session *TypeSession) mysqlValue(query string, args ...interface{}) (result string, err error) {
+	row := session.Handler.QueryRow(query, args...)
 	err = row.Scan(&result)
 	if err != nil {
 		return
@@ -39,9 +39,9 @@ func mysqlValue(query string, args ...interface{}) (result string, err error) {
 }
 
 // mysqlRow executes a SQL query on the MySQL database and returns a single row of results as a TypeRow.
-func mysqlRow(query string, args ...interface{}) (TypeRow, error) {
+func (session *TypeSession) mysqlRow(query string, args ...interface{}) (TypeRow, error) {
 	var result TypeRow
-	rows, err := mysqlRows(query, args...)
+	rows, err := session.mysqlRows(query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -53,8 +53,8 @@ func mysqlRow(query string, args ...interface{}) (TypeRow, error) {
 }
 
 // mysqlRows executes a SQL query on the MySQL database and returns multiple rows of results as a TypeRows.
-func mysqlRows(query string, args ...interface{}) (TypeRows, error) {
-	rows, err := DbHandler.Query(query, args...)
+func (session *TypeSession) mysqlRows(query string, args ...interface{}) (TypeRows, error) {
+	rows, err := session.Handler.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -90,8 +90,8 @@ func mysqlRows(query string, args ...interface{}) (TypeRows, error) {
 }
 
 // mysqlCols executes a SQL query on the MySQL database and returns the column names of the result set.
-func mysqlCols(query string, args ...interface{}) ([]string, error) {
-	rows, err := DbHandler.Query(query, args...)
+func (session *TypeSession) mysqlCols(query string, args ...interface{}) ([]string, error) {
+	rows, err := session.Handler.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -101,14 +101,14 @@ func mysqlCols(query string, args ...interface{}) ([]string, error) {
 }
 
 // mysqlTableExists checks if a table with the given name exists in the MySQL database.
-func mysqlTableExists(name string) (bool, error) {
+func (session *TypeSession) mysqlTableExists(name string) (bool, error) {
 	if err := mysqlTableNameIsValid(name); err != nil {
 		return false, err
 	}
 
-	mysqlRun("SET @dbName = DATABASE()")
-	mysqlRun("CALL sys.table_exists(@dbName,'" + name + "',@tableExists)")
-	exists, err := mysqlValue("SELECT @tableExists")
+	session.mysqlRun("SET @dbName = DATABASE()")
+	session.mysqlRun("CALL sys.table_exists(@dbName,'" + name + "',@tableExists)")
+	exists, err := session.mysqlValue("SELECT @tableExists")
 	if err != nil {
 		return false, err
 	}
@@ -116,7 +116,7 @@ func mysqlTableExists(name string) (bool, error) {
 }
 
 // mysqlFieldExists checks if a field with the given name exists in the specified table of the MySQL database.
-func mysqlFieldExists(tableName, fieldName string) (bool, error) {
+func (session *TypeSession) mysqlFieldExists(tableName, fieldName string) (bool, error) {
 	if err := mysqlTableNameIsValid(tableName); err != nil {
 		return false, err
 	}
@@ -125,7 +125,7 @@ func mysqlFieldExists(tableName, fieldName string) (bool, error) {
 		return false, err
 	}
 
-	rows, err := mysqlRows(fmt.Sprintf("SHOW COLUMNS FROM %s LIKE '%s'", tableName, fieldName))
+	rows, err := session.mysqlRows(fmt.Sprintf("SHOW COLUMNS FROM %s LIKE '%s'", tableName, fieldName))
 	if err != nil {
 		return false, err
 	}

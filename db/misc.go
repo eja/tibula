@@ -12,17 +12,17 @@ import (
 )
 
 // Now returns the current timestamp in the format "2006-01-02 15:04:05".
-func Now() string {
+func (session TypeSession) Now() string {
 	return time.Now().Format("2006-01-02 15:04:05")
 }
 
 // Generate an hashed password
-func Password(value string) string {
-	return Sha256(value)
+func (session *TypeSession) Password(value string) string {
+	return session.Sha256(value)
 }
 
 // Sha256 generates the SHA256 hash of a given string value.
-func Sha256(value string) string {
+func (session *TypeSession) Sha256(value string) string {
 	hasher := sha256.New()
 	hasher.Write([]byte(value))
 	hashBytes := hasher.Sum(nil)
@@ -31,7 +31,7 @@ func Sha256(value string) string {
 }
 
 // NumbersToCsv converts a slice of int64 numbers into a comma-separated string.
-func NumbersToCsv(slice []int64) string {
+func (session *TypeSession) NumbersToCsv(slice []int64) string {
 	result := ""
 	for i, v := range slice {
 		result += fmt.Sprint(v)
@@ -43,7 +43,7 @@ func NumbersToCsv(slice []int64) string {
 }
 
 // SelectToRows converts a pipe-separated or newline-separated string into a slice of TypeSelect structures.
-func SelectToRows(value string) []TypeSelect {
+func (session *TypeSession) SelectToRows(value string) []TypeSelect {
 	var result []TypeSelect
 	i := 0
 
@@ -75,11 +75,11 @@ func SelectToRows(value string) []TypeSelect {
 }
 
 // SelectSqlToRows executes a SQL query and converts the result into a slice of TypeSelect structures.
-func SelectSqlToRows(query string) []TypeSelect {
+func (session *TypeSession) SelectSqlToRows(query string) []TypeSelect {
 	var result []TypeSelect
-	cols, err := Cols(query)
+	cols, err := session.Cols(query)
 	if err == nil {
-		rows, err := Rows(query)
+		rows, err := session.Rows(query)
 		if err == nil {
 			for _, row := range rows {
 				result = append(result, TypeSelect{row[cols[0]], row[cols[1]]})
@@ -90,8 +90,8 @@ func SelectSqlToRows(query string) []TypeSelect {
 }
 
 // UserGroupList retrieves the list of group IDs associated with a user.
-func UserGroupList(userId int64) []int64 {
-	response, err := IncludeList("SELECT srcFieldId FROM ejaLinks WHERE srcModuleId=? AND dstModuleId=? AND dstFieldId=?", ModuleGetIdByName("ejaGroups"), ModuleGetIdByName("ejaUsers"), userId)
+func (session *TypeSession) UserGroupList(userId int64) []int64 {
+	response, err := session.IncludeList("SELECT srcFieldId FROM ejaLinks WHERE srcModuleId=? AND dstModuleId=? AND dstFieldId=?", session.ModuleGetIdByName("ejaGroups"), session.ModuleGetIdByName("ejaUsers"), userId)
 	if err != nil || len(response) == 0 {
 		return []int64{0}
 	}
@@ -99,22 +99,22 @@ func UserGroupList(userId int64) []int64 {
 }
 
 // UserGroupCsv returns a comma-separated string of group IDs associated with a user.
-func UserGroupCsv(userId int64) string {
-	return NumbersToCsv(UserGroupList(userId))
+func (session *TypeSession) UserGroupCsv(userId int64) string {
+	return session.NumbersToCsv(session.UserGroupList(userId))
 }
 
 // IncludeList executes a query and returns a slice of int64 values from the first column of the result.
-func IncludeList(query string, args ...interface{}) ([]int64, error) {
+func (session *TypeSession) IncludeList(query string, args ...interface{}) ([]int64, error) {
 	response := make([]int64, 0)
 
-	rows, err := Rows(query, args...)
+	rows, err := session.Rows(query, args...)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, row := range rows {
 		for _, value := range row {
-			response = append(response, Number(value))
+			response = append(response, session.Number(value))
 			break
 		}
 	}
