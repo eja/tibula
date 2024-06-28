@@ -16,14 +16,14 @@ func Set() TypeApi {
 		DefaultSearchOrder: "ejaLog DESC",
 		Values:             make(map[string]string),
 		SearchOrder:        make(map[string]string),
-		Link:               dbTypeLink{},
+		Link:               TypeDbLink{},
 	}
 }
 
 func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 	var user map[string]string
 
-	db := dbSession()
+	db := DbSession()
 
 	//open db connection
 	if err = db.Open(sys.Options.DbType, sys.Options.DbName, sys.Options.DbUser, sys.Options.DbPass, sys.Options.DbHost, sys.Options.DbPort); err != nil {
@@ -121,7 +121,7 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 				if eja.ModuleId == eja.Link.ModuleId && eja.Id == eja.Link.FieldId && eja.Id > 0 {
 					db.SessionCleanLink(eja.Owner)
 					db.SessionCleanSearch(eja.Owner)
-					eja.Link = dbTypeLink{}
+					eja.Link = TypeDbLink{}
 					eja.Action = "edit"
 					eja.Linking = false
 				}

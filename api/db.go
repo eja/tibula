@@ -6,8 +6,8 @@ import (
 	"github.com/eja/tibula/db"
 )
 
-type dbTypeLink = db.TypeLink
-type dbTypeModule = db.TypeModule
-type dbTypeSession = db.TypeSession
+type TypeDbLink = db.TypeLink
+type TypeDbModule = db.TypeModule
+type TypeDbSession = db.TypeSession
 
-var dbSession = db.Session
+var DbSession = db.Session
