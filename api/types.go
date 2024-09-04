@@ -44,4 +44,5 @@ type TypeApi struct {
 	SqlQueryArgs       []interface{}       `json:"SqlQueryArgs,omitempty"`
 	Tree               []db.TypeModuleTree `json:"Tree,omitempty"`
 	Values             map[string]string   `json:"Values,omitempty"`
+	GoogleSsoId        string              `json:"GoogleSsoId,omitempty"`
 }

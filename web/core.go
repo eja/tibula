@@ -133,6 +133,10 @@ func Core(w http.ResponseWriter, r *http.Request) {
 			templateFile = eja.ActionType + ".html"
 		}
 
+		if sys.Options.GoogleSsoId != "" {
+			eja.GoogleSsoId = sys.Options.GoogleSsoId
+		}
+
 		var tpl *template.Template
 		if sys.Options.WebPath != "" {
 			tpl, err = template.ParseGlob(filepath.Join(sys.Options.WebPath, "templates", "*.html"))

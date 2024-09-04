@@ -39,6 +39,15 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 			}
 		}
 	}
+	if eja.Values["googleSsoToken"] != "" {
+		ssoUsername := googleSsoEmail(eja.Values["googleSsoToken"])
+		if ssoUsername != "" {
+			user = db.UserGetAllByUsername(ssoUsername)
+		}
+		if len(user) > 0 {
+			eja.Session = db.SessionInit(db.Number(user["ejaId"]))
+		}
+	}
 	if eja.Session != "" {
 		if len(user) == 0 {
 			user = db.UserGetAllBySession(eja.Session)

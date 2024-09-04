@@ -86,6 +86,11 @@ func (session *TypeSession) SessionCleanSearch(userId int64) error {
 
 // SessionReset removes all session variables for a specified user from the database.
 func (session *TypeSession) SessionReset(userId int64) error {
-	_, err := session.Run("DELETE FROM ejaSessions WHERE ejaOwner=?", userId)
-	return err
+	if _, err := session.Run("DELETE FROM ejaSessions WHERE ejaOwner=?", userId); err != nil {
+		return err
+	}
+	if _, err := session.Run("UPDATE ejaUsers SET ejaSession='' WHERE ejaId=?", userId); err != nil {
+		return err
+	}
+	return nil
 }

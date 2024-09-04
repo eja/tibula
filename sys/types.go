@@ -25,6 +25,7 @@ type TypeConfig struct {
 	Language      string `json:"language,omitempty"`
 	LogLevel      int    `json:"log_level,omitempty"`
 	LogFile       string `json:"log_file,omitempty"`
+	GoogleSsoId   string `json:"google_sso_id,omitempty"`
 }
 
 type TypeCommand struct {

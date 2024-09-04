@@ -20,6 +20,12 @@ func (session *TypeSession) UserGetAllBySession(sessionHash string) TypeRow {
 	return result
 }
 
+// UserGetAllByUsername retrieves user information based on the provided username.
+func (session *TypeSession) UserGetAllByUsername(username string) TypeRow {
+	result, _ := session.Row("SELECT * FROM ejaUsers WHERE username=?", username)
+	return result
+}
+
 // UserPermissionCopy copies user permissions from one module to another.
 func (session *TypeSession) UserPermissionCopy(userId int64, moduleId int64) {
 	session.Run(`

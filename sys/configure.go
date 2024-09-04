@@ -32,6 +32,7 @@ func Configure() error {
 	flag.StringVar(&Options.Language, "language", "en", "default language code")
 	flag.StringVar(&Options.LogFile, "log-file", "", "log file")
 	flag.IntVar(&Options.LogLevel, "log-level", 3, "set the log level (1-5): 1=Error, 2=Warn, 3=Info, 4=Debug, 5=Trace")
+	flag.StringVar(&Options.GoogleSsoId, "google-sso-id", "", "google sso client id")
 	flag.Parse()
 
 	parse := false

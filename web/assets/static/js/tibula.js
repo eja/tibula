@@ -81,6 +81,17 @@ function fieldEditor(name) {
 	}
 }
 
+function googleSsoLogin() {
+	google.accounts.id.initialize({
+		client_id: document.getElementsByName('ejaGoogleSsoId')[0].value, 
+		callback: function(e) {
+			document.getElementsByName('ejaValues[googleSsoToken]')[0].value=e.credential
+			document.getElementById('ejaForm').submit()
+		}
+	})
+	google.accounts.id.prompt();
+}
+
 var editors = [];
 
 var toasts = document.querySelectorAll('.toast');
@@ -93,6 +104,12 @@ toasts.forEach(function (toast) {
 
 document.getElementById('ejaForm').addEventListener('submit', function(event) {
 	for (var key in editors) {
-		editors[key].save()
+		editors[key].save();
 	}
 });
+
+window.onload = function() {
+	if (document.getElementsByName('ejaGoogleSsoId').length > 0) {
+		googleSsoLogin();
+	}
+}
