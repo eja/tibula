@@ -3,90 +3,16 @@
     "parentName": "ejaSystem",
     "power": 11,
     "searchLimit": 0,
-    "sqlCreated": 1
+    "sqlCreated": 0
   },
   "command": [
-    "logout",
-    "run"
+    "logout"
   ],
-  "field": [
-    {
-      "value": "SELECT ejaId,name FROM ejaModules ORDER BY name;",
-      "powerEdit": 0,
-      "powerList": 0,
-      "type": "sqlMatrix",
-      "translate": 0,
-      "powerSearch": 1,
-      "name": "ejaModuleId",
-      "sizeSearch": 0,
-      "sizeList": 0,
-      "sizeEdit": 0
-    },
-    {
-      "value": "",
-      "powerEdit": 0,
-      "powerList": 0,
-      "type": "boolean",
-      "translate": 0,
-      "powerSearch": 2,
-      "name": "dataExport",
-      "sizeSearch": 0,
-      "sizeList": 0,
-      "sizeEdit": 0
-    },
-    {
-      "value": "",
-      "powerEdit": 0,
-      "powerList": 0,
-      "type": "textArea",
-      "translate": 0,
-      "powerSearch": 3,
-      "name": "export",
-      "sizeSearch": 10,
-      "sizeList": 0,
-      "sizeEdit": 0
-    }
-  ],
+  "field": null,
   "translation": [
     {
       "ejaLanguage": "en",
       "word": "ejaExport",
-      "translation": "Export"
-    },
-    {
-      "ejaLanguage": "en",
-      "ejaModuleName": "ejaExport",
-      "word": "ejaModuleId",
-      "translation": "Module"
-    },
-    {
-      "ejaLanguage": "en",
-      "ejaModuleName": "ejaExport",
-      "word": "export",
-      "translation": "Export"
-    },
-    {
-      "ejaLanguage": "en",
-      "ejaModuleName": "ejaExport",
-      "word": "dataExport",
-      "translation": "Data"
-    },
-    {
-      "ejaLanguage": "en",
-      "ejaModuleName": "ejaExport",
-      "word": "ejaExportError",
-      "translation": "Cannot export this module"
-    },
-    {
-      "ejaLanguage": "en",
-      "ejaModuleName": "ejaExport",
-      "word": "ejaExportOk",
-      "translation": "Module exported"
-    },
-    {
-      "ejaLanguage": "en",
-      "ejaModuleName": "ejaExport",
-      "word": "run",
       "translation": "Export"
     }
   ],

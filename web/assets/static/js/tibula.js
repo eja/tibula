@@ -108,6 +108,7 @@ window.onload = function() {
 					document.getElementById('ejaForm').submit()
 			}
 		})
-		google.accounts.id.renderButton(document.getElementById("google"),{ theme: "outline", size: "large", width: "225" })
+		google.accounts.id.renderButton(document.getElementById("google"),{ theme: "outline", size: "large", width: document.getElementById('google').style.width })
+		document.getElementsByName('ejaAction')[0].style.width=document.getElementById('google').style.width
 	}
 }

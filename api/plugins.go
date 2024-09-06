@@ -31,7 +31,7 @@ var Plugins = TypePlugins{
 		}
 		return eja
 	},
-	"ejaImport": func(eja TypeApi, db TypeDbSession) TypeApi {
+	"ejaModuleImport": func(eja TypeApi, db TypeDbSession) TypeApi {
 		if eja.Action == "run" {
 			moduleName := eja.Values["moduleName"]
 			moduleData := eja.Values["import"]
@@ -61,12 +61,49 @@ var Plugins = TypePlugins{
 		}
 		return eja
 	},
-	"ejaExport": func(eja TypeApi, db TypeDbSession) TypeApi {
+	"ejaModuleExport": func(eja TypeApi, db TypeDbSession) TypeApi {
 		if eja.Action == "run" {
 			moduleId := db.Number(eja.Values["ejaModuleId"])
 			dataExport := db.Number(eja.Values["dataExport"]) > 0
 			if moduleId > 0 {
 				if data, err := db.ModuleExport(moduleId, dataExport); err != nil {
+					alert(&eja.Alert, db.Translate("ejaExportError", eja.Owner))
+				} else {
+					jsonData, _ := json.MarshalIndent(data, "", "  ")
+					eja.Values["export"] = string(jsonData)
+					info(&eja.Info, db.Translate("ejaExportOk", eja.Owner))
+				}
+			}
+		}
+		return eja
+	},
+	"ejaGroupImport": func(eja TypeApi, db TypeDbSession) TypeApi {
+		if eja.Action == "run" {
+			groupName := eja.Values["groupName"]
+			groupData := eja.Values["import"]
+			if groupData != "" {
+				var group TypeDbGroup
+				if err := json.Unmarshal([]byte(groupData), &group); err != nil {
+					alert(&eja.Alert, db.Translate("ejaImportJsonError", eja.Owner))
+				} else {
+					var err error
+					err = db.GroupImport(group, groupName)
+					if err != nil {
+						alert(&eja.Alert, db.Translate("ejaImportError", eja.Owner))
+					} else {
+						eja.Values["import"] = ""
+						info(&eja.Info, db.Translate("ejaImportOk", eja.Owner))
+					}
+				}
+			}
+		}
+		return eja
+	},
+	"ejaGroupExport": func(eja TypeApi, db TypeDbSession) TypeApi {
+		if eja.Action == "run" {
+			groupId := db.Number(eja.Values["ejaGroupId"])
+			if groupId > 0 {
+				if data, err := db.GroupExport(groupId); err != nil {
 					alert(&eja.Alert, db.Translate("ejaExportError", eja.Owner))
 				} else {
 					jsonData, _ := json.MarshalIndent(data, "", "  ")

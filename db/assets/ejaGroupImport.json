@@ -1,0 +1,84 @@
+{
+  "module": {
+    "parentName": "ejaImport",
+    "power": 20,
+    "searchLimit": 0,
+    "sqlCreated": 0
+  },
+  "command": [
+    "logout",
+    "run"
+  ],
+  "field": [
+    {
+      "value": "",
+      "powerEdit": 0,
+      "powerList": 0,
+      "type": "textArea",
+      "translate": 0,
+      "powerSearch": 3,
+      "name": "import",
+      "sizeSearch": 10,
+      "sizeList": 0,
+      "sizeEdit": 0
+    },
+    {
+      "value": "",
+      "powerEdit": 0,
+      "powerList": 0,
+      "type": "text",
+      "translate": 0,
+      "powerSearch": 1,
+      "name": "groupName",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
+    }
+  ],
+  "translation": [
+    {
+      "ejaLanguage": "en",
+      "word": "ejaGroupImport",
+      "translation": "Group"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaGroupImport",
+      "word": "groupName",
+      "translation": "Name"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaGroupImport",
+      "word": "import",
+      "translation": "Import"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaGroupImport",
+      "word": "ejaImportJsonError",
+      "translation": "Json structure is not compatible"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaGroupImport",
+      "word": "ejaImportError",
+      "translation": "Cannot import this group"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaGroupImport",
+      "word": "ejaImportOk",
+      "translation": "Group imported"
+    },
+
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaGroupImport",
+      "word": "run",
+      "translation": "Import"
+    }
+  ],
+  "name": "ejaGroupImport",
+  "data": null
+}

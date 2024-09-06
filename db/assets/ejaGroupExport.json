@@ -1,0 +1,65 @@
+{
+  "module": {
+    "parentName": "ejaExport",
+    "power": 20,
+    "searchLimit": 0,
+    "sqlCreated": 0
+  },
+  "command": [
+    "logout",
+    "run"
+  ],
+  "field": [
+    {
+      "value": "",
+      "powerEdit": 0,
+      "powerList": 0,
+      "type": "textArea",
+      "translate": 0,
+      "powerSearch": 3,
+      "name": "export",
+      "sizeSearch": 10,
+      "sizeList": 0,
+      "sizeEdit": 0
+    },
+    {
+      "value": "SELECT ejaId,name FROM ejaGroups ORDER BY name;",
+      "powerEdit": 0,
+      "powerList": 0,
+      "type": "sqlMatrix",
+      "translate": 0,
+      "powerSearch": 1,
+      "name": "ejaGroupId",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
+    }
+  ],
+  "translation": [
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaGroupExport",
+      "word": "ejaGroupId",
+      "translation": "Group"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaGroupExport",
+      "word": "export",
+      "translation": "Export"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaGroupExport",
+      "word": "run",
+      "translation": "Export"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "ejaGroupExport",
+      "translation": "Group"
+    }
+  ],
+  "name": "ejaGroupExport",
+  "data": null
+}

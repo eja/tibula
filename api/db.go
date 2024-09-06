@@ -7,6 +7,7 @@ import (
 )
 
 type TypeDbLink = db.TypeLink
+type TypeDbGroup = db.TypeGroup
 type TypeDbModule = db.TypeModule
 type TypeDbSession = db.TypeSession
 

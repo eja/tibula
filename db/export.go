@@ -2,6 +2,61 @@
 
 package db
 
+import (
+	"errors"
+)
+
+func (session *TypeSession) GroupExport(groupId int64) (group TypeGroup, err error) {
+	var rows TypeRows
+
+	if name, err := session.Value("SELECT name FROM ejaGroups WHERE ejaId=?", groupId); err != nil {
+		return group, err
+	} else {
+		if name != "" {
+			group.Name = name
+		} else {
+			return group, errors.New("invalid group name")
+		}
+	}
+
+	groupsModuleId := session.ModuleGetIdByName("ejaGroups")
+	permissionsModuleId := session.ModuleGetIdByName("ejaPermissions")
+	sharesModuleId := session.ModuleGetIdByName("ejaModules")
+
+	rows, err = session.Rows(`SELECT 
+		(SELECT lf.name FROM ejaModules AS lf WHERE lf.ejaId=srcFieldId) AS name
+ 		FROM ejaLinks 
+		WHERE srcModuleId=? AND dstModuleId=? AND dstFieldId=? ORDER BY srcModuleId,srcFieldId
+		`, sharesModuleId, groupsModuleId, groupId)
+	if err != nil {
+		return
+	}
+	for _, row := range rows {
+		group.Shares = append(group.Shares, row["name"])
+	}
+
+	group.Permissions = make(map[string][]string)
+
+	rows, err = session.Rows(`SELECT
+		(SELECT module.name FROM ejaModules AS module WHERE ejaId=(SELECT lm.ejaModuleId FROM ejaPermissions AS lm WHERE lm.ejaId=srcFieldId)) AS moduleName,
+		(SELECT command.name FROM ejaCommands AS command WHERE ejaId=(SELECT lf.ejaCommandId FROM ejaPermissions AS lf WHERE lf.ejaId=srcFieldId)) AS permissionName
+		FROM ejaLinks
+		WHERE srcModuleId=? AND dstModuleId=? AND dstFieldId=? ORDER BY srcModuleId,srcFieldId
+		`, permissionsModuleId, groupsModuleId, groupId)
+	if err != nil {
+		return
+	}
+	for _, row := range rows {
+		module := row["moduleName"]
+		permission := row["permissionName"]
+		if module != "" && permission != "" {
+			group.Permissions[module] = append(group.Permissions[module], permission)
+		}
+	}
+
+	return
+}
+
 // ModuleExport exports a module.
 func (session *TypeSession) ModuleExport(moduleId int64, data bool) (module TypeModule, err error) {
 	var row TypeRow

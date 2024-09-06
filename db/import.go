@@ -10,6 +10,64 @@ import (
 	"github.com/eja/tibula/log"
 )
 
+// GroupImport imports a group into the database based on the provided TypeGroup and group name
+func (session *TypeSession) GroupImport(group TypeGroup, groupName string) (err error) {
+	const owner = 1
+	if groupName == "" {
+		groupName = group.Name
+		if groupName == "" {
+			return errors.New("invalid group name")
+		}
+	}
+
+	var groupId int64
+	groupModuleId := session.ModuleGetIdByName("ejaGroups")
+	shareModuleId := session.ModuleGetIdByName("ejaModules")
+	permissionModuleId := session.ModuleGetIdByName("ejaPermissions")
+	groupId, err = session.New(owner, groupModuleId)
+	if err != nil {
+		return
+	}
+	if err = session.Put(owner, groupModuleId, groupId, "name", groupName); err != nil {
+		return
+	}
+
+	for _, share := range group.Shares {
+		_, err := session.Run(`
+    	INSERT INTO ejaLinks 
+    		(ejaId, ejaOwner, ejaLog, srcModuleId, srcFieldId, dstModuleId, dstFieldId, power) 
+    	VALUES 
+      	(NULL,?,?,?,(SELECT lf.ejaId FROM ejaModules AS lf WHERE lf.name=? LIMIT 1),?,?,1)
+    	`, owner, session.Now(), shareModuleId, share, groupModuleId, groupId)
+		if err != nil {
+			return err
+		}
+	}
+	for moduleName, commands := range group.Permissions {
+		for _, commandName := range commands {
+			_, err := session.Run(`
+				INSERT INTO ejaLinks
+			  	(ejaId, ejaOwner, ejaLog, srcModuleId, srcFieldId, dstModuleId, dstFieldId, power)
+			  VALUES
+					(NULL,?,?,?,
+						(
+							SELECT lf.ejaId FROM ejaPermissions AS lf 
+							WHERE 
+								lf.ejaModuleId=(SELECT m.ejaId FROM ejaModules AS m WHERE m.name=? LIMIT 1) 
+							AND
+								lf.ejaCommandId=(SELECT c.ejaId FROM ejaCommands AS c WHERE c.name=? LIMIT 1)
+							LIMIT 1
+						) ,?,?,1)
+			     	`, owner, session.Now(), permissionModuleId, moduleName, commandName, groupModuleId, groupId)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return
+}
+
 // ModuleAppend appends data to an existing module
 func (session *TypeSession) ModuleAppend(module TypeModule, moduleName string) error {
 	const owner = 1

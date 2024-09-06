@@ -1,0 +1,101 @@
+{
+  "module": {
+    "parentName": "ejaImport",
+    "power": 10,
+    "searchLimit": 0,
+    "sqlCreated": 1
+  },
+  "command": [
+    "logout",
+    "run"
+  ],
+  "field": [
+    {
+      "value": "",
+      "powerEdit": 0,
+      "powerList": 0,
+      "type": "text",
+      "translate": 0,
+      "powerSearch": 1,
+      "name": "moduleName",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
+    },
+    {
+      "value": "0|No\r\n1|Yes\r\n2|Data only",
+      "powerEdit": 0,
+      "powerList": 0,
+      "type": "select",
+      "translate": 0,
+      "powerSearch": 2,
+      "name": "dataImport",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
+    },
+    {
+      "value": "",
+      "powerEdit": 0,
+      "powerList": 0,
+      "type": "textArea",
+      "translate": 0,
+      "powerSearch": 3,
+      "name": "import",
+      "sizeSearch": 10,
+      "sizeList": 0,
+      "sizeEdit": 0
+    }
+  ],
+  "translation": [
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaModuleImport",
+      "word": "moduleName",
+      "translation": "Module Name"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaModuleImport",
+      "word": "import",
+      "translation": "Import"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaModuleImport",
+      "word": "dataImport",
+      "translation": "Import Data"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaModuleImport",
+      "word": "ejaImportJsonError",
+      "translation": "Json structure is not compatible"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaModuleImport",
+      "word": "ejaImportError",
+      "translation": "Cannot import this module"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaModuleImport",
+      "word": "ejaImportOk",
+      "translation": "Module imported"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaModuleImport",
+      "word": "run",
+      "translation": "Import"
+    },
+    {
+      "ejaLanguage": "en",
+      "word": "ejaModuleImport",
+      "translation": "Module"
+    }
+  ],
+  "name": "ejaModuleImport",
+  "data": null
+}

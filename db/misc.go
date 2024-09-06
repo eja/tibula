@@ -89,20 +89,6 @@ func (session *TypeSession) SelectSqlToRows(query string) []TypeSelect {
 	return result
 }
 
-// UserGroupList retrieves the list of group IDs associated with a user.
-func (session *TypeSession) UserGroupList(userId int64) []int64 {
-	response, err := session.IncludeList("SELECT srcFieldId FROM ejaLinks WHERE srcModuleId=? AND dstModuleId=? AND dstFieldId=?", session.ModuleGetIdByName("ejaGroups"), session.ModuleGetIdByName("ejaUsers"), userId)
-	if err != nil || len(response) == 0 {
-		return []int64{0}
-	}
-	return response
-}
-
-// UserGroupCsv returns a comma-separated string of group IDs associated with a user.
-func (session *TypeSession) UserGroupCsv(userId int64) string {
-	return session.NumbersToCsv(session.UserGroupList(userId))
-}
-
 // IncludeList executes a query and returns a slice of int64 values from the first column of the result.
 func (session *TypeSession) IncludeList(query string, args ...interface{}) ([]int64, error) {
 	response := make([]int64, 0)
