@@ -100,7 +100,6 @@ document.getElementById('ejaForm').addEventListener('submit', function(event) {
 
 window.onload = function() {
 	if (document.getElementsByName('ejaGoogleSsoId').length > 0) {
-		document.body.innerHTML+='<div id="google" style="width:225px;margin:0 auto;"></div>';
 		google.accounts.id.initialize({
 			client_id: document.getElementsByName('ejaGoogleSsoId')[0].value,
 			callback: function(e) {
@@ -108,7 +107,6 @@ window.onload = function() {
 					document.getElementById('ejaForm').submit()
 			}
 		})
-		google.accounts.id.renderButton(document.getElementById("google"),{ theme: "outline", size: "large", width: document.getElementById('google').style.width })
-		document.getElementsByName('ejaAction')[0].style.width=document.getElementById('google').style.width
+		google.accounts.id.renderButton(document.getElementById("google"),{ width: document.getElementsByName('ejaAction')[0].offsetWidth })
 	}
 }
