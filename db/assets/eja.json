@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "module": {
     "power": 1,
     "searchLimit": 0,

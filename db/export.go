@@ -9,6 +9,8 @@ import (
 func (session *TypeSession) GroupExport(groupId int64) (group TypeGroup, err error) {
 	var rows TypeRows
 
+	group.Type = "group"
+
 	if name, err := session.Value("SELECT name FROM ejaGroups WHERE ejaId=?", groupId); err != nil {
 		return group, err
 	} else {
@@ -61,6 +63,7 @@ func (session *TypeSession) GroupExport(groupId int64) (group TypeGroup, err err
 func (session *TypeSession) ModuleExport(moduleId int64, data bool) (module TypeModule, err error) {
 	var row TypeRow
 	var rows TypeRows
+	module.Type = "module"
 	moduleName := session.ModuleGetNameById(moduleId)
 	module.Name = moduleName
 	row, err = session.Row("SELECT a.searchLimit, a.sqlCreated, a.power, a.sortList, (SELECT x.name FROM ejaModules AS x WHERE x.ejaId=a.parentId) AS parentName FROM ejaModules AS a WHERE ejaId=?", moduleId)

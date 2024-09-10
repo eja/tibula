@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "module": {
     "sqlCreated": 1,
     "sortList": "ejaModuleId",

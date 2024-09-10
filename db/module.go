@@ -10,6 +10,7 @@ type TypeModule struct {
 	Translation []TypeModuleTranslation  `json:"translation"`
 	Name        string                   `json:"name"`
 	Data        []map[string]interface{} `json:"data"`
+	Type        string                   `json:"type"`
 }
 
 // TypeModuleModule represents metadata about a module within a TypeModule.

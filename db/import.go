@@ -13,6 +13,11 @@ import (
 // GroupImport imports a group into the database based on the provided TypeGroup and group name
 func (session *TypeSession) GroupImport(group TypeGroup, groupName string) (err error) {
 	const owner = 1
+
+	if group.Type != "group" {
+		return errors.New("Wrong module type")
+	}
+
 	if groupName == "" {
 		groupName = group.Name
 		if groupName == "" {
@@ -71,6 +76,11 @@ func (session *TypeSession) GroupImport(group TypeGroup, groupName string) (err 
 // ModuleAppend appends data to an existing module
 func (session *TypeSession) ModuleAppend(module TypeModule, moduleName string) error {
 	const owner = 1
+
+	if module.Type != "module" {
+		return errors.New("Wrong module type")
+	}
+
 	if moduleName == "" {
 		moduleName = session.String(module.Name)
 	}
@@ -102,6 +112,11 @@ func (session *TypeSession) ModuleAppend(module TypeModule, moduleName string) e
 // ModuleImport imports a module into the database based on the provided TypeModule and module name.
 func (session *TypeSession) ModuleImport(module TypeModule, moduleName string) error {
 	const owner = 1
+
+	if module.Type != "module" {
+		return errors.New("Wrong module type")
+	}
+
 	if moduleName == "" {
 		moduleName = session.String(module.Name)
 	}

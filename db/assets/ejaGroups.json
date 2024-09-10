@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "module": {
     "parentName": "ejaAdministration",
     "power": 2,
