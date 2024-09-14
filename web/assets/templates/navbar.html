@@ -6,7 +6,7 @@
     	</button>
     	<div class="collapse navbar-collapse" id="navbarNavDropdown">
       	<ul class="navbar-nav">
-				{{if .Linking }}
+				{{if and .Link (gt .Link.ModuleId 0) (gt .Link.FieldId 0) }}
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="?ejaSession={{$.Session}}&ejaModuleId={{.ModuleId}}">{{.ModuleLabel}}</a>
           </li>				
