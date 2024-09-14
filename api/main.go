@@ -124,10 +124,17 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 				}
 			}
 			//link
+			linkingField := ""
 			if eja.Link.ModuleId > 0 && eja.Link.FieldId > 0 && eja.Link.Label != "" {
-				eja.Link.ModuleLabel = db.Translate(db.ModuleGetNameById(eja.Link.ModuleId), eja.Owner)
 				eja.Linking = true
+				eja.Link.ModuleLabel = db.Translate(db.ModuleGetNameById(eja.Link.ModuleId), eja.Owner)
+				linkingField = db.ModuleLinksFieldName(eja.ModuleId, eja.Link.ModuleId)
+				if linkingField != "" {
+					eja.Values[linkingField] = db.String(eja.Link.FieldId)
+					eja.SearchLink = false
+				}
 				if eja.ModuleId == eja.Link.ModuleId && eja.Id == eja.Link.FieldId && eja.Id > 0 {
+					//reset
 					db.SessionCleanLink(eja.Owner)
 					db.SessionCleanSearch(eja.Owner)
 					eja.Link = TypeDbLink{}
@@ -324,14 +331,17 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 				db.SessionPut(eja.Owner, "SearchOffset", db.String(eja.SearchOffset))
 				eja.Id = 0
 			}
-		}
 
-		//linking
-		if eja.Linking {
-			db.SessionPut(eja.Owner, "Link", db.String(eja.Link.ModuleId), "ModuleId")
-			db.SessionPut(eja.Owner, "Link", db.String(eja.Link.FieldId), "FieldId")
-			db.SessionPut(eja.Owner, "Link", eja.Link.Label, "Label")
-			eja.SearchLinks = db.SearchLinks(eja.Owner, eja.Link.ModuleId, eja.Link.FieldId, eja.ModuleId)
+			//linking last step
+			if eja.Linking {
+				db.SessionPut(eja.Owner, "Link", db.String(eja.Link.ModuleId), "ModuleId")
+				db.SessionPut(eja.Owner, "Link", db.String(eja.Link.FieldId), "FieldId")
+				db.SessionPut(eja.Owner, "Link", eja.Link.Label, "Label")
+				eja.SearchLinks = db.SearchLinks(eja.Owner, eja.Link.ModuleId, eja.Link.FieldId, eja.ModuleId)
+				if linkingField != "" {
+					eja.Linking = false
+				}
+			}
 		}
 
 		eja.ModuleLabel = db.Translate(eja.ModuleName, eja.Owner)

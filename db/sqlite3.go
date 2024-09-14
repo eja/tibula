@@ -29,10 +29,17 @@ func (session *TypeSession) sqliteRun(query string, args ...interface{}) (TypeRu
 
 // sqliteValue executes a SQL query with optional arguments and returns a single string result.
 func (session *TypeSession) sqliteValue(query string, args ...interface{}) (result string, err error) {
-	err = session.Handler.QueryRow(query, args...).Scan(&result)
+	var nullResult sql.NullString
+	err = session.Handler.QueryRow(query, args...).Scan(&nullResult)
 	if err != nil {
 		return
 	}
+	if nullResult.Valid {
+		result = nullResult.String
+	} else {
+		result = ""
+	}
+
 	return
 }
 

@@ -12,6 +12,15 @@ type TypeLink struct {
 	FieldId     int64  `json:"FieldId,omitempty"`
 }
 
+// ModuleLinksFieldName retrieve the linking field name if available
+func (session *TypeSession) ModuleLinksFieldName(moduleId, linkModuleId int64) string {
+	if value, err := session.Value("SELECT srcFieldName FROM ejaModuleLinks WHERE dstModuleId=? AND srcModuleId=?", linkModuleId, moduleId); err != nil {
+		return ""
+	} else {
+		return value
+	}
+}
+
 // ModuleLinks retrieves a list of links associated with a specified module.
 func (session *TypeSession) ModuleLinks(ownerId int64, moduleId int64) (result []TypeLink) {
 	ejaPermissions := session.ModuleGetIdByName("ejaPermissions")

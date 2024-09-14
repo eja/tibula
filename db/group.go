@@ -5,7 +5,7 @@ package db
 // TypeGroup represents a modular structure containing information about groups.
 type TypeGroup struct {
 	Name        string              `json:"name"`
-	Type        string              `json:"type`
+	Type        string              `json:"type"`
 	Shares      []string            `json:"shares,omitempty"`
 	Permissions map[string][]string `json:"permissions,omitempty"`
 }

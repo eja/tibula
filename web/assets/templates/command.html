@@ -1,4 +1,4 @@
-			{{if and .Link (gt .Link.ModuleId 0) (gt .Link.FieldId 0) }}
+			{{if and .Linking }}
 			{{if or (eq .ActionType "Search") (eq .ActionType "List") }}
 			<div class="form-check form-switch mt-3">
 				{{if .SearchLink }}
