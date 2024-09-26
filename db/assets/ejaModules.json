@@ -1,11 +1,10 @@
 {
-  "type": "module",
   "module": {
-    "sqlCreated": 1,
-    "sortList": "name",
     "parentName": "ejaStructure",
     "power": 1,
-    "searchLimit": 0
+    "searchLimit": 0,
+    "sqlCreated": 1,
+    "sortList": "name"
   },
   "command": [
     "logout",
@@ -13,11 +12,11 @@
     "edit",
     "previous",
     "next",
-    "search",
-    "save",
     "copy",
-    "list",
     "delete",
+    "save",
+    "search",
+    "list",
     "link",
     "unlink"
   ],
@@ -29,7 +28,10 @@
       "type": "sqlMatrix",
       "translate": 0,
       "powerSearch": 2,
-      "name": "parentId"
+      "name": "parentId",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
     },
     {
       "value": "",
@@ -38,7 +40,10 @@
       "type": "text",
       "translate": 0,
       "powerSearch": 1,
-      "name": "name"
+      "name": "name",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
     },
     {
       "value": "",
@@ -47,7 +52,10 @@
       "type": "integer",
       "translate": 0,
       "powerSearch": 0,
-      "name": "power"
+      "name": "power",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
     },
     {
       "value": "",
@@ -56,7 +64,10 @@
       "type": "boolean",
       "translate": 0,
       "powerSearch": 0,
-      "name": "sqlCreated"
+      "name": "sqlCreated",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
     },
     {
       "value": "",
@@ -65,7 +76,10 @@
       "type": "integer",
       "translate": 0,
       "powerSearch": 0,
-      "name": "searchLimit"
+      "name": "searchLimit",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
     },
     {
       "value": "SELECT name AS value, name AS title FROM ejaFields WHERE ejaModuleId=(SELECT value FROM ejaSession WHERE ejaSession.name='ejaId') ORDER BY name",
@@ -74,7 +88,17 @@
       "type": "sqlMatrix",
       "translate": 0,
       "powerSearch": 0,
-      "name": "sortList"
+      "name": "sortList",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
+    }
+  ],
+  "link": [
+    {
+      "srcModule": "ejaModules",
+      "dstModule": "ejaGroups",
+      "power": 1
     }
   ],
   "translation": [
@@ -119,12 +143,13 @@
       "word": "sortList",
       "translation": "Default Sorting"
     },
-		{
+    {
       "ejaLanguage": "en",
       "ejaModuleName": "ejaModules",
       "word": "ejaSqlTableCreated",
       "translation": "Sql table created"
     }
   ],
-  "name": "ejaModules"
+  "name": "ejaModules",
+  "type": "module"
 }

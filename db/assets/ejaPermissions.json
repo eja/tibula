@@ -1,11 +1,10 @@
 {
-  "type": "module",
   "module": {
-    "sqlCreated": 1,
-    "sortList": "ejaModuleId",
     "parentName": "ejaStructure",
     "power": 4,
-    "searchLimit": 0
+    "searchLimit": 0,
+    "sqlCreated": 1,
+    "sortList": "ejaModuleId"
   },
   "command": [
     "logout",
@@ -13,13 +12,13 @@
     "edit",
     "previous",
     "next",
-    "search",
-    "save",
     "copy",
-    "list",
     "delete",
+    "save",
+    "search",
+    "list",
     "link",
-		"unlink"
+    "unlink"
   ],
   "field": [
     {
@@ -29,7 +28,10 @@
       "type": "sqlMatrix",
       "translate": 0,
       "powerSearch": 2,
-      "name": "ejaModuleId"
+      "name": "ejaModuleId",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
     },
     {
       "value": "SELECT ejaId,name FROM ejaCommands ORDER BY name;",
@@ -38,7 +40,10 @@
       "type": "sqlMatrix",
       "translate": 0,
       "powerSearch": 3,
-      "name": "ejaCommandId"
+      "name": "ejaCommandId",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
     },
     {
       "value": "SELECT ejaId,username FROM ejaUsers WHERE ejaId IN (SELECT value FROM ejaSession WHERE ejaSession.name='ejaOwners') ORDER BY username;",
@@ -47,7 +52,22 @@
       "type": "sqlMatrix",
       "translate": 0,
       "powerSearch": 0,
-      "name": "ejaOwner"
+      "name": "ejaOwner",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
+    }
+  ],
+  "link": [
+    {
+      "srcModule": "ejaPermissions",
+      "dstModule": "ejaGroups",
+      "power": 2
+    },
+    {
+      "srcModule": "ejaPermissions",
+      "dstModule": "ejaUsers",
+      "power": 2
     }
   ],
   "translation": [
@@ -75,5 +95,6 @@
       "translation": "Command"
     }
   ],
-  "name": "ejaPermissions"
+  "name": "ejaPermissions",
+  "type": "module"
 }
