@@ -5,7 +5,6 @@ package db
 import (
 	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/eja/tibula/log"
 )
@@ -92,20 +91,16 @@ func (session *TypeSession) ModuleAppend(module TypeModule, moduleName string) e
 		return err
 	} else {
 		for _, data := range module.Data {
-			var keys = []string{"ejaLog"}
-			var values = []string{"?"}
-			var args = []interface{}{session.Now()}
-			for key, val := range data {
-				keys = append(keys, key)
-				values = append(values, "?")
-				args = append(args, val)
-			}
-			query := fmt.Sprintf("INSERT INTO %s (ejaId, ejaOwner, %s) VALUES (NULL,1,%s)", moduleName, strings.Join(keys, ", "), strings.Join(values, ","))
-			if _, err := session.Run(query, args...); err != nil {
+			if id, err := session.New(owner, moduleId); err != nil {
 				log.Error(tag, "data append", err)
+			} else {
+				for key, val := range data {
+					session.Put(owner, moduleId, session.Number(id), key, session.String(val))
+				}
 			}
 		}
 	}
+
 	return nil
 }
 
@@ -269,17 +264,12 @@ func (session *TypeSession) ModuleImport(module TypeModule, moduleName string) e
 		}
 
 		for _, data := range module.Data {
-			var keys = []string{"ejaLog"}
-			var values = []string{"?"}
-			var args = []interface{}{session.Now()}
-			for key, val := range data {
-				keys = append(keys, key)
-				values = append(values, "?")
-				args = append(args, val)
-			}
-			query := fmt.Sprintf("INSERT INTO %s (ejaId, ejaOwner, %s) VALUES (NULL,1,%s)", moduleName, strings.Join(keys, ", "), strings.Join(values, ","))
-			if _, err := session.Run(query, args...); err != nil {
-				log.Error(tag, "module import", err)
+			if id, err := session.New(owner, moduleId); err != nil {
+				log.Error(tag, "data append", err)
+			} else {
+				for key, val := range data {
+					session.Put(owner, moduleId, session.Number(id), key, session.String(val))
+				}
 			}
 		}
 
