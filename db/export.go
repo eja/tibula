@@ -114,6 +114,29 @@ func (session *TypeSession) ModuleExport(moduleId int64, data bool) (module Type
 		})
 	}
 
+	rows, err = session.Rows(`
+		SELECT
+			power,
+			srcFieldName,
+			(SELECT a.name FROM ejaModules AS a WHERE a.ejaId=srcModuleId LIMIT 1) AS srcModuleName,
+			(SELECT b.name FROM ejaModules AS b WHERE b.ejaId=dstModuleId LIMIT 1) AS dstModuleName
+		FROM
+			ejaModuleLinks
+		WHERE
+			srcModuleId=? OR dstModuleId=?
+		`, moduleId, moduleId)
+	if err != nil {
+		return
+	}
+	for _, row := range rows {
+		module.Link = append(module.Link, TypeModuleLink{
+			SrcModule: row["srcModuleName"],
+			SrcField:  row["srcFieldName"],
+			DstModule: row["dstModuleName"],
+			Power:     session.Number(row["power"]),
+		})
+	}
+
 	module.Command = []string{}
 	rows, err = session.Rows("SELECT name from ejaCommands WHERE ejaId IN (SELECT ejaCommandId FROM ejaPermissions WHERE ejaModuleId=?)", moduleId)
 	if err != nil {

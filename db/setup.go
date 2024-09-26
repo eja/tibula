@@ -138,31 +138,6 @@ func (session *TypeSession) Setup(setupPath string) error {
 		}
 	}
 
-	// add module links
-	if moduleIdMap["ejaGroups"] > 0 {
-		if moduleIdMap["ejaPermissions"] > 0 {
-			if _, err := session.Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", session.Now(), moduleIdMap["ejaGroups"], moduleIdMap["ejaPermissions"], 2); err != nil {
-				return err
-			}
-		}
-		if moduleIdMap["ejaModules"] > 0 {
-			if _, err := session.Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", session.Now(), moduleIdMap["ejaGroups"], moduleIdMap["ejaModules"], 1); err != nil {
-				return err
-			}
-		}
-	}
-	if moduleIdMap["ejaUsers"] > 0 {
-		if moduleIdMap["ejaGroups"] > 0 {
-			if _, err := session.Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", session.Now(), moduleIdMap["ejaUsers"], moduleIdMap["ejaGroups"], 1); err != nil {
-				return err
-			}
-		}
-		if moduleIdMap["ejaPermissions"] > 0 {
-			if _, err := session.Run("INSERT INTO ejaModuleLinks (ejaOwner,ejaLog,dstModuleId,srcModuleId,power) VALUES (1,?,?,?,?)", session.Now(), moduleIdMap["ejaUsers"], moduleIdMap["ejaPermissions"], 2); err != nil {
-				return err
-			}
-		}
-	}
 	return nil
 }
 

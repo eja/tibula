@@ -236,7 +236,6 @@ func (session *TypeSession) ModuleImport(module TypeModule, moduleName string) e
 			if field.EjaModuleName != moduleName {
 				moduleTmpId = 0
 			}
-
 			_, err := session.Run(`
 				INSERT INTO ejaTranslations 
 					(ejaId, ejaOwner, ejaLog, ejaModuleId, ejaLanguage, word, translation) 
@@ -245,6 +244,27 @@ func (session *TypeSession) ModuleImport(module TypeModule, moduleName string) e
 				`, owner, session.Now(), moduleTmpId, field.EjaLanguage, field.Word, field.Translation)
 			if err != nil {
 				return err
+			}
+		}
+
+		for _, field := range module.Link {
+			srcModuleId := session.ModuleGetIdByName(field.SrcModule)
+			dstModuleId := session.ModuleGetIdByName(field.DstModule)
+			if srcModuleId > 0 && dstModuleId > 0 {
+				alreadyExists, err := session.Value(`SELECT COUNT(*) FROM ejaModuleLinks WHERE srcModuleId=? AND dstModuleId=?`, srcModuleId, dstModuleId)
+				if err != nil {
+					return err
+				}
+				if session.Number(alreadyExists) == 0 {
+					if _, err := session.Run(`
+						INSERT INTO ejaModuleLinks
+							(ejaOwner, ejaLog, srcModuleId, srcFieldName, dstModuleId, power)
+						VALUES
+							(?,?,?,?,?,?);
+					`, owner, session.Now(), srcModuleId, field.SrcField, dstModuleId, field.Power); err != nil {
+						return err
+					}
+				}
 			}
 		}
 

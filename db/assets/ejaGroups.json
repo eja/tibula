@@ -1,5 +1,4 @@
 {
-  "type": "module",
   "module": {
     "parentName": "ejaAdministration",
     "power": 2,
@@ -12,11 +11,11 @@
     "edit",
     "previous",
     "next",
-    "search",
-    "save",
     "copy",
-    "list",
     "delete",
+    "save",
+    "search",
+    "list",
     "link",
     "unlink"
   ],
@@ -28,7 +27,10 @@
       "type": "text",
       "translate": 0,
       "powerSearch": 1,
-      "name": "name"
+      "name": "name",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
     },
     {
       "value": "",
@@ -37,7 +39,27 @@
       "type": "textArea",
       "translate": 0,
       "powerSearch": 0,
-      "name": "note"
+      "name": "note",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
+    }
+  ],
+  "link": [
+    {
+      "srcModule": "ejaPermissions",
+      "dstModule": "ejaGroups",
+      "power": 2
+    },
+    {
+      "srcModule": "ejaModules",
+      "dstModule": "ejaGroups",
+      "power": 1
+    },
+    {
+      "srcModule": "ejaGroups",
+      "dstModule": "ejaUsers",
+      "power": 1
     }
   ],
   "translation": [
@@ -59,5 +81,6 @@
       "translation": "Note"
     }
   ],
-  "name": "ejaGroups"
+  "name": "ejaGroups",
+  "type": "module"
 }

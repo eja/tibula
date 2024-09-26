@@ -2,14 +2,15 @@
 
 package db
 
-// TypeModule represents a modular structure containing information about modules, fields, translations, and data.
+// TypeModule represents a modular structure containing information about modules, fields, translations, links and data.
 type TypeModule struct {
 	Module      TypeModuleModule         `json:"module"`
 	Command     []string                 `json:"command"`
 	Field       []TypeModuleField        `json:"field"`
-	Translation []TypeModuleTranslation  `json:"translation"`
+	Link        []TypeModuleLink         `json:"link,omitempty"`
+	Translation []TypeModuleTranslation  `json:"translation,omitempty"`
 	Name        string                   `json:"name"`
-	Data        []map[string]interface{} `json:"data"`
+	Data        []map[string]interface{} `json:"data,omitempty"`
 	Type        string                   `json:"type"`
 }
 
@@ -42,6 +43,14 @@ type TypeModuleTranslation struct {
 	EjaModuleName string `json:"ejaModuleName,omitempty"`
 	Word          string `json:"word"`
 	Translation   string `json:"translation"`
+}
+
+// TypeModuleModule represents module links withing modules in TypeModule.
+type TypeModuleLink struct {
+	SrcField  string `json:"srcField,omitempty"`
+	SrcModule string `json:"srcModule"`
+	DstModule string `json:"dstModule"`
+	Power     int64  `json:"power,omitempty"`
 }
 
 // ModuleGetIdByName retrieves the module ID based on the given module name.

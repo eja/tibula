@@ -30,11 +30,17 @@ func (session *TypeSession) mysqlRun(query string, args ...interface{}) (TypeRun
 
 // mysqlValue executes a SQL query on the MySQL database and returns a single result as a string.
 func (session *TypeSession) mysqlValue(query string, args ...interface{}) (result string, err error) {
-	row := session.Handler.QueryRow(query, args...)
-	err = row.Scan(&result)
+	var nullResult sql.NullString
+	err = session.Handler.QueryRow(query, args...).Scan(&nullResult)
 	if err != nil {
 		return
 	}
+	if nullResult.Valid {
+		result = nullResult.String
+	} else {
+		result = ""
+	}
+
 	return
 }
 

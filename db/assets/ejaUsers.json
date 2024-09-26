@@ -1,5 +1,4 @@
 {
-  "type": "module",
   "module": {
     "parentName": "ejaAdministration",
     "power": 1,
@@ -12,11 +11,11 @@
     "edit",
     "previous",
     "next",
-    "search",
-    "save",
     "copy",
-    "list",
-    "delete"
+    "delete",
+    "save",
+    "search",
+    "list"
   ],
   "field": [
     {
@@ -26,7 +25,10 @@
       "type": "text",
       "translate": 0,
       "powerSearch": 1,
-      "name": "username"
+      "name": "username",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
     },
     {
       "value": "",
@@ -35,7 +37,10 @@
       "type": "password",
       "translate": 0,
       "powerSearch": 0,
-      "name": "password"
+      "name": "password",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
     },
     {
       "value": "SELECT ejaId,name FROM ejaModules ORDER BY name",
@@ -44,7 +49,10 @@
       "type": "sqlMatrix",
       "translate": 0,
       "powerSearch": 0,
-      "name": "defaultModuleId"
+      "name": "defaultModuleId",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
     },
     {
       "value": "SELECT ejaId,username FROM ejaUsers WHERE ejaId IN (SELECT value FROM ejaSession WHERE ejaSession.name='ejaOwners') ORDER BY username",
@@ -53,7 +61,10 @@
       "type": "sqlMatrix",
       "translate": 0,
       "powerSearch": 3,
-      "name": "ejaOwner"
+      "name": "ejaOwner",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
     },
     {
       "value": "SELECT name,nameFull FROM ejaLanguages ORDER BY nameFull",
@@ -62,7 +73,10 @@
       "type": "sqlMatrix",
       "translate": 0,
       "powerSearch": 0,
-      "name": "ejaLanguage"
+      "name": "ejaLanguage",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
     },
     {
       "value": "",
@@ -71,7 +85,22 @@
       "type": "text",
       "translate": 0,
       "powerSearch": 0,
-      "name": "ejaSession"
+      "name": "ejaSession",
+      "sizeSearch": 0,
+      "sizeList": 0,
+      "sizeEdit": 0
+    }
+  ],
+  "link": [
+    {
+      "srcModule": "ejaGroups",
+      "dstModule": "ejaUsers",
+      "power": 1
+    },
+    {
+      "srcModule": "ejaPermissions",
+      "dstModule": "ejaUsers",
+      "power": 2
     }
   ],
   "translation": [
@@ -117,5 +146,6 @@
       "translation": "Language"
     }
   ],
-  "name": "ejaUsers"
+  "name": "ejaUsers",
+  "type": "module"
 }
