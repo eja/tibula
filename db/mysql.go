@@ -106,12 +106,14 @@ func (session *TypeSession) mysqlTableExists(name string) (bool, error) {
 		return false, err
 	}
 
+	//we need this approach to be able to check also for temporary tables
 	session.mysqlRun("SET @dbName = DATABASE()")
 	session.mysqlRun("CALL sys.table_exists(@dbName,'" + name + "',@tableExists)")
 	exists, err := session.mysqlValue("SELECT @tableExists")
 	if err != nil {
 		return false, err
 	}
+
 	return exists != "", nil
 }
 
