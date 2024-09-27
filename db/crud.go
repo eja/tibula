@@ -44,7 +44,7 @@ func (session *TypeSession) Get(ownerId int64, moduleId int64, ejaId int64) (Typ
 }
 
 // Put updates a specific field in a row of the specified module table based on ownerId, moduleId, ejaId, fieldName, and fieldValue.
-func (session *TypeSession) Put(ownerId int64, moduleId int64, ejaId int64, fieldName string, fieldValue string) error {
+func (session *TypeSession) Put(ownerId int64, moduleId int64, ejaId int64, fieldName string, fieldValue interface{}) error {
 	moduleName := session.ModuleGetNameById(moduleId)
 
 	check, err := session.TableExists(moduleName)
