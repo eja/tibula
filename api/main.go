@@ -208,17 +208,24 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 					alert(&eja.Alert, db.Translate("ejaErrorEditId", eja.Owner))
 				} else {
 					for key, val := range eja.Values {
+						var value interface{}
 						fieldType := db.FieldTypeGet(eja.ModuleId, key)
 						switch fieldType {
 						case "password":
 							if len(val) != 64 {
-								val = db.Sha256(val)
+								value = db.Sha256(val)
 							}
+						case "boolean", "integer":
+							value = db.Number(val)
+						case "decimal":
+							value = db.Float(val)
+						default:
+							value = db.String(val)
 						}
 						if key == "ejaOwner" && db.Number(val) < 1 {
 							eja.Values["ejaOwner"] = db.String(eja.Owner)
 						} else {
-							db.Put(eja.Owner, eja.ModuleId, eja.Id, key, val)
+							db.Put(eja.Owner, eja.ModuleId, eja.Id, key, value)
 						}
 					}
 					values, err := db.Get(eja.Owner, eja.ModuleId, eja.Id)
