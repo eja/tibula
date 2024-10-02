@@ -86,3 +86,7 @@ func Float(nameValue interface{}) float64 {
 	}
 	return 0.0
 }
+
+func Bool(value interface{}) bool {
+	return Number(value) > 0
+}

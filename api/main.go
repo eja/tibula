@@ -5,6 +5,7 @@ package api
 import (
 	"encoding/base64"
 	"errors"
+	"fmt"
 
 	"github.com/eja/tibula/sys"
 )
@@ -129,9 +130,8 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 				eja.Linking = true
 				eja.Link.ModuleLabel = db.Translate(db.ModuleGetNameById(eja.Link.ModuleId), eja.Owner)
 				linkingField = db.ModuleLinksFieldName(eja.ModuleId, eja.Link.ModuleId)
-				if linkingField != "" {
+				if linkingField != "" && eja.Action != "search" {
 					eja.Values[linkingField] = db.String(eja.Link.FieldId)
-					eja.SearchLink = false
 				}
 				if eja.ModuleId == eja.Link.ModuleId && eja.Id == eja.Link.FieldId && eja.Id > 0 {
 					//reset
@@ -324,7 +324,10 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 				}
 
 				//link
-				if eja.SearchLink {
+				if linkingField != "" {
+					sqlLinks = fmt.Sprintf(" AND %s=? ", linkingField)
+					eja.SqlQueryArgs = append(eja.SqlQueryArgs, db.String(eja.Link.FieldId))
+				} else if eja.SearchLink {
 					sqlLinks = db.SearchQueryLinks(eja.Owner, eja.Link.ModuleId, eja.Link.FieldId, eja.ModuleId)
 				}
 

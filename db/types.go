@@ -83,3 +83,8 @@ func (session *TypeSession) Float(nameValue interface{}) float64 {
 	}
 	return 0.0
 }
+
+// Bool converts a value to an int64 and checks if it is bigger than zero.
+func (session *TypeSession) Bool(value interface{}) bool {
+	return session.Number(value) > 0
+}
