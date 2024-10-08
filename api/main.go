@@ -14,7 +14,7 @@ func Set() TypeApi {
 	return TypeApi{
 		Language:           sys.Options.Language,
 		DefaultSearchLimit: 15,
-		DefaultSearchOrder: "ejaLog DESC",
+		DefaultSearchOrder: "ejaId DESC",
 		Values:             make(map[string]string),
 		SearchOrder:        make(map[string]string),
 		Link:               TypeDbLink{},
