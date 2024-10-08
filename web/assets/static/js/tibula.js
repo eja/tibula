@@ -107,6 +107,6 @@ window.onload = function() {
 					document.getElementById('ejaForm').submit()
 			}
 		})
-		google.accounts.id.renderButton(document.getElementById("google"),{ width: document.getElementsByName('ejaAction')[0].offsetWidth })
+		google.accounts.id.renderButton(document.getElementById("google"), {type: "icon"})
 	}
 }

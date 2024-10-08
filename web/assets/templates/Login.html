@@ -11,7 +11,7 @@
 					<label for="password" class="form-label">Password</label>
 					<input type="password" id="password" name="ejaValues[password]" class="form-control" required>
 				</div>
-				<div class="mb-3 d-grid col-4 mx-auto gap-2">
+				<div class="mb-3 d-flex justify-content-center gap-2">
 					<button type="submit" name="ejaAction" value="login" class="btn btn-primary">Login</button>
 {{if .GoogleSsoId }}
 					<input type="hidden" name="ejaGoogleSsoId" value="{{.GoogleSsoId}}">
