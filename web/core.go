@@ -3,7 +3,6 @@
 package web
 
 import (
-	"encoding/csv"
 	"encoding/json"
 	"html/template"
 	"net/http"
@@ -109,10 +108,7 @@ func Core(w http.ResponseWriter, r *http.Request) {
 		for key, value := range r.Form {
 			if strings.HasPrefix(key, "ejaValues") {
 				if len(value) > 1 {
-					var buf strings.Builder
-					if err := csv.NewWriter(&buf).WriteAll([][]string{value}); err == nil {
-						eja.Values[arrayKeyNameExtract(key)] = buf.String()
-					}
+					eja.Values[arrayKeyNameExtract(key)] = arrayToCsvQuoted(value)
 				} else {
 					eja.Values[arrayKeyNameExtract(key)] = value[0]
 				}

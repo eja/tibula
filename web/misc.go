@@ -4,6 +4,7 @@ package web
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"regexp"
 	"strings"
 )
@@ -33,4 +34,11 @@ func csvContains(csvData, searchString string) bool {
 	}
 
 	return false
+}
+
+func arrayToCsvQuoted(data []string) string {
+	jsonBytes, _ := json.Marshal(data)
+	jsonString := string(jsonBytes)
+
+	return strings.Trim(jsonString, "[]")
 }

@@ -103,7 +103,7 @@ func (session *TypeSession) SearchQuery(ownerId int64, tableName string, values 
 					sqlAnd = fmt.Sprintf(" AND %s = ? ", key)
 				}
 			case "multiple", "sqlMultiple":
-				sqlAnd = fmt.Sprintf(" AND INSTR(%s,?) > 0 ", key)
+				sqlAnd = fmt.Sprintf(` AND %s LIKE '%%"' || ? || '"%%' `, key)
 			}
 			if sqlAnd == "" {
 				sqlAnd = fmt.Sprintf(" AND %s LIKE ? ", key)
