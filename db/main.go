@@ -38,6 +38,9 @@ func (session *TypeSession) Open(engine string, database string, username string
 	case "mysql":
 		if username != "" && password != "" {
 			session.Handler, err = mysqlOpen(database, username, password, host, port)
+			if err == nil {
+				_, err = session.Handler.Exec("SET sql_mode = 'PIPES_AS_CONCAT'")
+			}
 		} else {
 			return errors.New("username/password missing")
 		}
