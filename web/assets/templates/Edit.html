@@ -22,6 +22,20 @@
 						{{end}}
 					</select>
 				</div>
+				{{else if or (eq .Type "multiple") (eq .Type "sqlMultiple")}}
+				<div class="col-md-{{$Cols}} mt-3">
+					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
+					<select id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" class="form-control" multiple>
+						<option></option>
+						{{range .Options}}
+							{{if csvContains $fieldValue .Key}}
+							<option value="{{.Key}}" selected>{{.Value}}</option>
+							{{else}}
+							<option value="{{.Key}}">{{.Value}}</option>
+							{{end}}
+						{{end}}
+					</select>
+				</div>
 				{{else if eq .Type "label"}}
 				<h6 class="text-center mt-5">
 					{{.Label}}

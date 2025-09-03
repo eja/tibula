@@ -1,5 +1,4 @@
 {
-  "type": "module",
   "module": {
     "parentName": "ejaStructure",
     "power": 3,
@@ -32,7 +31,7 @@
       "sizeEdit": 0
     },
     {
-      "value": "boolean\ndate\ndatetime\ndecimal\nhidden\ninteger\nlabel\npassword\nselect\nsqlHidden\nsqlMatrix\nsqlValue\ntext\ntextArea\ntime\nview\n",
+      "value": "boolean\r\ndate\r\ndatetime\r\ndecimal\r\nhidden\r\ninteger\r\nlabel\r\npassword\r\nselect\r\nmultiple\r\nsqlHidden\r\nsqlMatrix\r\nsqlMultiple\r\nsqlValue\r\ntext\r\ntextArea\r\ntime\r\nview\r\n",
       "powerEdit": 2,
       "powerList": 2,
       "type": "select",
@@ -256,5 +255,5 @@
     }
   ],
   "name": "ejaFields",
-  "data": null
+  "type": "module"
 }

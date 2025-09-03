@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) 2007-2025 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
@@ -102,6 +102,8 @@ func (session *TypeSession) SearchQuery(ownerId int64, tableName string, values 
 				default:
 					sqlAnd = fmt.Sprintf(" AND %s = ? ", key)
 				}
+			case "multiple", "sqlMultiple":
+				sqlAnd = fmt.Sprintf(" AND INSTR(%s,?) > 0 ", key)
 			}
 			if sqlAnd == "" {
 				sqlAnd = fmt.Sprintf(" AND %s LIKE ? ", key)
@@ -156,9 +158,9 @@ func (session *TypeSession) searchHeader(query string, moduleId int64) (TypeSear
 		switch rowType {
 		case "boolean":
 			colValues[rowName]["value"] = []TypeSelect{{Key: "0", Value: "FALSE"}, {Key: "1", Value: "TRUE"}}
-		case "select":
+		case "select", "multiple":
 			colValues[rowName]["value"] = session.SelectToRows(field["value"])
-		case "sqlMatrix":
+		case "sqlMatrix", "sqlMultiple":
 			colValues[rowName]["value"] = session.SelectSqlToRows(field["value"])
 		case "sqlValue", "sqlHidden":
 			query = strings.Replace(query, field["name"], fmt.Sprintf("(%s) AS %s", field["value"], field["name"]), 1)

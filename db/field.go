@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) 2007-2025 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
@@ -54,10 +54,10 @@ func (session *TypeSession) Fields(ownerId int64, moduleId int64, actionType str
 			rowValue = row["value"]
 		}
 
-		if rowType == "select" {
+		if rowType == "select" || rowType == "multiple" {
 			rowOptions = session.SelectToRows(row["value"])
 		}
-		if rowType == "sqlMatrix" {
+		if rowType == "sqlMatrix" || rowType == "sqlMultiple" {
 			rowOptions = session.SelectSqlToRows(row["value"])
 		}
 		if rowType == "sqlValue" || rowType == "sqlHidden" {

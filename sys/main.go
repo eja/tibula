@@ -1,9 +1,9 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) 2007-2025 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package sys
 
 const Name = "Tibula"
-const Version = "17.10.8"
+const Version = "18.9.3"
 
 var Options TypeConfig
 var Commands TypeCommand

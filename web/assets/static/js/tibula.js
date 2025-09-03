@@ -98,6 +98,12 @@ document.getElementById('ejaForm').addEventListener('submit', function(event) {
 	}
 });
 
+document.querySelectorAll('select[multiple]').forEach(select => {
+    new SlimSelect({
+        select: select
+    });
+});
+
 window.onload = function() {
 	if (document.getElementsByName('ejaGoogleSsoId').length > 0) {
 		google.accounts.id.initialize({

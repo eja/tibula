@@ -8,17 +8,13 @@
 				{{$fieldValue := index $.Values .Name }}
 				{{$Cols := .SearchSize}}{{if eq $Cols 0}}{{$Cols = 4}}{{end}}
 				{{$Rows := .SearchSize}}{{if eq $Rows 0}}{{$Rows = 3}}{{end}}
-				{{if or (eq .Type "select") (eq .Type "sqlMatrix")}}
+				{{if or (eq .Type "select") (eq .Type "sqlMatrix") (eq .Type "multiple") (eq .Type "sqlMultiple")}}
 				<div class="col-md-{{$Cols}} mt-3">
 					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label>
 					<select id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" class="form-select">
 						<option></option>
 						{{range .Options}}
-							{{if eq (index $.Values $fieldName) .Key}}
-							<option value="{{.Key}}" selected>{{.Value}}</option>
-							{{else}}
-							<option value="{{.Key}}">{{.Value}}</option>
-							{{end}}
+                        <option value="{{.Key}}">{{.Value}}</option>
 						{{end}}
 					</select>
 				</div>
