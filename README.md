@@ -1,15 +1,16 @@
 # Tibula
 
-Tibula is a powerful and flexible web-based Relational Database Management System (RDBMS) that allows for dynamic table and field customization. With an intuitive web interface for data interaction and the ability to easily organize and customize your database structure.
+Tibula is a powerful and flexible application framework for building data-centric web applications. It allows you to define and evolve your application's structure (data models, fields, permissions, UI hints) as metadata stored within the database itself. This approach significantly reduces the need to write traditional backend application code, enabling you to dynamically create and manage complex applications—like CRMs, inventory managers, or project trackers—primarily through its user-friendly web interface. 
 
 ## Key Features
-
-* **User-friendly web interface:** Tibula provides a user-friendly web interface for easy data interaction.
-* **Dynamic table and field customization:** Tibula allows for the flexible addition of tables and fields, giving you the ability to adapt and evolve your database structure as needed.
-* **Hierarchical access:** Tibula allows for hierarchical access, giving you fine-grained control over who can access your data.
-* **Group management:** Tibula includes group management features, making it easy to organize and manage access to your data.
-* **Extensible:** Tibula efficiently manages database tables and their data, incorporating a practical Import/Export feature for smooth interchange in JSON format.
-* **Support for multiple databases:** Tibula supports both SQLite3 and MySQL, giving you the flexibility to choose the database that best meets your needs.
+* **Dynamic Scaffolding:** Create, modify, and delete entire data models (tables and fields) directly from the web UI. Your application's structure can evolve in real-time without redeploying or writing traditional backend code.
+* **User-Friendly Web Interface:** A clean, intuitive interface for all data interactions, including creating, searching, editing, deleting, and linking records.
+* **Headless JSON API:** In addition to the web UI, every action in Tibula is accessible via a JSON API, making it a perfect backend for custom front-ends or integrations.
+* **Powerful Plugin System:** Extend Tibula's core functionality by writing Go functions that hook into specific modules, allowing for custom business logic, complex validations, or unique workflows where direct Go code is required.
+* **Robust Permission System:** Manage access control with a flexible system based on users and groups. Define exactly who can see and do what.
+* **Advanced Data Integration (SQL-driven):** For dynamic field values and selection options, Tibula leverages embedded SQL queries, making a basic understanding of SQL beneficial for advanced configurations.
+* **Data Portability:** A practical Import/Export feature allows for smooth data interchange of entire module definitions and their content in JSON format.
+* **Multi-Database Support:** Run your application on either SQLite for simplicity and portability or MySQL for production scale.
 
 ## Getting Started
 
