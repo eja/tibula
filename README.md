@@ -3,7 +3,7 @@
 Tibula is a powerful and flexible application framework for building data-centric web applications. It allows you to define and evolve your application's structure (data models, fields, permissions, UI hints) as metadata stored within the database itself. This approach significantly reduces the need to write traditional backend application code, enabling you to dynamically create and manage complex applications—like CRMs, inventory managers, or project trackers—primarily through its user-friendly web interface. 
 
 ## Key Features
-* **Dynamic Scaffolding:** Create, modify, and delete entire data models (tables and fields) directly from the web UI. Your application's structure can evolve in real-time without redeploying or writing traditional backend code.
+* **Dynamic Data Modeling:** Define, modify, and evolve your application's data models (tables and fields) directly from the web UI. Your application's structure can change in real-time without redeploying or writing traditional backend code.
 * **User-Friendly Web Interface:** A clean, intuitive interface for all data interactions, including creating, searching, editing, deleting, and linking records.
 * **Headless JSON API:** In addition to the web UI, every action in Tibula is accessible via a JSON API, making it a perfect backend for custom front-ends or integrations.
 * **Powerful Plugin System:** Extend Tibula's core functionality by writing Go functions that hook into specific modules, allowing for custom business logic, complex validations, or unique workflows where direct Go code is required.
