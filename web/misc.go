@@ -6,7 +6,10 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"regexp"
+	"strconv"
 	"strings"
+
+	"github.com/eja/tibula/api"
 )
 
 func arrayKeyNameExtract(input string) string {
@@ -41,4 +44,21 @@ func arrayToCsvQuoted(data []string) string {
 	jsonString := string(jsonBytes)
 
 	return strings.Trim(jsonString, "[]")
+}
+
+func subModulePathExtract(value string) (subModulePath []api.SubModulePathItem) {
+	for _, part := range strings.Split(value, ",") {
+		pair := strings.Split(part, ".")
+		if len(pair) == 3 {
+			linkingModuleId, _ := strconv.Atoi(pair[0])
+			moduleId, _ := strconv.Atoi(pair[1])
+			fieldId, _ := strconv.Atoi(pair[2])
+			subModulePath = append(subModulePath, api.SubModulePathItem{
+				LinkingModuleId: int64(linkingModuleId),
+				ModuleId:        int64(moduleId),
+				FieldId:         int64(fieldId),
+			})
+		}
+	}
+	return
 }

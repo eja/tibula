@@ -1,3 +1,8 @@
+{{if .SubModulePathString }}
+            <input type="hidden" name="ejaSubModulePath" value="{{.SubModulePathString}}">
+{{end}}
+            <input type="hidden" name="ejaSession" value="{{.Session}}">
+            <input type="hidden" name="ejaModuleId" value="{{.ModuleId}}">
 </form>
 <script src="/static/js/bootstrap.min.js"></script>
 <script src="/static/js/suneditor.min.js"></script>

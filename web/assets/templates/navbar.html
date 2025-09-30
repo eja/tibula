@@ -6,43 +6,50 @@
     	</button>
     	<div class="collapse navbar-collapse" id="navbarNavDropdown">
       	<ul class="navbar-nav">
-				{{if and .Link (gt .Link.ModuleId 0) (gt .Link.FieldId 0) }}
+		{{if and .Link (gt .Link.ModuleId 0) (gt .Link.FieldId 0) }}
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="?ejaSession={{$.Session}}&ejaModuleId={{.ModuleId}}">{{.ModuleLabel}}</a>
           </li>				
-				{{else}}
-					{{range .Path}}
+		{{else}}
+	        {{range .Path}}
         	<li class="nav-item">
-          	<a class="nav-link" aria-current="page" href="?ejaSession={{$.Session}}&ejaModuleId={{.Id}}">{{.Label}}</a>
+          	<a class="nav-link" aria-current="page" href="?ejaSession={{$.Session}}&ejaModuleId={{.Id}}&ejaSubModulePath={{$.SubModulePathString}}">{{.Label}}</a>
         	</li>
-					{{end}}
-					{{if eq (len .Tree) 0}}
-					<li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="?ejaSession={{$.Session}}&ejaModuleId={{.ModuleId}}">{{.ModuleLabel}}</a>
-          </li>
-					{{else}}
+			{{end}}
+			{{if eq (len .Tree) 0}}
+			<li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="?ejaSession={{$.Session}}&ejaModuleId={{.ModuleId}}&ejaSubModulePath={{$.SubModulePathString}}">{{.ModuleLabel}}</a>
+            </li>
+			{{else}}
         	<li class="nav-item dropdown">
-          	<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{.ModuleLabel}}</a>
-          	<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-							{{range .Tree}}
-            	<li><a class="dropdown-item" href="?ejaSession={{$.Session}}&ejaModuleId={{.Id}}">{{.Label}}</a></li>
-							{{end}}
-          	</ul>
+          	    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{.ModuleLabel}}</a>
+          	    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                {{range .Tree}}
+            	    <li><a class="dropdown-item" href="?ejaSession={{$.Session}}&ejaModuleId={{.Id}}">{{.Label}}</a></li>
+                {{end}}
+          	    </ul>
         	</li>
-					{{end}}
-				{{end}}
+		    {{end}}
+	    {{end}}
       	</ul>
     	</div>
 			{{if and .Link (gt .Link.ModuleId 0) (gt .Link.FieldId 0) }}
 			<a class="btn btn-danger" href="?ejaSession={{$.Session}}&ejaModuleId={{.Link.ModuleId}}&ejaId={{.Link.FieldId}}">{{.Link.ModuleLabel}}</a>
 			{{else if .Links}}
 			<div class="btn-group">
-  			<button type="submit" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-    			Links
-  			</button>
+  			<button type="submit" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Links</button>
   			<ul class="dropdown-menu dropdown-menu-end">
 					{{range .Links}}
     			<li><a class="dropdown-item" href="?ejaSession={{$.Session}}&ejaModuleId={{.ModuleId}}&ejaLink={{$.ModuleId}}.{{$.Id}}.{{.Label}}">{{.Label}}</a></li>
+					{{end}}
+				</ul>
+			</div>
+			{{else if .SubModules}}
+			<div class="btn-group">
+  			<button type="submit" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Submodules</button>
+  			<ul class="dropdown-menu dropdown-menu-end">
+					{{range .SubModules}}
+    			<li><a class="dropdown-item" href="?ejaSession={{$.Session}}&ejaModuleId={{.ModuleId}}&ejaSubModulePath={{$.SubModulePathString}}{{$.ModuleId}}.{{.ModuleId}}.{{$.Id}}">{{.Label}}</a></li>
 					{{end}}
 				</ul>
 			</div>

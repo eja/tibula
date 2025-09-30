@@ -123,22 +123,30 @@ func (session *TypeSession) SearchQuery(ownerId int64, tableName string, values 
 
 // SearchCount calculates the number of records for a given search query and arguments.
 func (session *TypeSession) SearchCount(query string, args []interface{}) int64 {
-	var queryCount string
-	start := strings.Index(strings.ToUpper(query), "FROM")
-	stop := strings.LastIndex(strings.ToUpper(query), "LIMIT")
-	if start > 0 {
-		if stop > 0 {
-			queryCount = query[start:stop]
-		} else {
-			queryCount = query[start:]
-		}
-		if result, err := session.Value("SELECT COUNT(*) "+queryCount, args...); err != nil {
-			return 0
-		} else {
-			return session.Number(result)
-		}
+	reFrom := regexp.MustCompile(`(?i)\s+FROM\s+`)
+	reLimit := regexp.MustCompile(`(?i)\s+LIMIT\s+`)
+
+	fromMatches := reFrom.FindAllStringIndex(query, -1)
+	if len(fromMatches) == 0 {
+		return 0
 	}
-	return 0
+
+	fromPos := fromMatches[len(fromMatches)-1][1] - 5
+
+	limitMatches := reLimit.FindAllStringIndex(query, -1)
+	var queryCount string
+
+	if len(limitMatches) > 0 {
+		queryCount = query[fromPos:limitMatches[0][0]]
+	} else {
+		queryCount = query[fromPos:]
+	}
+
+	if result, err := session.Value("SELECT COUNT(*) "+queryCount, args...); err != nil {
+		return 0
+	} else {
+		return session.Number(result)
+	}
 }
 
 // searchHeader retrieves column information for constructing search queries.
@@ -230,4 +238,16 @@ func (session *TypeSession) SearchQueryLinks(ownerId, srcModuleId, srcFieldId, d
 		result = " AND ejaId IN (" + strings.Join(links, ",") + ") "
 	}
 	return result
+}
+
+// AutoSearch checks if there are searching fields
+func (session *TypeSession) AutoSearch(moduleId int64) (check bool) {
+	hasSql, err := session.Value(`SELECT sqlCreated FROM ejaModules WHERE ejaId=?`, moduleId)
+	if err == nil && session.Number(hasSql) > 0 {
+		hasFields, err2 := session.Value(`SELECT COUNT(*) FROM ejaFields WHERE powerSearch > 0 AND ejaModuleId=?`, moduleId)
+		if err2 == nil && session.Number(hasFields) == 0 {
+			check = true
+		}
+	}
+	return
 }

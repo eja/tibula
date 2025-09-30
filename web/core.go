@@ -82,6 +82,8 @@ func Core(w http.ResponseWriter, r *http.Request) {
 					eja.SearchLink = true
 					eja.SearchLinkClean = true
 				}
+			case "ejaSubModulePath":
+				eja.SubModulePath = subModulePathExtract(value)
 			}
 		}
 
@@ -103,6 +105,8 @@ func Core(w http.ResponseWriter, r *http.Request) {
 				} else {
 					eja.SearchLink = false
 				}
+			case "ejaSubModulePath":
+				eja.SubModulePath = subModulePathExtract(value)
 			}
 		}
 		for key, value := range r.Form {

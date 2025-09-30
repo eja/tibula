@@ -124,6 +124,23 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 					}
 				}
 			}
+			//auto search
+			if eja.Id == 0 && db.AutoSearch(eja.ModuleId) {
+				eja.ActionType = "List"
+				eja.SqlQuery64 = ""
+			}
+
+			//submodule
+			var SubModule SubModulePathItem
+			for _, sub := range eja.SubModulePath {
+				eja.SubModulePathString += fmt.Sprintf("%d.%d.%d,", sub.LinkingModuleId, sub.ModuleId, sub.FieldId)
+				if sub.ModuleId == eja.ModuleId {
+					SubModule = sub
+					SubModule.FieldName = db.ModuleLinksFieldName(sub.ModuleId, sub.LinkingModuleId)
+					break
+				}
+			}
+
 			//link
 			linkingField := ""
 			if eja.Link.ModuleId > 0 && eja.Link.FieldId > 0 && eja.Link.Label != "" {
@@ -331,6 +348,11 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 					sqlLinks = db.SearchQueryLinks(eja.Owner, eja.Link.ModuleId, eja.Link.FieldId, eja.ModuleId)
 				}
 
+				//submodule
+				if SubModule.FieldId > 0 {
+					sqlQuery += fmt.Sprintf(" AND %s=%d ", SubModule.FieldName, SubModule.FieldId)
+				}
+
 				eja.SqlQuery = sqlQuery + sqlLinks + db.SearchQueryOrderAndLimit(sqlOrder, eja.SearchLimit, eja.SearchOffset)
 				eja.SearchCount = db.SearchCount(sqlQuery+sqlLinks, eja.SqlQueryArgs)
 				eja.SearchLast = eja.SearchOffset + eja.SearchLimit
@@ -362,6 +384,7 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 			if eja.Id > 0 {
 				eja.ActionType = "Edit"
 				eja.Links = db.ModuleLinks(eja.Owner, eja.ModuleId)
+				eja.SubModules = db.SubModules(eja.Owner, eja.ModuleId)
 				db.SessionPut(eja.Owner, "ejaId", db.String(eja.Id))
 			} else {
 				eja.ActionType = "Search"

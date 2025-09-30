@@ -29,6 +29,7 @@ func (session *TypeSession) ModuleLinks(ownerId int64, moduleId int64) (result [
 		SELECT srcModuleId, (SELECT name FROM ejaModules WHERE ejaId=srcModuleId) AS srcModuleName 
 		FROM ejaModuleLinks 
 		WHERE dstModuleId=? 
+        AND srcFieldName = ""
 		ORDER BY power ASC
 		`, moduleId)
 	if err != nil {
