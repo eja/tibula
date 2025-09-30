@@ -54,7 +54,9 @@ func (session *TypeSession) ModuleTree(ownerId int64, moduleId int64, modulePath
 			`, owners)
 			checkId, _ := session.Value(query, ejaPermissions, session.Number(row["ejaId"]), ownerId, ejaUsers, ejaGroups)
 			if ownerId == 1 || session.Number(checkId) > 0 {
-				result = append(result, TypeModuleTree{Id: session.Number(row["ejaId"]), Name: row["name"], Label: session.Translate(row["name"], ownerId)})
+				if !session.IsSubModule(session.Number(row["ejaId"])) {
+					result = append(result, TypeModuleTree{Id: session.Number(row["ejaId"]), Name: row["name"], Label: session.Translate(row["name"], ownerId)})
+				}
 			}
 		}
 	}

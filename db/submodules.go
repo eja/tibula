@@ -4,13 +4,13 @@ package db
 
 import ()
 
-// SubModuleFieldName retrieve the field name associated with the parent ejaId
-func (session *TypeSession) SubModuleFieldName(moduleId int64) string {
-	if value, err := session.Value(`SELECT srcFieldName FROM ejaModuleLinks WHERE srcModuleId=? AND srcFieldName != "" LIMIT 1`, moduleId); err != nil {
-		return ""
-	} else {
-		return value
+// IsSubModule check if a moduleId is a submodule
+func (session *TypeSession) IsSubModule(moduleId int64) bool {
+	value, err := session.Value(`SELECT srcFieldName FROM ejaModuleLinks WHERE srcModuleId=? AND srcFieldName != "" LIMIT 1`, moduleId)
+	if err == nil && value != "" {
+		return true
 	}
+	return false
 }
 
 // SubModules retrieves a list of submodules associated with a specified module.
