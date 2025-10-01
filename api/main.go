@@ -248,7 +248,9 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 						switch fieldType {
 						case "password":
 							if len(val) != 64 {
-								value = db.Sha256(val)
+								value = db.Password(val)
+							} else {
+								value = val
 							}
 						case "boolean", "integer":
 							value = db.Number(val)

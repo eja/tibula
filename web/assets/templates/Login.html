@@ -18,11 +18,11 @@
 				{{if .GoogleSsoId}}
 					<input type="hidden" name="ejaGoogleSsoId" value="{{.GoogleSsoId}}"><input type="hidden" name="ejaValues[googleSsoToken]" value="">
 					<div id="google">
-						<div>
-						{{end}}
-					</div>
+					{{end}}
 				</div>
 			</div>
 		</div>
-		{{template "notification.html" .}}
-		{{template "foot.html" .}}
+	</div>
+</div>
+{{template "notification.html" .}}
+{{template "foot.html" .}}
