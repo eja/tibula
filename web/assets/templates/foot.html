@@ -1,15 +1,19 @@
-{{if .SubModulePathString }}
-            <input type="hidden" name="ejaSubModulePath" value="{{.SubModulePathString}}">
+{{if .SubModulePathString}}
+	<input type="hidden" name="ejaSubModulePath" value="{{.SubModulePathString}}">
 {{end}}
-            <input type="hidden" name="ejaSession" value="{{.Session}}">
-            <input type="hidden" name="ejaModuleId" value="{{.ModuleId}}">
+<input type="hidden" name="ejaSession" value="{{.Session}}"><input type="hidden" name="ejaModuleId" value="{{.ModuleId}}">
 </form>
-<script src="/static/js/bootstrap.min.js"></script>
-<script src="/static/js/suneditor.min.js"></script>
-<script src="/static/js/slimselect.min.js"></script>
-<script src="/static/js/tibula.js"></script>
+<script src="/static/js/bootstrap.min.js">
+</script>
+<script src="/static/js/suneditor.min.js">
+</script>
+<script src="/static/js/slimselect.min.js">
+</script>
+<script src="/static/js/tibula.js">
+</script>
 {{if .GoogleSsoId}}
-<script src="https://accounts.google.com/gsi/client"></script>
+	<script src="https://accounts.google.com/gsi/client">
+	</script>
 {{end}}
 </body>
 </html>

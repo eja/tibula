@@ -133,8 +133,16 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 			//submodule
 			var isSubModule bool
 			var subModule SubModulePathItem
-			for _, sub := range eja.SubModulePath {
+			for i := 0; i < len(eja.SubModulePath); i++ {
+				sub := eja.SubModulePath[i]
 				eja.SubModulePathString += fmt.Sprintf("%d.%d.%d,", sub.LinkingModuleId, sub.ModuleId, sub.FieldId)
+				if i < len(eja.SubModulePath)-1 && eja.ModuleId == eja.SubModulePath[i+1].LinkingModuleId {
+					isSubModule = true
+					eja.ActionType = ""
+					eja.Action = "edit"
+					eja.Id = eja.SubModulePath[i+1].FieldId
+					break
+				}
 				if sub.ModuleId == eja.ModuleId {
 					isSubModule = true
 					subModule = sub
@@ -143,8 +151,8 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 					break
 				}
 				if sub.LinkingModuleId == eja.ModuleId {
-					eja.Id = sub.FieldId
 					eja.Action = "edit"
+					eja.Id = sub.FieldId
 				}
 			}
 			if !isSubModule {

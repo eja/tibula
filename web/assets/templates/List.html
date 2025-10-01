@@ -1,78 +1,97 @@
-{{template "head.html" . }}
-{{template "navbar.html" . }}
-{{$Fields := .Fields }}
-	<div class="container-fluid">
-		<table class="table table-bordered table-hover mt-4">
-			<caption class="text-center border-start border-bottom border-end"><small>{{.SearchOffset}}/{{.SearchLast}} - {{.SearchCount}}</small></caption>
-			<thead>
-				<tr>
-                {{if gt (len .SearchCols) 1}}
-				{{range $key := .SearchCols}}
-					{{if eq $key "ejaId"}}
-					<th width="30px" class="text-center"><input type="checkbox" name="ejaCheckAll" onclick="tableRowsCheck(this)"></th>
-						{{if $.Linking}}
-						<th width="30px" class="text-center"><i class="bi bi-link-45deg"></i></th>
-						{{end}}					
-					{{else}}
-						{{$colSpan := 0}}
-						{{range $field := $Fields}}
-							{{if eq $field.Name $key}}
-								{{$colSpan = $field.ListSize}}
+{{template "head.html" .}}
+{{template "navbar.html" .}}
+{{$Fields := .Fields}}
+<div class="container-fluid">
+	<table class="table table-bordered table-hover mt-4">
+		<caption class="text-center border-start border-bottom border-end">
+			<small>{{.SearchOffset}}/{{.SearchLast}} - {{.SearchCount}}</small>
+		</caption>
+		<thead>
+			<tr>
+				{{if gt (len .SearchCols) 1}}
+					{{range $key := .SearchCols}}
+						{{if eq $key "ejaId"}}
+							<th width="30px" class="text-center">
+								<input type="checkbox" name="ejaCheckAll" onclick="tableRowsCheck(this)">
+							</th>
+							{{if $.Linking}}
+								<th width="30px" class="text-center">
+									<i class="bi bi-link-45deg"></i>
+								</th>
 							{{end}}
-						{{end}} 
-						<th{{if gt $colSpan 0}} class="col-{{$colSpan}}"{{end}}>
-						<select name="ejaSearchOrder[{{$key}}]" class="text-secondary" style="appearance:none; border:0;outline:none;padding-right:5px;">
-							<option value="NONE">&#x21C5;</option>
-							{{if eq (index $.SearchOrder $key) "ASC"}}
-								<option value="ASC" selected>&#x2191;</option>
-							{{else}}
-								<option value="ASC">&#x2191;</option>
+						{{else}}
+							{{$colSpan := 0}}
+							{{range $field := $Fields}}
+								{{if eq $field.Name $key}}
+									{{$colSpan = $field.ListSize}}
+								{{end}}
 							{{end}}
-							{{if eq (index $.SearchOrder $key) "DESC"}}
-								<option value="DESC" selected>&#x2193;</option>
-							{{else}}
-								<option value="DESC" >&#x2193;</option>
-							{{end}}
-						</select>
-						{{index $.SearchLabels $key}}
-						</th>
+							<th{{if gt $colSpan 0}} class="col-{{$colSpan}}"{{end}}>
+								<select name="ejaSearchOrder[{{$key}}]" class="text-secondary" style="appearance:none; border:0;outline:none;padding-right:5px;">
+									<option value="NONE">
+										&#x21C5;
+									</option>
+									{{if eq (index $.SearchOrder $key) "ASC"}}
+										<option value="ASC" selected>
+											&#x2191;
+										</option>
+									{{else}}
+										<option value="ASC">
+											&#x2191;
+										</option>
+									{{end}}
+									{{if eq (index $.SearchOrder $key) "DESC"}}
+										<option value="DESC" selected>
+											&#x2193;
+										</option>
+									{{else}}
+										<option value="DESC" >
+											&#x2193;
+										</option>
+									{{end}}
+								</select>
+								{{index $.SearchLabels $key}}
+							</th>
+						{{end}}
 					{{end}}
 				{{end}}
-                {{end}}
-				</tr>
-			</thead>
-			<tbody>
-				{{range $rowId, $rowValues := index .SearchRows}}
-					<tr onclick="tableRowCheck(this)" ondblclick="tableEdit(this)">
-						{{range $key := $.SearchCols}}
-							{{if eq $key "ejaId"}}
+			</tr>
+		</thead>
+		<tbody>
+			{{range $rowId, $rowValues := index .SearchRows}}
+				<tr onclick="tableRowCheck(this)" ondblclick="tableEdit(this)">
+					{{range $key := $.SearchCols}}
+						{{if eq $key "ejaId"}}
 							{{$ejaId := (index $rowValues $key)}}
-							<td width="30px" class="text-center"><input type="checkbox" name="ejaIdList[{{index $rowValues $key}}]" onclick="tableInputCheck(this)"></td>
-								{{if $.Linking}}
-										<td class="text-center">
-										{{range $k,$v := $.SearchLinks}}
-											{{if eq $v $ejaId}}
-												<i class="bi bi-link-45deg"></i>
-											{{end}}
+							<td width="30px" class="text-center">
+								<input type="checkbox" name="ejaIdList[{{index $rowValues $key}}]" onclick="tableInputCheck(this)">
+							</td>
+							{{if $.Linking}}
+								<td class="text-center">
+									{{range $k,$v := $.SearchLinks}}
+										{{if eq $v $ejaId}}
+											<i class="bi bi-link-45deg"></i>
 										{{end}}
-										</td>
-								{{end}}
-							{{else}}
+									{{end}}
+								</td>
+							{{end}}
+						{{else}}
 							{{$colSpan := 1}}
 							{{range $field := $Fields}}
 								{{if and (eq $field.Name $key) (gt $field.ListSize 0)}}
-									{{$colSpan = $field.ListSize }}
+									{{$colSpan = $field.ListSize}}
 								{{end}}
-							{{end}} 
-							<td>{{index $rowValues $key}}</td>
 							{{end}}
+							<td>
+								{{index $rowValues $key}}
+							</td>
 						{{end}}
-					</tr>
-				{{end}}
-			</tbody>
-			</table>
-
-			{{template "command.html" .}}
-	</div>
+					{{end}}
+				</tr>
+			{{end}}
+		</tbody>
+	</table>
+	{{template "command.html" .}}
+</div>
 {{template "notification.html" .}}
 {{template "foot.html" .}}
