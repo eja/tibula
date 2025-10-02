@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
@@ -7,15 +7,12 @@ import (
 	"fmt"
 )
 
-// TypeCommand represents a command with its properties.
 type TypeCommand struct {
 	Name   string
 	Label  string
 	Linker bool
 }
 
-// Commands retrieves a list of commands based on user and module information.
-// It checks permissions and builds the command list accordingly.
 func (session *TypeSession) Commands(userId int64, moduleId int64, actionType string) ([]TypeCommand, error) {
 	commandList := []TypeCommand{}
 	actionTypeSql := ""
@@ -68,7 +65,6 @@ func (session *TypeSession) Commands(userId int64, moduleId int64, actionType st
 	return commandList, nil
 }
 
-// CommandExists checks if a given command exists in the provided list of commands.
 func (session *TypeSession) CommandExists(commands []TypeCommand, commandName string) bool {
 	for _, row := range commands {
 		if row.Name == commandName {

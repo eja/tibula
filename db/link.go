@@ -1,10 +1,9 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
 import ()
 
-// TypeLink represents a link between modules and fields.
 type TypeLink struct {
 	Label       string `json:"Label,omitempty"`
 	ModuleId    int64  `json:"ModuleId,omitempty"`
@@ -12,7 +11,6 @@ type TypeLink struct {
 	FieldId     int64  `json:"FieldId,omitempty"`
 }
 
-// ModuleLinksFieldName retrieve the linking field name if available
 func (session *TypeSession) ModuleLinksFieldName(moduleId, linkModuleId int64) string {
 	if value, err := session.Value("SELECT srcFieldName FROM ejaModuleLinks WHERE dstModuleId=? AND srcModuleId=?", linkModuleId, moduleId); err != nil {
 		return ""
@@ -21,7 +19,6 @@ func (session *TypeSession) ModuleLinksFieldName(moduleId, linkModuleId int64) s
 	}
 }
 
-// ModuleLinks retrieves a list of links associated with a specified module.
 func (session *TypeSession) ModuleLinks(ownerId int64, moduleId int64) (result []TypeLink) {
 	ejaPermissions := session.ModuleGetIdByName("ejaPermissions")
 	ejaUsers := session.ModuleGetIdByName("ejaUsers")
@@ -46,19 +43,16 @@ func (session *TypeSession) ModuleLinks(ownerId int64, moduleId int64) (result [
 	return
 }
 
-// LinkDel deletes a link between modules and fields.
 func (session *TypeSession) LinkDel(ownerId int64, moduleId int64, fieldId int64, linkModuleId int64, linkFieldId int64) error {
 	_, err := session.Run("DELETE FROM ejaLinks WHERE ejaOwner=? AND srcModuleId=? AND srcFieldId=? AND dstModuleId=? AND dstFieldId=?", ownerId, moduleId, fieldId, linkModuleId, linkFieldId)
 	return err
 }
 
-// LinkAdd adds a new link between modules and fields.
 func (session *TypeSession) LinkAdd(ownerId int64, moduleId int64, fieldId int64, linkModuleId int64, linkFieldId int64) error {
 	_, err := session.Run("INSERT INTO ejaLinks (ejaOwner,ejaLog,srcModuleId,srcFieldId,dstModuleId,dstFieldId,power) VALUES(?,?,?,?,?,?,?)", ownerId, session.Now(), moduleId, fieldId, linkModuleId, linkFieldId, 1)
 	return err
 }
 
-// LinkCopy duplicates a link from the original field to a new field in a different module.
 func (session *TypeSession) LinkCopy(userId int64, dstFieldNew int64, dstModule int64, dstFieldOriginal int64) (TypeRun, error) {
 	return session.Run(`
 		INSERT INTO ejaLinks (ejaId, ejaOwner, ejaLog, srcModuleId, srcFieldId, dstModuleId, dstFieldId, power) 
@@ -68,7 +62,6 @@ func (session *TypeSession) LinkCopy(userId int64, dstFieldNew int64, dstModule 
 		`, userId, session.Now(), dstFieldNew, dstModule, dstFieldOriginal)
 }
 
-// SearchLinks searches for links associated with a specified module, field, and owner ID.
 func (session *TypeSession) SearchLinks(ownerId int64, srcModuleId int64, srcFieldId int64, dstModuleId int64) []string {
 	result := []string{"0"}
 	rows, err := session.Rows("SELECT * FROM ejaLinks WHERE ejaOwner=? AND dstModuleId=? AND dstFieldId=? AND srcModuleId=?", ownerId, srcModuleId, srcFieldId, dstModuleId)

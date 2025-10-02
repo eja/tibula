@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
@@ -11,12 +11,10 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-// sqliteOpen opens a connection to an SQLite database at the specified path.
 func sqliteOpen(path string) (*sql.DB, error) {
 	return sql.Open("sqlite3", path)
 }
 
-// sqliteRun executes a SQL query with optional arguments and returns information about the execution.
 func (session *TypeSession) sqliteRun(query string, args ...interface{}) (TypeRun, error) {
 	result, err := session.Handler.Exec(query, args...)
 	if err != nil {
@@ -27,7 +25,6 @@ func (session *TypeSession) sqliteRun(query string, args ...interface{}) (TypeRu
 	return TypeRun{Changes: changes, LastId: lastId}, nil
 }
 
-// sqliteValue executes a SQL query with optional arguments and returns a single string result.
 func (session *TypeSession) sqliteValue(query string, args ...interface{}) (result string, err error) {
 	var nullResult sql.NullString
 	err = session.Handler.QueryRow(query, args...).Scan(&nullResult)
@@ -43,7 +40,6 @@ func (session *TypeSession) sqliteValue(query string, args ...interface{}) (resu
 	return
 }
 
-// sqliteRow executes a SQL query with optional arguments and returns a single row of results.
 func (session *TypeSession) sqliteRow(query string, args ...interface{}) (TypeRow, error) {
 	var result TypeRow
 	rows, err := session.sqliteRows(query, args...)
@@ -56,7 +52,6 @@ func (session *TypeSession) sqliteRow(query string, args ...interface{}) (TypeRo
 	return result, nil
 }
 
-// sqliteRows executes a SQL query with optional arguments and returns multiple rows of results.
 func (session *TypeSession) sqliteRows(query string, args ...interface{}) (TypeRows, error) {
 	rows, err := session.Handler.Query(query, args...)
 	if err != nil {
@@ -93,7 +88,6 @@ func (session *TypeSession) sqliteRows(query string, args ...interface{}) (TypeR
 	return result, nil
 }
 
-// sqliteCols executes a SQL query with optional arguments and returns the column names.
 func (session *TypeSession) sqliteCols(query string, args ...interface{}) ([]string, error) {
 	rows, err := session.Handler.Query(query, args...)
 	if err != nil {
@@ -104,7 +98,6 @@ func (session *TypeSession) sqliteCols(query string, args ...interface{}) ([]str
 	return rows.Columns()
 }
 
-// sqliteTableExists checks if a table with the specified name exists in the database.
 func (session *TypeSession) sqliteTableExists(name string) (bool, error) {
 	if err := sqliteTableNameIsValid(name); err != nil {
 		return false, err
@@ -117,7 +110,6 @@ func (session *TypeSession) sqliteTableExists(name string) (bool, error) {
 	return true, nil
 }
 
-// sqliteFieldExists checks if a field with the specified name exists in the specified table.
 func (session *TypeSession) sqliteFieldExists(tableName, fieldName string) (bool, error) {
 	if err := sqliteTableNameIsValid(tableName); err != nil {
 		return false, err
@@ -141,7 +133,6 @@ func (session *TypeSession) sqliteFieldExists(tableName, fieldName string) (bool
 	return false, nil
 }
 
-// sqliteTableNameIsValid checks if a table name is valid according to SQLite naming conventions.
 func sqliteTableNameIsValid(name string) error {
 	check, err := regexp.MatchString(`^[a-zA-Z_][a-zA-Z0-9_]{0,127}$`, name)
 	if err != nil {
@@ -153,7 +144,6 @@ func sqliteTableNameIsValid(name string) error {
 	return nil
 }
 
-// sqliteFieldNameIsValid checks if a field name is valid according to SQLite naming conventions.
 func sqliteFieldNameIsValid(name string) error {
 	check, err := regexp.MatchString(`^[a-zA-Z_][a-zA-Z0-9_]{0,127}$`, name)
 	if err != nil {

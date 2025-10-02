@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
@@ -9,7 +9,6 @@ import (
 	"github.com/eja/tibula/log"
 )
 
-// GroupImport imports a group into the database based on the provided TypeGroup and group name
 func (session *TypeSession) GroupImport(group TypeGroup, groupName string) (err error) {
 	const owner = 1
 
@@ -72,7 +71,6 @@ func (session *TypeSession) GroupImport(group TypeGroup, groupName string) (err 
 	return
 }
 
-// ModuleAppend appends data to an existing module
 func (session *TypeSession) ModuleAppend(module TypeModule, moduleName string) error {
 	const owner = 1
 
@@ -104,7 +102,6 @@ func (session *TypeSession) ModuleAppend(module TypeModule, moduleName string) e
 	return nil
 }
 
-// ModuleImport imports a module into the database based on the provided TypeModule and module name.
 func (session *TypeSession) ModuleImport(module TypeModule, moduleName string) error {
 	const owner = 1
 

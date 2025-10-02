@@ -1,6 +1,4 @@
-// Package log provides a simple logging mechanism with different log levels.
-//
-// Copyright (C) 2023-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package log
 

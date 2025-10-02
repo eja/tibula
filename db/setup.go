@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
@@ -14,9 +14,6 @@ import (
 //go:embed all:assets
 var Assets embed.FS
 
-// Setup initializes the database with modules, fields, and commands.
-// It reads JSON files from the specified setupPath or embeded assets, and populates the database accordingly.
-// The admin user credentials are used for setup.
 func (session *TypeSession) Setup(setupPath string) error {
 	moduleIdMap := map[string]int64{}
 	var modules []TypeModule

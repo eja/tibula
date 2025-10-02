@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
@@ -7,7 +7,6 @@ import (
 	"fmt"
 )
 
-// New creates a new entry in the specified module table with the given ownerId and moduleId.
 func (session *TypeSession) New(ownerId int64, moduleId int64) (int64, error) {
 	moduleName := session.ModuleGetNameById(moduleId)
 
@@ -27,7 +26,6 @@ func (session *TypeSession) New(ownerId int64, moduleId int64) (int64, error) {
 	return run.LastId, nil
 }
 
-// Get retrieves a row from the specified module table based on ownerId, moduleId, and ejaId.
 func (session *TypeSession) Get(ownerId int64, moduleId int64, ejaId int64) (TypeRow, error) {
 	moduleName := session.ModuleGetNameById(moduleId)
 
@@ -43,7 +41,6 @@ func (session *TypeSession) Get(ownerId int64, moduleId int64, ejaId int64) (Typ
 	return session.Row(query, ejaId)
 }
 
-// Put updates a specific field in a row of the specified module table based on ownerId, moduleId, ejaId, fieldName, and fieldValue.
 func (session *TypeSession) Put(ownerId int64, moduleId int64, ejaId int64, fieldName string, fieldValue interface{}) error {
 	moduleName := session.ModuleGetNameById(moduleId)
 
@@ -71,7 +68,6 @@ func (session *TypeSession) Put(ownerId int64, moduleId int64, ejaId int64, fiel
 	return nil
 }
 
-// Del deletes a row from the specified module table based on ownerId, moduleId, and ejaId.
 func (session *TypeSession) Del(ownerId int64, moduleId, ejaId int64) error {
 	owners := session.Owners(ownerId, moduleId)
 	csv := session.NumbersToCsv(owners)

@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
@@ -59,7 +59,6 @@ func (session *TypeSession) GroupExport(groupId int64) (group TypeGroup, err err
 	return
 }
 
-// ModuleExport exports a module.
 func (session *TypeSession) ModuleExport(moduleId int64, data bool) (module TypeModule, err error) {
 	var row TypeRow
 	var rows TypeRows

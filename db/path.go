@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
@@ -6,14 +6,12 @@ import (
 	"fmt"
 )
 
-// TypeModulePath represents a node in the module hierarchy with its ID, name, and translated label.
 type TypeModulePath struct {
 	Id    int64
 	Name  string
 	Label string
 }
 
-// ModulePath retrieves the path of module hierarchy from the specified module to its root for a given user.
 func (session *TypeSession) ModulePath(ownerId int64, moduleId int64) (result []TypeModulePath) {
 	id := moduleId
 	ejaPermissions := session.ModuleGetIdByName("ejaPermissions")

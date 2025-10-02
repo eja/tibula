@@ -1,7 +1,4 @@
-// Package db provides functions for database operations, including opening and closing connections,
-// running queries, and retrieving results. It supports SQLite and MySQL database engines.
-//
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
@@ -20,12 +17,10 @@ type TypeSession struct {
 	ConnectionId int64
 }
 
-// Session start a new database session
 func Session() TypeSession {
 	return TypeSession{}
 }
 
-// Open initializes a connection to the specified database using the provided parameters.
 func (session *TypeSession) Open(engine string, database string, username string, password string, host string, port int) (err error) {
 
 	if database == "" {
@@ -57,7 +52,6 @@ func (session *TypeSession) Open(engine string, database string, username string
 	return
 }
 
-// Close closes the open database connection.
 func (session *TypeSession) Close() error {
 	if session.Handler != nil {
 		log.Debug(tag, "close", session.Engine)
@@ -66,7 +60,6 @@ func (session *TypeSession) Close() error {
 	return errors.New("no database connection to close")
 }
 
-// Run executes a query with optional parameters and returns a TypeRun containing information about the execution.
 func (session *TypeSession) Run(query string, args ...interface{}) (result TypeRun, err error) {
 	switch session.Engine {
 	case "sqlite":
@@ -85,7 +78,6 @@ func (session *TypeSession) Run(query string, args ...interface{}) (result TypeR
 	return
 }
 
-// Value executes a query with optional parameters and returns a single result as a string.
 func (session *TypeSession) Value(query string, args ...interface{}) (result string, err error) {
 	switch session.Engine {
 	case "sqlite":
@@ -107,7 +99,6 @@ func (session *TypeSession) Value(query string, args ...interface{}) (result str
 	return
 }
 
-// Row executes a query with optional parameters and returns a single row of results as a TypeRow.
 func (session *TypeSession) Row(query string, args ...interface{}) (result TypeRow, err error) {
 	switch session.Engine {
 	case "sqlite":
@@ -129,7 +120,6 @@ func (session *TypeSession) Row(query string, args ...interface{}) (result TypeR
 	return
 }
 
-// Rows executes a query with optional parameters and returns multiple rows of results as a TypeRows.
 func (session *TypeSession) Rows(query string, args ...interface{}) (result TypeRows, err error) {
 	switch session.Engine {
 	case "sqlite":
@@ -151,7 +141,6 @@ func (session *TypeSession) Rows(query string, args ...interface{}) (result Type
 	return
 }
 
-// Cols executes a query with optional parameters and returns the column names of the result set.
 func (session *TypeSession) Cols(query string, args ...interface{}) ([]string, error) {
 	switch session.Engine {
 	case "sqlite":

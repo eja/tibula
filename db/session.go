@@ -1,16 +1,20 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
 import (
-	randCrypto "crypto/rand"
 	"encoding/binary"
 	"fmt"
-	randMath "math/rand"
 	"time"
+
+	randCrypto "crypto/rand"
+	randMath "math/rand"
 )
 
-// SessionInit generates a new session for the specified user and updates the database.
+func (session *TypeSession) SessionTokenUpdate(userId int64, sessionHash string) string {
+	return session.Sha256(fmt.Sprintf("%s.%d.%d", sessionHash, userId, time.Now().Unix()/1000))
+}
+
 func (session *TypeSession) SessionInit(userId int64) string {
 	var seed int64
 	maxValue := 1000 * 1000 * 1000
@@ -26,10 +30,10 @@ func (session *TypeSession) SessionInit(userId int64) string {
 	sessionHash := session.Sha256(fmt.Sprintf("%d%d", randMath.Intn(maxValue), randMath.Intn(maxValue)))
 	session.Run("UPDATE ejaUsers SET ejaSession=? WHERE ejaId=?", sessionHash, userId)
 	session.Run("DELETE FROM ejaSessions WHERE ejaOwner=?", userId)
-	return sessionHash
+
+	return session.SessionTokenUpdate(userId, sessionHash)
 }
 
-// SessionLoad loads session data for a specified user and module from the database.
 func (session *TypeSession) SessionLoad(userId int64, moduleId int64) (TypeRows, error) {
 	if session.Engine == "mysql" {
 		session.Run("SET @ejaOwner = " + session.String(userId))
@@ -51,7 +55,6 @@ func (session *TypeSession) SessionLoad(userId int64, moduleId int64) (TypeRows,
 	return session.Rows("SELECT * FROM ejaSession ORDER BY ejaLog ASC, ejaId ASC")
 }
 
-// SessionPut stores a session variable for a specified user in the database.
 func (session *TypeSession) SessionPut(userId int64, name string, value string, subName ...string) (err error) {
 	var sub string
 	if len(subName) > 0 {
@@ -72,19 +75,16 @@ func (session *TypeSession) SessionPut(userId int64, name string, value string, 
 	return
 }
 
-// SessionCleanLink removes specific session variables related to links for a specified user.
 func (session *TypeSession) SessionCleanLink(userId int64) error {
 	_, err := session.Run("DELETE FROM ejaSessions WHERE ejaOwner=? AND name in ('Link','SqlQuery64','SqlQueryArgs','SearchLimit','SearchOffset','SearchOrder')", userId)
 	return err
 }
 
-// SessionCleanSearch removes specific session variables related to searches for a specified user.
 func (session *TypeSession) SessionCleanSearch(userId int64) error {
 	_, err := session.Run("DELETE FROM ejaSessions WHERE ejaOwner=? AND name in ('SqlQuery64','SqlQueryArgs','SearchLimit','SearchOffset','SearchOrder')", userId)
 	return err
 }
 
-// SessionReset removes all session variables for a specified user from the database.
 func (session *TypeSession) SessionReset(userId int64) error {
 	if _, err := session.Run("DELETE FROM ejaSessions WHERE ejaOwner=?", userId); err != nil {
 		return err

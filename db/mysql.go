@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
@@ -11,13 +11,11 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// mysqlOpen establishes a MySQL database connection using the provided parameters.
 func mysqlOpen(database string, username string, password string, host string, port int) (*sql.DB, error) {
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", username, password, host, port, database)
 	return sql.Open("mysql", connectionString)
 }
 
-// mysqlRun executes a SQL query on the MySQL database and returns information about the execution.
 func (session *TypeSession) mysqlRun(query string, args ...interface{}) (TypeRun, error) {
 	result, err := session.Handler.Exec(query, args...)
 	if err != nil {
@@ -28,7 +26,6 @@ func (session *TypeSession) mysqlRun(query string, args ...interface{}) (TypeRun
 	return TypeRun{Changes: changes, LastId: lastId}, nil
 }
 
-// mysqlValue executes a SQL query on the MySQL database and returns a single result as a string.
 func (session *TypeSession) mysqlValue(query string, args ...interface{}) (result string, err error) {
 	var nullResult sql.NullString
 	err = session.Handler.QueryRow(query, args...).Scan(&nullResult)
@@ -44,7 +41,6 @@ func (session *TypeSession) mysqlValue(query string, args ...interface{}) (resul
 	return
 }
 
-// mysqlRow executes a SQL query on the MySQL database and returns a single row of results as a TypeRow.
 func (session *TypeSession) mysqlRow(query string, args ...interface{}) (TypeRow, error) {
 	var result TypeRow
 	rows, err := session.mysqlRows(query, args...)
@@ -58,7 +54,6 @@ func (session *TypeSession) mysqlRow(query string, args ...interface{}) (TypeRow
 	return result, nil
 }
 
-// mysqlRows executes a SQL query on the MySQL database and returns multiple rows of results as a TypeRows.
 func (session *TypeSession) mysqlRows(query string, args ...interface{}) (TypeRows, error) {
 	rows, err := session.Handler.Query(query, args...)
 	if err != nil {
@@ -95,7 +90,6 @@ func (session *TypeSession) mysqlRows(query string, args ...interface{}) (TypeRo
 	return result, nil
 }
 
-// mysqlCols executes a SQL query on the MySQL database and returns the column names of the result set.
 func (session *TypeSession) mysqlCols(query string, args ...interface{}) ([]string, error) {
 	rows, err := session.Handler.Query(query, args...)
 	if err != nil {
@@ -106,7 +100,6 @@ func (session *TypeSession) mysqlCols(query string, args ...interface{}) ([]stri
 	return rows.Columns()
 }
 
-// mysqlTableExists checks if a table with the given name exists in the MySQL database.
 func (session *TypeSession) mysqlTableExists(name string) (bool, error) {
 	if err := mysqlTableNameIsValid(name); err != nil {
 		return false, err
@@ -123,7 +116,6 @@ func (session *TypeSession) mysqlTableExists(name string) (bool, error) {
 	return exists != "", nil
 }
 
-// mysqlFieldExists checks if a field with the given name exists in the specified table of the MySQL database.
 func (session *TypeSession) mysqlFieldExists(tableName, fieldName string) (bool, error) {
 	if err := mysqlTableNameIsValid(tableName); err != nil {
 		return false, err
@@ -143,7 +135,6 @@ func (session *TypeSession) mysqlFieldExists(tableName, fieldName string) (bool,
 	return false, nil
 }
 
-// mysqlTableNameIsValid checks if a table name is valid based on MySQL naming conventions.
 func mysqlTableNameIsValid(name string) error {
 	check, err := regexp.MatchString(`^[a-zA-Z_][a-zA-Z0-9_]{0,63}$`, name)
 	if err != nil {
@@ -155,7 +146,6 @@ func mysqlTableNameIsValid(name string) error {
 	return nil
 }
 
-// mysqlFieldNameIsValid checks if a field name is valid based on MySQL naming conventions.
 func mysqlFieldNameIsValid(name string) error {
 	check, err := regexp.MatchString(`^[a-zA-Z_][a-zA-Z0-9_]{0,63}$`, name)
 	if err != nil {

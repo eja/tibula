@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
@@ -7,7 +7,6 @@ import (
 	"fmt"
 )
 
-// TableExists checks if a table with the specified name exists in the database.
 func (session *TypeSession) TableExists(name string) (bool, error) {
 	switch session.Engine {
 	case "sqlite":
@@ -19,7 +18,6 @@ func (session *TypeSession) TableExists(name string) (bool, error) {
 	}
 }
 
-// TableNameIsValid checks if a table name is valid according to the current database engine's conventions.
 func (session *TypeSession) TableNameIsValid(name string) error {
 	switch session.Engine {
 	case "sqlite":
@@ -31,9 +29,6 @@ func (session *TypeSession) TableNameIsValid(name string) error {
 	}
 }
 
-// TableAdd creates a new table with the specified name in the database.
-// If the table already exists, it does nothing.
-// The optional 'tmp' parameter specifies whether the table is temporary.
 func (session *TypeSession) TableAdd(name string, tmp ...bool) error {
 	check, err := session.TableExists(name)
 	if err != nil {
@@ -60,8 +55,6 @@ func (session *TypeSession) TableAdd(name string, tmp ...bool) error {
 	return nil
 }
 
-// TableDel deletes the table with the specified name from the database.
-// If the table does not exist, it returns an error.
 func (session *TypeSession) TableDel(name string) error {
 	check, err := session.TableExists(name)
 	if err != nil {
@@ -76,7 +69,6 @@ func (session *TypeSession) TableDel(name string) error {
 	return nil
 }
 
-// TableGetAllById retrieves a row from the specified table based on the ejaId field.
 func (session *TypeSession) TableGetAllById(tableName string, ejaId int64) TypeRow {
 	row, _ := session.Row("SELECT * FROM "+tableName+" WHERE ejaId=?", ejaId)
 	return row

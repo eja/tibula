@@ -1,8 +1,7 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
-// TypeModule represents a modular structure containing information about modules, fields, translations, links and data.
 type TypeModule struct {
 	Module      TypeModuleModule         `json:"module"`
 	Command     []string                 `json:"command"`
@@ -14,7 +13,6 @@ type TypeModule struct {
 	Type        string                   `json:"type"`
 }
 
-// TypeModuleModule represents metadata about a module within a TypeModule.
 type TypeModuleModule struct {
 	ParentName  string `json:"parentName,omitempty"`
 	Power       int64  `json:"power"`
@@ -23,7 +21,6 @@ type TypeModuleModule struct {
 	SortList    string `json:"sortList,omitempty"`
 }
 
-// TypeModuleField represents metadata about a field within a TypeModule.
 type TypeModuleField struct {
 	Value       string `json:"value"`
 	PowerEdit   int64  `json:"powerEdit"`
@@ -37,7 +34,6 @@ type TypeModuleField struct {
 	SizeEdit    int64  `json:"sizeEdit"`
 }
 
-// TypeModuleTranslation represents translation information within a TypeModule.
 type TypeModuleTranslation struct {
 	EjaLanguage   string `json:"ejaLanguage"`
 	EjaModuleName string `json:"ejaModuleName,omitempty"`
@@ -45,7 +41,6 @@ type TypeModuleTranslation struct {
 	Translation   string `json:"translation"`
 }
 
-// TypeModuleModule represents module links withing modules in TypeModule.
 type TypeModuleLink struct {
 	SrcField  string `json:"srcField,omitempty"`
 	SrcModule string `json:"srcModule"`
@@ -53,8 +48,6 @@ type TypeModuleLink struct {
 	Power     int64  `json:"power,omitempty"`
 }
 
-// ModuleGetIdByName retrieves the module ID based on the given module name.
-// If an error occurs during the database operation or table name is not valid, it returns 0.
 func (session *TypeSession) ModuleGetIdByName(name string) int64 {
 	if err := session.TableNameIsValid(name); err != nil {
 		return 0
@@ -67,8 +60,6 @@ func (session *TypeSession) ModuleGetIdByName(name string) int64 {
 	return session.Number(val)
 }
 
-// ModuleGetNameById retrieves the module name based on the given module ID.
-// If an error occurs during the database operation or table name is not valid, it returns an empty string.
 func (session *TypeSession) ModuleGetNameById(id int64) string {
 	val, err := session.Value("SELECT name FROM ejaModules WHERE ejaId = ?", id)
 	if err != nil {

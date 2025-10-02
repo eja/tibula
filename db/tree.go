@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
@@ -6,14 +6,12 @@ import (
 	"fmt"
 )
 
-// TypeModuleTree represents a node in the module tree.
 type TypeModuleTree struct {
 	Id    int64
 	Name  string
 	Label string
 }
 
-// ModuleTree generates a tree structure of modules accessible to a user based on permissions and ownership.
 func (session *TypeSession) ModuleTree(ownerId int64, moduleId int64, modulePath []TypeModulePath) (result []TypeModuleTree) {
 	ejaPermissions := session.ModuleGetIdByName("ejaPermissions")
 	ejaUsers := session.ModuleGetIdByName("ejaUsers")

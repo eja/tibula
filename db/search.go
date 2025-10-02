@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2025 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
@@ -10,10 +10,8 @@ import (
 	"github.com/eja/tibula/log"
 )
 
-// TypeSearchColumn represents a mapping of column names to their properties and values.
 type TypeSearchColumn map[string]map[string]interface{}
 
-// SearchMatrix performs a search on a specified database module using a dynamic SQL query.
 func (session *TypeSession) SearchMatrix(ownerId int64, moduleId int64, query string, queryArgs []interface{}) (resultRows TypeRows, resultCols []string, resultLabels map[string]string, err error) {
 	var sqlResult TypeRows
 	var queryHead TypeSearchColumn
@@ -45,7 +43,6 @@ func (session *TypeSession) SearchMatrix(ownerId int64, moduleId int64, query st
 	return
 }
 
-// SearchQuery generates a SQL query for searching records in a specified table based on provided criteria.
 func (session *TypeSession) SearchQuery(ownerId int64, tableName string, values map[string]string) (string, []interface{}, error) {
 	var sql []string
 	var args []interface{}
@@ -121,7 +118,6 @@ func (session *TypeSession) SearchQuery(ownerId int64, tableName string, values 
 	return strings.Join(sql, ""), args, nil
 }
 
-// SearchCount calculates the number of records for a given search query and arguments.
 func (session *TypeSession) SearchCount(query string, args []interface{}) int64 {
 	reFrom := regexp.MustCompile(`(?i)\s+FROM\s+`)
 	reLimit := regexp.MustCompile(`(?i)\s+LIMIT\s+`)
@@ -149,7 +145,6 @@ func (session *TypeSession) SearchCount(query string, args []interface{}) int64 
 	}
 }
 
-// searchHeader retrieves column information for constructing search queries.
 func (session *TypeSession) searchHeader(query string, moduleId int64) (TypeSearchColumn, string, error) {
 	colValues := make(TypeSearchColumn)
 
@@ -182,7 +177,6 @@ func (session *TypeSession) searchHeader(query string, moduleId int64) (TypeSear
 	return colValues, query, nil
 }
 
-// searchRow filters and transforms a row based on the search column information.
 func (session *TypeSession) searchRow(ownerId int64, queryHead TypeSearchColumn, row TypeRow) TypeRow {
 	filteredRow := row
 	for colName := range queryHead {
@@ -219,7 +213,6 @@ func (session *TypeSession) searchRow(ownerId int64, queryHead TypeSearchColumn,
 	return filteredRow
 }
 
-// SearchQueryOrderAndLimit generates an ORDER BY, LIMIT, and OFFSET clause for search queries.
 func (session *TypeSession) SearchQueryOrderAndLimit(order string, limit int64, offset int64) string {
 	pattern := `^\s*(\w+\s+(ASC|DESC)\s*,\s*)*\w+\s+(ASC|DESC)\s*$`
 	regexpPattern := regexp.MustCompile(pattern)
@@ -230,7 +223,6 @@ func (session *TypeSession) SearchQueryOrderAndLimit(order string, limit int64, 
 	return fmt.Sprintf("ORDER BY %s LIMIT %d OFFSET %d", order, limit, offset)
 }
 
-// SearchQueryLinks generates a condition for searching based on related links.
 func (session *TypeSession) SearchQueryLinks(ownerId, srcModuleId, srcFieldId, dstModuleId int64) string {
 	result := ""
 	links := session.SearchLinks(ownerId, srcModuleId, srcFieldId, dstModuleId)
@@ -240,7 +232,6 @@ func (session *TypeSession) SearchQueryLinks(ownerId, srcModuleId, srcFieldId, d
 	return result
 }
 
-// AutoSearch checks if there are searching fields
 func (session *TypeSession) AutoSearch(moduleId int64) (check bool) {
 	hasSql, err := session.Value(`SELECT sqlCreated FROM ejaModules WHERE ejaId=?`, moduleId)
 	if err == nil && session.Number(hasSql) > 0 {

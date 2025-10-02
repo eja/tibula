@@ -1,10 +1,9 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
 import ()
 
-// IsSubModule check if a moduleId is a submodule
 func (session *TypeSession) IsSubModule(moduleId int64) bool {
 	value, err := session.Value(`SELECT srcFieldName FROM ejaModuleLinks WHERE srcModuleId=? AND srcFieldName != "" LIMIT 1`, moduleId)
 	if err == nil && value != "" {
@@ -13,7 +12,6 @@ func (session *TypeSession) IsSubModule(moduleId int64) bool {
 	return false
 }
 
-// SubModules retrieves a list of submodules associated with a specified module.
 func (session *TypeSession) SubModules(ownerId int64, moduleId int64) (result []TypeLink) {
 	ejaPermissions := session.ModuleGetIdByName("ejaPermissions")
 	ejaUsers := session.ModuleGetIdByName("ejaUsers")

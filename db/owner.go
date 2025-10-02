@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
@@ -6,8 +6,6 @@ import (
 	"fmt"
 )
 
-// Owners retrieves a list of user IDs who are owners of the specified module ID and have certain group associations.
-// The function recursively checks group memberships up to a certain depth.
 func (session *TypeSession) Owners(ownerId int64, moduleId int64) (result []int64) {
 	const maxDepth = 10
 	var groupOwners []int64
@@ -75,7 +73,6 @@ func (session *TypeSession) Owners(ownerId int64, moduleId int64) (result []int6
 	return
 }
 
-// OwnersCsv retrieves a comma-separated string of user IDs who are owners of the specified module ID and have certain group associations.
 func (session *TypeSession) OwnersCsv(ownerId int64, moduleId int64) string {
 	return session.NumbersToCsv(session.Owners(ownerId, moduleId))
 }

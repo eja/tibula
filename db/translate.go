@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
@@ -6,8 +6,6 @@ import (
 	"github.com/eja/tibula/log"
 )
 
-// Translate retrieves the translation for the specified word based on the current session's language and module context.
-// If a translation is not found, it returns a placeholder string indicating that the translation is missing.
 func (session *TypeSession) Translate(value string, user ...int64) string {
 	var userId int64
 	var result string

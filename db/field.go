@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2025 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package db
 
@@ -7,7 +7,6 @@ import (
 	"fmt"
 )
 
-// TypeField represents a field in a database with metadata.
 type TypeField struct {
 	Type        string
 	Name        string
@@ -22,7 +21,6 @@ type TypeField struct {
 	Options     []TypeSelect
 }
 
-// FieldNameList retrieves a list of field names based on the provided module ID and action type.
 func (session *TypeSession) FieldNameList(moduleId int64, actionType string) (fields []string) {
 	rows, err := session.Rows(fmt.Sprintf("SELECT name FROM ejaFields WHERE ejaModuleId=%d AND power%s>0 AND power%s!='' ORDER BY power%s ASC;", moduleId, actionType, actionType, actionType))
 	if err == nil {
@@ -33,7 +31,6 @@ func (session *TypeSession) FieldNameList(moduleId int64, actionType string) (fi
 	return
 }
 
-// Fields retrieves a list of TypeField objects based on the provided module ID, action type, and field values.
 func (session *TypeSession) Fields(ownerId int64, moduleId int64, actionType string, values map[string]string) ([]TypeField, error) {
 	var res []TypeField
 
@@ -91,7 +88,6 @@ func (session *TypeSession) Fields(ownerId int64, moduleId int64, actionType str
 	return res, nil
 }
 
-// FieldAdd adds a new field to the specified table with the given name and type.
 func (session *TypeSession) FieldAdd(tableName string, fieldName string, fieldType string) error {
 	if fieldType == "label" || fieldType == "sqlValue" {
 		return nil
@@ -122,7 +118,6 @@ func (session *TypeSession) FieldAdd(tableName string, fieldName string, fieldTy
 	return nil
 }
 
-// FieldExists checks whether a field with the given name already exists in the specified table.
 func (session *TypeSession) FieldExists(tableName string, fieldName string) (bool, error) {
 	switch session.Engine {
 	case "sqlite":
@@ -134,7 +129,6 @@ func (session *TypeSession) FieldExists(tableName string, fieldName string) (boo
 	}
 }
 
-// FieldNameIsValid checks the validity of a field name based on the current database engine.
 func (session *TypeSession) FieldNameIsValid(name string) error {
 	switch session.Engine {
 	case "sqlite":
@@ -146,7 +140,6 @@ func (session *TypeSession) FieldNameIsValid(name string) error {
 	}
 }
 
-// FieldType returns the corresponding SQL type for a given field type.
 func FieldType(name string) string {
 	switch name {
 	case "boolean", "integer":
@@ -164,7 +157,6 @@ func FieldType(name string) string {
 	}
 }
 
-// FieldTypeGet retrieves the field type for a specific field in a module based on module ID and field name.
 func (session *TypeSession) FieldTypeGet(moduleId int64, fieldName string) string {
 	value, _ := session.Value("SELECT type FROM ejaFields WHERE ejaModuleId=? AND name=?", moduleId, fieldName)
 	return value

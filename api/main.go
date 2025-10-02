@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2024 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
 
 package api
 
@@ -52,6 +52,7 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 	if eja.Session != "" {
 		if len(user) == 0 {
 			user = db.UserGetAllBySession(eja.Session)
+			eja.Session = db.SessionTokenUpdate(db.Number(user["ejaId"]), user["ejaSession"])
 		}
 		if len(user) > 0 {
 			eja.Owner = db.Number(user["ejaId"])
