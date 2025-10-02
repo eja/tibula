@@ -86,9 +86,10 @@
 			{{else if or (eq .Type "textArea") (eq .Type "htmlArea")}}
 				<div class="col-md-12 mt-3">
 					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label><span class="lead position-absolute end-0 me-3">
-					<a href="#" onclick="fieldEditor('{{.Name}}')" title="rich text"><i class="bi bi-text-left"></i></a> &nbsp;<a href="#" onclick="fieldUpload('{{.Name}}')" title="upload">
-					<i class="bi bi-cloud-arrow-up-fill"></i></a><a href="#" onclick="fieldDownload(this, '{{.Name}}')" title="download">
-					<i class="bi bi-cloud-arrow-down-fill"></i></a></span><textarea class="form-control" id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" rows="{{$Rows}}">{{$fieldValue}}</textarea>
+					<a href="#" onclick="fieldEditor('{{.Name}}')" title="rich text"><i class="bi bi-text-left"></i></a> &nbsp;
+					<a href="#" onclick="fieldUpload('{{.Name}}')" title="upload"><i class="bi bi-cloud-arrow-up-fill"></i></a>
+					<a href="#" onclick="fieldDownload(this, '{{.Name}}')" title="download"><i class="bi bi-cloud-arrow-down-fill"></i></a></span>
+					<textarea class="form-control" id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" rows="{{$Rows}}">{{$fieldValue}}</textarea>
 				</div>
 			{{else if eq .Type "password"}}
 				<div class="col-md-{{$Cols}} mt-3">
