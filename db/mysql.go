@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"regexp"
 
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/go-sql-driver/mysql"
 )
 
 func mysqlOpen(database string, username string, password string, host string, port int) (*sql.DB, error) {
@@ -105,15 +105,16 @@ func (session *TypeSession) mysqlTableExists(name string) (bool, error) {
 		return false, err
 	}
 
-	//we need this approach to be able to check also for temporary tables
-	session.mysqlRun("SET @dbName = DATABASE()")
-	session.mysqlRun("CALL sys.table_exists(@dbName,'" + name + "',@tableExists)")
-	exists, err := session.mysqlValue("SELECT @tableExists")
+	rows, err := session.Handler.Query(`SELECT 1 FROM ` + name + ` LIMIT 1`)
 	if err != nil {
+		if mysqlErr, ok := err.(*mysql.MySQLError); ok && mysqlErr.Number == 1146 {
+			return false, nil
+		}
 		return false, err
 	}
+	defer rows.Close()
 
-	return exists != "", nil
+	return true, nil
 }
 
 func (session *TypeSession) mysqlFieldExists(tableName, fieldName string) (bool, error) {
