@@ -30,6 +30,7 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 	if err = db.Open(sys.Options.DbType, sys.Options.DbName, sys.Options.DbUser, sys.Options.DbPass, sys.Options.DbHost, sys.Options.DbPort); err != nil {
 		return
 	}
+	defer db.Close()
 
 	//login and logout
 	if eja.Action == "login" {
@@ -426,6 +427,5 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 		db.SessionReset(eja.Owner)
 	}
 
-	db.Close()
 	return eja, nil
 }
