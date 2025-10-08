@@ -81,8 +81,32 @@ function fieldEditor(name) {
   }
 }
 
+function formInit() {
+  const f = document.getElementById('ejaForm');
+  const o = {};
+  
+  Array.from(f.elements).forEach(function(i) {
+    o[i.name] = i.value;
+  });
+  
+  f.oninput = function() {
+    window.onbeforeunload = function() {
+      return 'Unsaved changes';
+    };
+  };
+
+  f.onsubmit = function() {
+    window.onbeforeunload = null;
+  };
+  
+  window.onbeforeunload = function() {
+    return null;
+  };
+}
+
 
 var editors = [];
+
 
 document.querySelectorAll('.toast').forEach(toast => {
   var toastInstance = new bootstrap.Toast(toast);
@@ -124,4 +148,6 @@ window.onload = function() {
   }
   setTimeout(()=>{ alert("Logging out for inactivity in a minute"); }, 950*1000);
   setTimeout(()=>{ window.location.href = window.location.origin + window.location.pathname; }, 1000*1000);
+  
+  formInit();
 }
