@@ -12,7 +12,7 @@ import (
 )
 
 func (session *TypeSession) SessionTokenUpdate(userId int64, sessionHash string) string {
-	return session.Sha256(fmt.Sprintf("%s.%d.%d", sessionHash, userId, time.Now().Unix()/1000))
+	return session.Sha256(fmt.Sprintf("%s.%d.%d", sessionHash, userId, time.Now().Unix()/SESSION_EXPIRE))
 }
 
 func (session *TypeSession) SessionInit(userId int64) string {

@@ -9,7 +9,10 @@ import (
 	"github.com/eja/tibula/log"
 )
 
-const tag = "[db]"
+const (
+	tag            = "[db]"
+	SESSION_EXPIRE = 10000 //>2 <6 hours
+)
 
 type TypeSession struct {
 	Handler      *sql.DB

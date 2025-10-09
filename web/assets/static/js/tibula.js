@@ -146,8 +146,8 @@ window.onload = function() {
   })
   google.accounts.id.renderButton(document.getElementById("google"), {type: "icon"})
   }
-  setTimeout(()=>{ alert("Logging out for inactivity in a minute"); }, 950*1000);
-  setTimeout(()=>{ window.location.href = window.location.origin + window.location.pathname; }, 1000*1000);
+  setTimeout(()=>{ alert("Logging out for inactivity in 5 minutes"); }, 9700*1000);
+  setTimeout(()=>{ window.location.href = window.location.origin + window.location.pathname; }, 10000*1000);
   
   formInit();
 }

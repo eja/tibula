@@ -17,8 +17,14 @@ func (session *TypeSession) UserGetAllById(userId int64) TypeRow {
 	return result
 }
 
-func (session *TypeSession) UserGetAllBySession(sessionHash string) (result TypeRow) {
-	timeNow := time.Now().Unix() / 1000
+func (session *TypeSession) UserGetAllBySession(sessionHash string) TypeRow {
+	if sessionHash == "" {
+		return nil
+	}
+	if row, err := session.Row(`SELECT * FROM ejaUsers WHERE ejaSession = ? AND ejaSession !="" LIMIT 1`, sessionHash); err == nil && len(row) > 0 {
+		return row
+	}
+	timeNow := time.Now().Unix() / SESSION_EXPIRE
 	timePre := timeNow - 1
 	rows, err := session.Rows("SELECT * FROM ejaUsers")
 	if err == nil {
@@ -30,7 +36,7 @@ func (session *TypeSession) UserGetAllBySession(sessionHash string) (result Type
 			}
 		}
 	}
-	return
+	return nil
 }
 
 func (session *TypeSession) UserGetAllByUsername(username string) TypeRow {
