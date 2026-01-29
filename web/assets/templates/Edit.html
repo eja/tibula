@@ -123,6 +123,8 @@
 				<input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{$fieldValue}}" type="hidden">
 			{{else if eq .Type "sqlHidden"}}
 				<input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{.Value}}" type="hidden">
+			{{else if eq .Type "html"}}
+				{{.Value | safe}}
 			{{else}}
 				<div class="col-md-{{$Cols}} mt-3">
 					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label><input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{$fieldValue}}" type="text" class="form-control">

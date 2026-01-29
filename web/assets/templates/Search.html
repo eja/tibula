@@ -103,6 +103,8 @@
 				</div>
 			{{else if eq .Type "hidden"}}
 				<input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{$fieldValue}}" type="hidden">
+			{{else if eq .Type "html"}}
+				{{.Value | safe}}
 			{{else if eq .Type "sqlHidden"}}
 				<input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{.Value}}" type="hidden">
 			{{else}}

@@ -148,6 +148,7 @@ func Core(w http.ResponseWriter, r *http.Request) {
 		var tpl *template.Template
 		templateFunctions := template.FuncMap{
 			"csvContains": csvContains,
+			"safe":        func(s string) template.HTML { return template.HTML(s) },
 		}
 		if sys.Options.WebPath != "" {
 			tpl, err = template.New("").Funcs(templateFunctions).ParseGlob(filepath.Join(sys.Options.WebPath, "templates", "*.html"))
