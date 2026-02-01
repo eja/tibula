@@ -78,7 +78,7 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 	if eja.Owner == 0 {
 		var error = "ejaNotAuthorized"
 		if len(eja.Values) > 0 {
-			alert(&eja.Alert, db.Translate(error))
+			alert(&eja.Alert, "%s", db.Translate(error))
 		}
 		return eja, errors.New(error)
 	} else {
@@ -93,7 +93,7 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 		//check if the operation is permitted
 		eja.Commands, _ = db.Commands(eja.Owner, eja.ModuleId, "")
 		if eja.Action != "" && eja.Action != "login" && !db.CommandExists(eja.Commands, eja.Action) {
-			alert(&eja.Alert, db.Translate("ejaNotPermitted", eja.Owner))
+			alert(&eja.Alert, "%s", db.Translate("ejaNotPermitted", eja.Owner))
 		} else {
 			//session
 			if eja.SearchLinkClean {
@@ -201,7 +201,7 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 				copyId := eja.Id
 				eja.Id, _ = db.New(eja.Owner, eja.ModuleId)
 				if eja.Id < 1 {
-					alert(&eja.Alert, db.Translate("ejaActionNewError", eja.Owner))
+					alert(&eja.Alert, "%s", db.Translate("ejaActionNewError", eja.Owner))
 				} else {
 					db.LinkCopy(eja.Owner, eja.Id, eja.ModuleId, copyId)
 				}
@@ -211,18 +211,18 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 				if eja.ModuleName == "ejaModules" {
 					if db.Number(eja.Values["sqlCreated"]) > 0 {
 						if err := db.TableAdd(eja.Values["name"]); err != nil {
-							alert(&eja.Alert, db.Translate("ejaSqlModuleNotCreated", eja.Owner))
+							alert(&eja.Alert, "%s", db.Translate("ejaSqlModuleNotCreated", eja.Owner))
 						} else {
-							info(&eja.Info, db.Translate("ejaSqlModuleCreated", eja.Owner))
+							info(&eja.Info, "%s", db.Translate("ejaSqlModuleCreated", eja.Owner))
 						}
 					}
 					if eja.Action == "save" && db.PermissionCount(eja.Id) == 0 {
 						if db.Number(eja.Values["sqlCreated"]) > 0 {
 							db.PermissionAddDefault(eja.Owner, eja.Id)
-							info(&eja.Info, db.Translate("ejaModulePermissionsAddDefault", eja.Owner))
+							info(&eja.Info, "%s", db.Translate("ejaModulePermissionsAddDefault", eja.Owner))
 						} else {
 							db.PermissionAdd(eja.Owner, eja.Id, "logout")
-							info(&eja.Info, db.Translate("ejaModulePermissionAdd", eja.Owner))
+							info(&eja.Info, "%s", db.Translate("ejaModulePermissionAdd", eja.Owner))
 						}
 						db.UserPermissionCopy(eja.Owner, eja.Id)
 					}
@@ -230,9 +230,9 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 				if eja.ModuleName == "ejaFields" {
 					moduleName := db.ModuleGetNameById(db.Number(eja.Values["ejaModuleId"]))
 					if err := db.FieldAdd(moduleName, eja.Values["name"], eja.Values["type"]); err == nil {
-						info(&eja.Info, db.Translate("ejaSqlFieldCreated", eja.Owner))
+						info(&eja.Info, "%s", db.Translate("ejaSqlFieldCreated", eja.Owner))
 					} else {
-						alert(&eja.Alert, db.Translate("ejaSqlFieldNotCreated", eja.Owner))
+						alert(&eja.Alert, "%s", db.Translate("ejaSqlFieldNotCreated", eja.Owner))
 					}
 				}
 				if eja.Id < 1 {
@@ -242,7 +242,7 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 					}
 				}
 				if eja.Id < 1 {
-					alert(&eja.Alert, db.Translate("ejaErrorEditId", eja.Owner))
+					alert(&eja.Alert, "%s", db.Translate("ejaErrorEditId", eja.Owner))
 				} else {
 					for key, val := range eja.Values {
 						var value interface{}
@@ -282,9 +282,9 @@ func Run(eja TypeApi, sessionSave bool) (result TypeApi, err error) {
 					err := db.Del(eja.Owner, eja.ModuleId, val)
 					if eja.ModuleName == "ejaModules" {
 						if err == nil {
-							info(&eja.Info, db.Translate("ejaSqlModuleDeleteTrue", eja.Owner))
+							info(&eja.Info, "%s", db.Translate("ejaSqlModuleDeleteTrue", eja.Owner))
 						} else {
-							alert(&eja.Alert, db.Translate("ejaSqlModuleDeleteFalse", eja.Owner))
+							alert(&eja.Alert, "%s", db.Translate("ejaSqlModuleDeleteFalse", eja.Owner))
 						}
 					}
 				}

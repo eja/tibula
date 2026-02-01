@@ -1,0 +1,69 @@
+name: Build
+
+on:
+  release:
+    types: [published]
+
+env:
+  APP_NAME: "tibula"
+
+jobs:
+  build:
+    name: Build ${{ matrix.goos }}/${{ matrix.goarch }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+          - goos: linux
+            goarch: arm64
+          - goos: linux
+            goarch: arm
+            goarm: 7
+          - goos: darwin
+            goarch: amd64
+          - goos: darwin
+            goarch: arm64
+          - goos: windows
+            goarch: amd64
+          - goos: windows
+            goarch: arm64
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-go@v4
+        with:
+          go-version: '1.24'
+
+      - name: Build
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          GOARM: ${{ matrix.goarm }}
+          CGO_ENABLED: 0
+        run: |
+          mkdir -p dist
+          EXT=""
+          if [ "$GOOS" = "windows" ]; then EXT=".exe"; fi
+          go build -ldflags="-s -w" -o dist/${{ env.APP_NAME }}${EXT} ./cmd/${{ env.APP_NAME }}
+
+      - name: Archive
+        run: |
+          EXT=""
+          if [ "${{ matrix.goos }}" = "windows" ]; then EXT=".exe"; fi
+          ARCH_NAME="${{ matrix.goarch }}"
+          if [ "$ARCH_NAME" = "arm" ]; then ARCH_NAME="arm32"; fi
+          ASSET_NAME="${{ env.APP_NAME }}-${{ matrix.goos }}-${ARCH_NAME}.tar.gz"
+          echo "ASSET_NAME=$ASSET_NAME" >> $GITHUB_ENV
+          tar -C dist -czvf $ASSET_NAME ${{ env.APP_NAME }}${EXT}
+
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ env.ASSET_NAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

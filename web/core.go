@@ -16,7 +16,7 @@ import (
 )
 
 func Core(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Server", sys.Name+"/"+sys.Version)
+	w.Header().Set("Server", sys.Label+"/"+sys.Version)
 	templateFile := "Login.html"
 	var err error
 

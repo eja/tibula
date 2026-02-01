@@ -1,5 +1,4 @@
 // Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
-
 package db
 
 import (
@@ -8,11 +7,11 @@ import (
 	"fmt"
 	"regexp"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 )
 
 func sqliteOpen(path string) (*sql.DB, error) {
-	return sql.Open("sqlite3", path)
+	return sql.Open("sqlite", path)
 }
 
 func (session *TypeSession) sqliteRun(query string, args ...interface{}) (TypeRun, error) {
@@ -36,7 +35,6 @@ func (session *TypeSession) sqliteValue(query string, args ...interface{}) (resu
 	} else {
 		result = ""
 	}
-
 	return
 }
 
@@ -76,12 +74,10 @@ func (session *TypeSession) sqliteRows(query string, args ...interface{}) (TypeR
 		if err != nil {
 			return nil, err
 		}
-
 		row := make(TypeRow)
 		for i, col := range values {
 			row[columns[i]] = string(col)
 		}
-
 		result = append(result, row)
 	}
 
@@ -94,7 +90,6 @@ func (session *TypeSession) sqliteCols(query string, args ...interface{}) ([]str
 		return nil, err
 	}
 	defer rows.Close()
-
 	return rows.Columns()
 }
 
@@ -114,7 +109,6 @@ func (session *TypeSession) sqliteFieldExists(tableName, fieldName string) (bool
 	if err := sqliteTableNameIsValid(tableName); err != nil {
 		return false, err
 	}
-
 	if err := sqliteFieldNameIsValid(fieldName); err != nil {
 		return false, err
 	}
