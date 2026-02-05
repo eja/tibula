@@ -2,13 +2,13 @@
 
 package api
 
-import (
-	"github.com/eja/tibula/db"
+import "github.com/eja/tibula/db"
+
+type (
+	DbLink    = db.TypeLink
+	DbGroup   = db.TypeGroup
+	DbModule  = db.TypeModule
+	DbSession = db.TypeSession
 )
 
-type TypeDbLink = db.TypeLink
-type TypeDbGroup = db.TypeGroup
-type TypeDbModule = db.TypeModule
-type TypeDbSession = db.TypeSession
-
-var DbSession = db.Session
+var DbProvider = db.Session

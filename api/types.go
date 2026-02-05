@@ -2,11 +2,9 @@
 
 package api
 
-import (
-	"github.com/eja/tibula/db"
-)
+import "github.com/eja/tibula/db"
 
-type TypeApi struct {
+type Api struct {
 	Action              string              `json:"Action,omitempty"`
 	ActionType          string              `json:"ActionType,omitempty"`
 	Alert               []string            `json:"Alert,omitempty"`
@@ -51,8 +49,8 @@ type TypeApi struct {
 }
 
 type SubModulePathItem struct {
-	LinkingModuleId int64
-	ModuleId        int64
-	FieldId         int64
-	FieldName       string
+	LinkingModuleId int64  `json:"LinkingModuleId"`
+	ModuleId        int64  `json:"ModuleId"`
+	FieldId         int64  `json:"FieldId"`
+	FieldName       string `json:"FieldName"`
 }

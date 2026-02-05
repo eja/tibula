@@ -6,23 +6,23 @@ import (
 	"encoding/json"
 )
 
-type TypePlugins map[string]func(TypeApi, TypeDbSession) TypeApi
+type TypePlugins map[string]func(Api, DbSession) Api
 
 var Plugins = TypePlugins{
-	"ejaProfile": func(eja TypeApi, db TypeDbSession) TypeApi {
+	"ejaProfile": func(eja Api, db DbSession) Api {
 		eja.Alert = nil
 		if eja.Action == "run" {
-			if eja.Values["passwordOld"] == "" || eja.Values["passwordNew"] == "" || eja.Values["passwordRepeat"] == "" {
+			v := eja.Values
+			if v["passwordOld"] == "" || v["passwordNew"] == "" || v["passwordRepeat"] == "" {
 				alert(&eja.Alert, "%s", db.Translate("passwordEmptyError", eja.Owner))
-			} else if eja.Values["passwordNew"] != eja.Values["passwordRepeat"] {
+			} else if v["passwordNew"] != v["passwordRepeat"] {
 				alert(&eja.Alert, "%s", db.Translate("passwordMatchError", eja.Owner))
 			} else {
 				user := db.UserGetAllBySession(eja.Session)
-				pass := db.Password(eja.Values["passwordOld"])
-				if pass != user["password"] {
+				if db.Password(v["passwordOld"]) != user["password"] {
 					alert(&eja.Alert, "%s", db.Translate("passwordOldError", eja.Owner))
 				} else {
-					_, err := db.Run("UPDATE ejaUsers SET password=? WHERE ejaId=?", db.Password(eja.Values["passwordNew"]), eja.Owner)
+					_, err := db.Run("UPDATE ejaUsers SET password=? WHERE ejaId=?", db.Password(v["passwordNew"]), eja.Owner)
 					if err == nil {
 						info(&eja.Info, "%s", db.Translate("passwordUpdated", eja.Owner))
 					}
@@ -31,85 +31,69 @@ var Plugins = TypePlugins{
 		}
 		return eja
 	},
-	"ejaModuleImport": func(eja TypeApi, db TypeDbSession) TypeApi {
+	"ejaModuleImport": func(eja Api, db DbSession) Api {
 		if eja.Action == "run" {
-			moduleName := eja.Values["moduleName"]
-			moduleData := eja.Values["import"]
-			dataImport := db.Number(eja.Values["dataImport"])
-			if moduleData != "" {
-				var module TypeDbModule
-				if err := json.Unmarshal([]byte(moduleData), &module); err != nil {
-					alert(&eja.Alert, "%s", db.Translate("ejaImportJsonError", eja.Owner))
+			var module DbModule
+			if err := json.Unmarshal([]byte(eja.Values["import"]), &module); err != nil {
+				alert(&eja.Alert, "%s", db.Translate("ejaImportJsonError", eja.Owner))
+			} else {
+				var err error
+				dImp := db.Number(eja.Values["dataImport"])
+				if dImp == 2 {
+					err = db.ModuleAppend(module, eja.Values["moduleName"])
 				} else {
-					var err error
-					if dataImport == 2 {
-						err = db.ModuleAppend(module, moduleName)
-					} else {
-						if dataImport < 1 {
-							module.Data = nil
-						}
-						err = db.ModuleImport(module, moduleName)
+					if dImp < 1 {
+						module.Data = nil
 					}
-					if err != nil {
-						alert(&eja.Alert, "%s", db.Translate("ejaImportError", eja.Owner))
-					} else {
-						eja.Values["import"] = ""
-						info(&eja.Info, "%s", db.Translate("ejaImportOk", eja.Owner))
-					}
+					err = db.ModuleImport(module, eja.Values["moduleName"])
+				}
+				if err != nil {
+					alert(&eja.Alert, "%s", db.Translate("ejaImportError", eja.Owner))
+				} else {
+					eja.Values["import"] = ""
+					info(&eja.Info, "%s", db.Translate("ejaImportOk", eja.Owner))
 				}
 			}
 		}
 		return eja
 	},
-	"ejaModuleExport": func(eja TypeApi, db TypeDbSession) TypeApi {
+	"ejaModuleExport": func(eja Api, db DbSession) Api {
 		if eja.Action == "run" {
-			moduleId := db.Number(eja.Values["ejaModuleId"])
-			dataExport := db.Number(eja.Values["dataExport"]) > 0
-			if moduleId > 0 {
-				if data, err := db.ModuleExport(moduleId, dataExport); err != nil {
-					alert(&eja.Alert, "%s", db.Translate("ejaExportError", eja.Owner))
-				} else {
-					jsonData, _ := json.MarshalIndent(data, "", "  ")
-					eja.Values["export"] = string(jsonData)
-					info(&eja.Info, "%s", db.Translate("ejaExportOk", eja.Owner))
-				}
+			mId := db.Number(eja.Values["ejaModuleId"])
+			dExp := db.Number(eja.Values["dataExport"]) > 0
+			if data, err := db.ModuleExport(mId, dExp); err != nil {
+				alert(&eja.Alert, "%s", db.Translate("ejaExportError", eja.Owner))
+			} else {
+				jsonData, _ := json.MarshalIndent(data, "", "  ")
+				eja.Values["export"] = string(jsonData)
+				info(&eja.Info, "%s", db.Translate("ejaExportOk", eja.Owner))
 			}
 		}
 		return eja
 	},
-	"ejaGroupImport": func(eja TypeApi, db TypeDbSession) TypeApi {
+	"ejaGroupImport": func(eja Api, db DbSession) Api {
 		if eja.Action == "run" {
-			groupName := eja.Values["groupName"]
-			groupData := eja.Values["import"]
-			if groupData != "" {
-				var group TypeDbGroup
-				if err := json.Unmarshal([]byte(groupData), &group); err != nil {
-					alert(&eja.Alert, "%s", db.Translate("ejaImportJsonError", eja.Owner))
-				} else {
-					var err error
-					err = db.GroupImport(group, groupName)
-					if err != nil {
-						alert(&eja.Alert, "%s", db.Translate("ejaImportError", eja.Owner))
-					} else {
-						eja.Values["import"] = ""
-						info(&eja.Info, "%s", db.Translate("ejaImportOk", eja.Owner))
-					}
-				}
+			var group DbGroup
+			if err := json.Unmarshal([]byte(eja.Values["import"]), &group); err != nil {
+				alert(&eja.Alert, "%s", db.Translate("ejaImportJsonError", eja.Owner))
+			} else if err := db.GroupImport(group, eja.Values["groupName"]); err != nil {
+				alert(&eja.Alert, "%s", db.Translate("ejaImportError", eja.Owner))
+			} else {
+				eja.Values["import"] = ""
+				info(&eja.Info, "%s", db.Translate("ejaImportOk", eja.Owner))
 			}
 		}
 		return eja
 	},
-	"ejaGroupExport": func(eja TypeApi, db TypeDbSession) TypeApi {
+	"ejaGroupExport": func(eja Api, db DbSession) Api {
 		if eja.Action == "run" {
-			groupId := db.Number(eja.Values["ejaGroupId"])
-			if groupId > 0 {
-				if data, err := db.GroupExport(groupId); err != nil {
-					alert(&eja.Alert, "%s", db.Translate("ejaExportError", eja.Owner))
-				} else {
-					jsonData, _ := json.MarshalIndent(data, "", "  ")
-					eja.Values["export"] = string(jsonData)
-					info(&eja.Info, "%s", db.Translate("ejaExportOk", eja.Owner))
-				}
+			gId := db.Number(eja.Values["ejaGroupId"])
+			if data, err := db.GroupExport(gId); err != nil {
+				alert(&eja.Alert, "%s", db.Translate("ejaExportError", eja.Owner))
+			} else {
+				jsonData, _ := json.MarshalIndent(data, "", "  ")
+				eja.Values["export"] = string(jsonData)
+				info(&eja.Info, "%s", db.Translate("ejaExportOk", eja.Owner))
 			}
 		}
 		return eja

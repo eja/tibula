@@ -6,10 +6,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/eja/tibula/log"
 	"github.com/eja/tibula/sys"
 )
+
+var httpClient = &http.Client{Timeout: 10 * time.Second}
 
 func info(array *[]string, format string, args ...interface{}) {
 	row := fmt.Sprintf(format, args...)
@@ -27,18 +30,20 @@ func alert(array *[]string, format string, args ...interface{}) {
 	}
 }
 
-func googleSsoEmail(token string) (email string) {
-	resp, err := http.Get("https://oauth2.googleapis.com/tokeninfo?id_token=" + token)
+func googleSsoEmail(token string) string {
+	resp, err := httpClient.Get("https://oauth2.googleapis.com/tokeninfo?id_token=" + token)
 	if err != nil {
-		return
+		return ""
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusOK {
-		var result map[string]interface{}
+		var result struct {
+			Email string `json:"email"`
+		}
 		if err := json.NewDecoder(resp.Body).Decode(&result); err == nil {
-			email, _ = result["email"].(string)
+			return result.Email
 		}
 	}
-	return
+	return ""
 }
