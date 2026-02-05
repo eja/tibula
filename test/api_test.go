@@ -1359,9 +1359,7 @@ func TestEdgeCases(t *testing.T) {
 }
 
 // TestConcurrentOperations tests concurrent API calls
-// Note: SQLite doesn't handle concurrent writes at the moment, so these tests are skipped
 func TestConcurrentOperations(t *testing.T) {
-	t.Skip("Skipping concurrent operations tests - SQLite doesn't support concurrent writes")
 
 	_, cleanup := setupTestDB(t)
 	defer cleanup()
