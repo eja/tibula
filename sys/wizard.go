@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"golang.org/x/term"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"syscall"
@@ -28,9 +27,8 @@ func WizardPassword(message string) string {
 }
 
 func WizardSetup() error {
-	var cwd = filepath.Dir(os.Args[0])
+	var tibulaDb = "tibula.db"
 	var tibulaJson = ConfigFileName()
-	var tibulaDb = filepath.Join(cwd, "tibula.db")
 
 	if _, err := os.Stat(tibulaJson); err == nil {
 		return errors.New("A configuration file already exists, remove it and try again.")

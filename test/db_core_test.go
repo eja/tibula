@@ -14,10 +14,10 @@ import (
 
 func TestDbOperations(t *testing.T) {
 	session := db.Session()
-	
+
 	dbPath := "./test_concurrent.db"
 	os.Remove(dbPath)
-	
+
 	defer func() {
 		session.Close()
 		os.Remove(dbPath)
