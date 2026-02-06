@@ -14,17 +14,17 @@ var Plugins = TypePlugins{
 		if eja.Action == "run" {
 			v := eja.Values
 			if v["passwordOld"] == "" || v["passwordNew"] == "" || v["passwordRepeat"] == "" {
-				alert(&eja.Alert, "%s", db.Translate("passwordEmptyError", eja.Owner))
+				eja.alert(db.Translate("passwordEmptyError", eja.Owner))
 			} else if v["passwordNew"] != v["passwordRepeat"] {
-				alert(&eja.Alert, "%s", db.Translate("passwordMatchError", eja.Owner))
+				eja.alert(db.Translate("passwordMatchError", eja.Owner))
 			} else {
 				user := db.UserGetAllBySession(eja.Session)
 				if db.Password(v["passwordOld"]) != user["password"] {
-					alert(&eja.Alert, "%s", db.Translate("passwordOldError", eja.Owner))
+					eja.alert(db.Translate("passwordOldError", eja.Owner))
 				} else {
 					_, err := db.Run("UPDATE ejaUsers SET password=? WHERE ejaId=?", db.Password(v["passwordNew"]), eja.Owner)
 					if err == nil {
-						info(&eja.Info, "%s", db.Translate("passwordUpdated", eja.Owner))
+						eja.info(db.Translate("passwordUpdated", eja.Owner))
 					}
 				}
 			}
@@ -35,7 +35,7 @@ var Plugins = TypePlugins{
 		if eja.Action == "run" {
 			var module DbModule
 			if err := json.Unmarshal([]byte(eja.Values["import"]), &module); err != nil {
-				alert(&eja.Alert, "%s", db.Translate("ejaImportJsonError", eja.Owner))
+				eja.alert(db.Translate("ejaImportJsonError", eja.Owner))
 			} else {
 				var err error
 				dImp := db.Number(eja.Values["dataImport"])
@@ -48,10 +48,10 @@ var Plugins = TypePlugins{
 					err = db.ModuleImport(module, eja.Values["moduleName"])
 				}
 				if err != nil {
-					alert(&eja.Alert, "%s", db.Translate("ejaImportError", eja.Owner))
+					eja.alert(db.Translate("ejaImportError", eja.Owner))
 				} else {
 					eja.Values["import"] = ""
-					info(&eja.Info, "%s", db.Translate("ejaImportOk", eja.Owner))
+					eja.info(db.Translate("ejaImportOk", eja.Owner))
 				}
 			}
 		}
@@ -62,11 +62,11 @@ var Plugins = TypePlugins{
 			mId := db.Number(eja.Values["ejaModuleId"])
 			dExp := db.Number(eja.Values["dataExport"]) > 0
 			if data, err := db.ModuleExport(mId, dExp); err != nil {
-				alert(&eja.Alert, "%s", db.Translate("ejaExportError", eja.Owner))
+				eja.alert(db.Translate("ejaExportError", eja.Owner))
 			} else {
 				jsonData, _ := json.MarshalIndent(data, "", "  ")
 				eja.Values["export"] = string(jsonData)
-				info(&eja.Info, "%s", db.Translate("ejaExportOk", eja.Owner))
+				eja.info(db.Translate("ejaExportOk", eja.Owner))
 			}
 		}
 		return eja
@@ -75,12 +75,12 @@ var Plugins = TypePlugins{
 		if eja.Action == "run" {
 			var group DbGroup
 			if err := json.Unmarshal([]byte(eja.Values["import"]), &group); err != nil {
-				alert(&eja.Alert, "%s", db.Translate("ejaImportJsonError", eja.Owner))
+				eja.alert(db.Translate("ejaImportJsonError", eja.Owner))
 			} else if err := db.GroupImport(group, eja.Values["groupName"]); err != nil {
-				alert(&eja.Alert, "%s", db.Translate("ejaImportError", eja.Owner))
+				eja.alert(db.Translate("ejaImportError", eja.Owner))
 			} else {
 				eja.Values["import"] = ""
-				info(&eja.Info, "%s", db.Translate("ejaImportOk", eja.Owner))
+				eja.info(db.Translate("ejaImportOk", eja.Owner))
 			}
 		}
 		return eja
@@ -89,11 +89,11 @@ var Plugins = TypePlugins{
 		if eja.Action == "run" {
 			gId := db.Number(eja.Values["ejaGroupId"])
 			if data, err := db.GroupExport(gId); err != nil {
-				alert(&eja.Alert, "%s", db.Translate("ejaExportError", eja.Owner))
+				eja.alert(db.Translate("ejaExportError", eja.Owner))
 			} else {
 				jsonData, _ := json.MarshalIndent(data, "", "  ")
 				eja.Values["export"] = string(jsonData)
-				info(&eja.Info, "%s", db.Translate("ejaExportOk", eja.Owner))
+				eja.info(db.Translate("ejaExportOk", eja.Owner))
 			}
 		}
 		return eja

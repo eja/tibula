@@ -4,7 +4,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -14,19 +13,17 @@ import (
 
 var httpClient = &http.Client{Timeout: 10 * time.Second}
 
-func info(array *[]string, format string, args ...interface{}) {
-	row := fmt.Sprintf(format, args...)
-	*array = append(*array, row)
+func (a *Api) info(value string) {
+	a.Info = append(a.Info, value)
 	if sys.Options.LogLevel > 3 {
-		log.Trace("[api] [info]", row)
+		log.Trace(tag, "[info]", value)
 	}
 }
 
-func alert(array *[]string, format string, args ...interface{}) {
-	row := fmt.Sprintf(format, args...)
-	*array = append(*array, row)
+func (a *Api) alert(value string) {
+	a.Alert = append(a.Alert, value)
 	if sys.Options.LogLevel > 3 {
-		log.Trace("[api] [alert]", row)
+		log.Trace(tag, "[alert]", value)
 	}
 }
 
