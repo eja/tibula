@@ -1,4 +1,4 @@
-// Copyright (C) 2007-2025 by Ubaldo Porcheddu <ubaldo@eja.it>
+// Copyright (C) 2007-2026 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
 function tableRowCheck(obj) {
@@ -79,6 +79,36 @@ function fieldEditor(name) {
       ]
     })
   }
+}
+
+function fieldCalendar(name) {
+  const iframeHtml = `
+    <iframe 
+      src="/static/calendar.html?id=${name}"
+      class="w-100 h-100 border-0"
+      style="min-height:100vh">
+    </iframe>
+  `;
+  
+  const closeBtn = `
+    <button 
+      class="btn-close position-fixed top-0 end-0 m-3"
+      onclick="this.closest('.modal').remove()">
+    </button>
+  `;
+  
+  const modalHtml = `
+    <div class="modal fade show d-block">
+      <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-white">
+          ${iframeHtml}
+          ${closeBtn}
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
 
 function formInit() {

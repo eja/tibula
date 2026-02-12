@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+		<style>
+			a { text-decoration: none; }
+		</style>
+</head>
+<body>
+
+<div id="calendar-container" class="container mt-3"></div>
+
+<div id="eventModal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title">Add Event</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeModalBtn"></button>
+            </div>
+            <div class="modal-body">
+                <form id="eventForm">
+                    <div class="mb-3">
+                        <label for="eventTitle" class="form-label">Event Title</label>
+                        <input type="text" class="form-control" id="eventTitle" placeholder="Enter title" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="eventStart" class="form-label">Start Date & Time</label>
+                        <input type="datetime-local" class="form-control" id="eventStart" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="eventEnd" class="form-label">End Date & Time</label>
+                        <input type="datetime-local" class="form-control" id="eventEnd" required>
+                        <div class="form-text">Defines the event duration.</div>
+                    </div>
+
+                    <div class="mb-3" id="recurrenceGroup">
+                        <label for="recurrence" class="form-label">Repeat for (Days)</label>
+                        <input type="number" class="form-control" id="recurrence" value="1" min="1">
+                        <div class="form-text">Set to 1 for a single event. Set >1 to repeat daily.</div>
+                    </div>
+
+                    <input type="hidden" id="eventId">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger w-100" id="deleteBtn" style="display:none;">Delete Event</button>
+                <button type="submit" form="eventForm" class="btn btn-primary w-100" id="saveBtn">Save Event</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/fullcalendar.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const calendarEl = document.getElementById('calendar-container');
+        const modal = document.getElementById('eventModal');
+        const form = document.getElementById('eventForm');
+        const deleteBtn = document.getElementById('deleteBtn');
+        const recurrenceGroup = document.getElementById('recurrenceGroup');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        let currentEvent = null; 
+        let backdrop = null;
+        let parentInput = null;
+        let initialEvents = [];
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const inputId = urlParams.get('id');
+
+        if (inputId && window.parent !== window) {
+            try {
+                parentInput = window.parent.document.getElementById(inputId);
+                
+                if (parentInput && parentInput.value) {
+                    try {
+                        const parsed = JSON.parse(parentInput.value);
+                        if (Array.isArray(parsed)) {
+                            initialEvents = parsed;
+                        }
+                    } catch (e) {
+                        console.warn("Could not parse parent input value:", e);
+                    }
+                }
+            } catch (err) {
+                console.warn("Cannot access parent frame. Ensure Same-Origin policy allows it.", err);
+                parentInput = null;
+            }
+        }
+
+        function syncToParent() {
+            if (!parentInput) return;
+
+            const events = calendar.getEvents().map(event => ({
+                id: event.id,
+                title: event.title,
+                start: event.start.toISOString(),
+                end: event.end.toISOString(),
+                allDay: event.allDay
+            }));
+
+            parentInput.value = JSON.stringify(events, null ,2);
+        }
+
+        function openModal(start = null, end = null, event = null) {
+            currentEvent = event;
+            
+            if (event) {
+                document.getElementById('modal-title').innerText = "Edit Event";
+                document.getElementById('eventTitle').value = event.title;
+                document.getElementById('eventStart').value = formatDateForInput(event.start);
+                document.getElementById('eventEnd').value = formatDateForInput(event.end);
+                document.getElementById('eventId').value = event.id;
+                recurrenceGroup.style.display = 'none';
+                deleteBtn.style.display = 'block';
+            } else {
+                document.getElementById('modal-title').innerText = "Add Event";
+                form.reset();
+                document.getElementById('eventId').value = '';
+                recurrenceGroup.style.display = 'block';
+                if (start) document.getElementById('eventStart').value = formatDateForInput(start);
+                if (end) document.getElementById('eventEnd').value = formatDateForInput(end);
+                deleteBtn.style.display = 'none';
+            }
+            
+            modal.classList.add('show');
+            modal.style.display = 'block';
+            backdrop = document.createElement('div');
+            backdrop.className = 'modal-backdrop fade show';
+            document.body.appendChild(backdrop);
+            document.body.classList.add('modal-open');
+        }
+
+        function closeModal() {
+            modal.classList.remove('show');
+            modal.style.display = 'none';
+            if (backdrop) {
+                backdrop.remove();
+                backdrop = null;
+            }
+            document.body.classList.remove('modal-open');
+        }
+
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next addEventButton today',
+                center: 'title',
+                right: 'timeGridDay,timeGridWeek,dayGridMonth,multiMonthYear,listYear'
+            },
+            views: {
+                listYear: { buttonText: 'list' },
+            },
+            customButtons: {
+                addEventButton: {
+                    text: '+',
+                    click: () => openModal()
+                }
+            },
+            editable: true,
+            selectable: true,
+            selectMirror: true,
+            dayMaxEvents: true,
+            
+            events: initialEvents,
+
+            select: function(arg) {
+                openModal(arg.start, arg.end);
+                calendar.unselect();
+            },
+
+            eventClick: function(arg) {
+                openModal(arg.event.start, arg.event.end, arg.event);
+            },
+
+            eventsSet: function() {
+                syncToParent();
+            }
+        });
+
+        calendar.render();
+
+        closeModalBtn.addEventListener('click', closeModal);
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('eventTitle').value;
+            const startVal = document.getElementById('eventStart').value;
+            const endVal = document.getElementById('eventEnd').value;
+            const idVal = document.getElementById('eventId').value;
+            const days = parseInt(document.getElementById('recurrence').value) || 1;
+
+            if (!title || !startVal || !endVal) { alert('Title, Start, and End are required'); return; }
+
+            const startDate = new Date(startVal);
+            const endDate = new Date(endVal);
+
+            if (endDate <= startDate) {
+                alert('End Time must be after Start Time');
+                return;
+            }
+
+            if (idVal) {
+                const ev = calendar.getEventById(idVal);
+                if (ev) {
+                    ev.setProp('title', title);
+                    ev.setDates(startDate, endDate);
+                }
+            } else {
+                const duration = endDate - startDate; 
+
+                for (let i = 0; i < days; i++) {
+                    const newStart = new Date(startDate);
+                    newStart.setDate(startDate.getDate() + i);
+
+                    const newEnd = new Date(newStart.getTime() + duration);
+
+                    calendar.addEvent({
+                        id: generateUID(),
+                        title: title,
+                        start: newStart,
+                        end: newEnd,
+                        allDay: false
+                    });
+                }
+            }
+
+            closeModal();
+            form.reset();
+        });
+
+        deleteBtn.addEventListener('click', function() {
+            if (currentEvent && confirm('Delete this event?')) {
+                currentEvent.remove();
+                closeModal();
+            }
+        });
+
+        function generateUID() {
+            return 'evt_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function formatDateForInput(date) {
+            if(!date) return '';
+            const offset = date.getTimezoneOffset();
+            const d = new Date(date.getTime() - (offset*60*1000));
+            return d.toISOString().slice(0, 16);
+        }
+
+        function exportData() {
+            const events = calendar.getEvents().map(event => ({
+                id: event.id,
+                title: event.title,
+                start: event.start.toISOString(),
+                end: event.end.toISOString(),
+                allDay: event.allDay
+            }));
+
+            const jsonStr = JSON.stringify(events, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'calendar_data.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(data) {
+            if (!Array.isArray(data)) {
+                alert('Invalid data format');
+                return;
+            }
+
+            const existingIds = new Set(calendar.getEvents().map(e => e.id));
+            
+            data.forEach(item => {
+                if (!item.id || !item.title || !item.start) return; 
+
+                if (!existingIds.has(item.id)) {
+                    calendar.addEvent({
+                        id: item.id,
+                        title: item.title,
+                        start: item.start,
+                        end: item.end,
+                        allDay: item.allDay || false
+                    });
+                }
+            });
+        }
+    });
+</script>
+</script>
+</body>
+</html>

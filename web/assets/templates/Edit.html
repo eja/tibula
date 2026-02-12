@@ -111,6 +111,12 @@
 				<div class="col-md-{{$Cols}} mt-3">
 					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label><input id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{$fieldValue}}" type="time" class="form-control">
 				</div>
+			{{else if or (eq .Type "calendar")}}
+				<div class="col-md-{{$Cols}} mt-3 position-relative">
+					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label><span class="lead position-absolute end-0 me-3">
+					<a href="#" onclick="fieldCalendar('ejaValues[{{.Name}}]')" title="calendar"><i class="bi bi-calendar-event"></i></a></span>
+					<textarea class="form-control" id="ejaValues[{{.Name}}]" name="ejaValues[{{.Name}}]" rows="1">{{$fieldValue}}</textarea>
+				</div>
 			{{else if eq .Type "view"}}
 				<div class="col-md-{{$Cols}} mt-3">
 					<label for="ejaView[{{.Name}}]" class="form-label">{{.Label}}</label><input id="ejaView[{{.Name}}]" name="ejaValues[{{.Name}}]" value="{{$fieldValue}}" type="text" class="form-control" readonly>

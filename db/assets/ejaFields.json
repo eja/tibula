@@ -31,7 +31,7 @@
       "sizeEdit": 0
     },
     {
-      "value": "boolean\r\ndate\r\ndatetime\r\ndecimal\r\nhidden\r\ninteger\r\nlabel\r\npassword\r\nselect\r\nmultiple\r\nsqlHidden\r\nsqlMatrix\r\nsqlMultiple\r\nsqlValue\r\ntext\r\ntextArea\r\ntime\r\nview\r\nhtml\r\n",
+      "value": "boolean\r\ndate\r\ndatetime\r\ncalendar\r\ndecimal\r\nhidden\r\ninteger\r\nlabel\r\npassword\r\nselect\r\nmultiple\r\nsqlHidden\r\nsqlMatrix\r\nsqlMultiple\r\nsqlValue\r\ntext\r\ntextArea\r\ntime\r\nview\r\nhtml\r\n",
       "powerEdit": 2,
       "powerList": 2,
       "type": "select",

@@ -9,7 +9,7 @@ import (
 
 const Name = "tibula"
 const Label = "Tibula"
-const Version = "19.2.5"
+const Version = "19.2.12"
 
 var Options TypeConfig
 var Commands TypeCommand
