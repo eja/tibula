@@ -46,6 +46,7 @@ type Api struct {
 	SubModules          []db.TypeLink       `json:"SubModules,omitempty"`
 	SubModulePath       []SubModulePathItem `json:"SubModulePath,omitempty"`
 	SubModulePathString string              `json:"SubModulePathString,omitempty"`
+	RemoteIP            string
 }
 
 type SubModulePathItem struct {

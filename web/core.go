@@ -55,6 +55,7 @@ func Core(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 		eja := api.Set()
+		eja.RemoteIP = getClientIP(r)
 		r.PostFormValue("")
 		if err := r.ParseForm(); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
