@@ -328,7 +328,7 @@ func TestCRUDOperations(t *testing.T) {
 	t.Run("Delete_Multiple_Records", func(t *testing.T) {
 		// Create multiple records
 		var ids []int64
-		for i := 0; i < 3; i++ {
+		for range 3 {
 			eja := api.Set()
 			eja.Session = session
 			eja.ModuleName = "ejaUsers"
@@ -362,7 +362,7 @@ func TestSearchAndList(t *testing.T) {
 	session := getAuthenticatedSession(t)
 
 	// Create some test records
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		eja := api.Set()
 		eja.Session = session
 		eja.ModuleName = "ejaUsers"
@@ -1369,7 +1369,7 @@ func TestConcurrentOperations(t *testing.T) {
 	t.Run("Concurrent_Reads", func(t *testing.T) {
 		done := make(chan bool, 5)
 
-		for i := 0; i < 5; i++ {
+		for range 5 {
 			go func() {
 				eja := api.Set()
 				eja.Session = session
@@ -1384,7 +1384,7 @@ func TestConcurrentOperations(t *testing.T) {
 			}()
 		}
 
-		for i := 0; i < 5; i++ {
+		for range 5 {
 			<-done
 		}
 	})
@@ -1392,7 +1392,7 @@ func TestConcurrentOperations(t *testing.T) {
 	t.Run("Concurrent_Writes", func(t *testing.T) {
 		done := make(chan bool, 3)
 
-		for i := 0; i < 3; i++ {
+		for i := range 3 {
 			go func(idx int) {
 				eja := api.Set()
 				eja.Session = session
@@ -1415,7 +1415,7 @@ func TestConcurrentOperations(t *testing.T) {
 			}(i)
 		}
 
-		for i := 0; i < 3; i++ {
+		for range 3 {
 			<-done
 		}
 	})

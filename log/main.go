@@ -40,7 +40,7 @@ func Init(level int, filename string) error {
 	return nil
 }
 
-func Log(level int, args ...interface{}) {
+func Log(level int, args ...any) {
 	msg := ""
 	switch level {
 	case LevelFatal:
@@ -78,26 +78,26 @@ func Log(level int, args ...interface{}) {
 	}
 }
 
-func Fatal(args ...interface{}) {
+func Fatal(args ...any) {
 	Log(LevelFatal, args...)
 }
 
-func Error(args ...interface{}) {
+func Error(args ...any) {
 	Log(LevelError, args...)
 }
 
-func Warn(args ...interface{}) {
+func Warn(args ...any) {
 	Log(LevelWarn, args...)
 }
 
-func Info(args ...interface{}) {
+func Info(args ...any) {
 	Log(LevelInfo, args...)
 }
 
-func Debug(args ...interface{}) {
+func Debug(args ...any) {
 	Log(LevelDebug, args...)
 }
 
-func Trace(args ...interface{}) {
+func Trace(args ...any) {
 	Log(LevelTrace, args...)
 }

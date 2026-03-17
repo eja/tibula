@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"slices"
 
 	"github.com/eja/tibula/sys"
 )
@@ -289,7 +290,7 @@ func handleSave(eja Api, db DbSession) Api {
 	}
 
 	for k, v := range eja.Values {
-		var val interface{}
+		var val any
 		switch db.FieldTypeGet(eja.ModuleId, k) {
 		case "password":
 			val = v
@@ -337,7 +338,7 @@ func handleSearch(eja Api, db DbSession, linkField string, sub ActiveSubModule) 
 	}
 
 	var sqlQuery string
-	var sqlArgs []interface{}
+	var sqlArgs []any
 
 	if eja.SqlQuery64 != "" {
 		if b, err := base64.StdEncoding.DecodeString(eja.SqlQuery64); err == nil {
@@ -439,17 +440,5 @@ type ActiveSubModule struct {
 }
 
 func contains(s []string, e string) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-	return false
-}
-
-func min(a, b int64) int64 {
-	if a < b {
-		return a
-	}
-	return b
+	return slices.Contains(s, e)
 }

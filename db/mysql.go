@@ -16,7 +16,7 @@ func mysqlOpen(database string, username string, password string, host string, p
 	return sql.Open("mysql", connectionString)
 }
 
-func (session *TypeSession) mysqlRun(query string, args ...interface{}) (TypeRun, error) {
+func (session *TypeSession) mysqlRun(query string, args ...any) (TypeRun, error) {
 	result, err := session.Handler.Exec(query, args...)
 	if err != nil {
 		return TypeRun{}, err
@@ -26,7 +26,7 @@ func (session *TypeSession) mysqlRun(query string, args ...interface{}) (TypeRun
 	return TypeRun{Changes: changes, LastId: lastId}, nil
 }
 
-func (session *TypeSession) mysqlValue(query string, args ...interface{}) (result string, err error) {
+func (session *TypeSession) mysqlValue(query string, args ...any) (result string, err error) {
 	var nullResult sql.NullString
 	err = session.Handler.QueryRow(query, args...).Scan(&nullResult)
 	if err != nil {
@@ -41,7 +41,7 @@ func (session *TypeSession) mysqlValue(query string, args ...interface{}) (resul
 	return
 }
 
-func (session *TypeSession) mysqlRow(query string, args ...interface{}) (TypeRow, error) {
+func (session *TypeSession) mysqlRow(query string, args ...any) (TypeRow, error) {
 	var result TypeRow
 	rows, err := session.mysqlRows(query, args...)
 	if err != nil {
@@ -54,7 +54,7 @@ func (session *TypeSession) mysqlRow(query string, args ...interface{}) (TypeRow
 	return result, nil
 }
 
-func (session *TypeSession) mysqlRows(query string, args ...interface{}) (TypeRows, error) {
+func (session *TypeSession) mysqlRows(query string, args ...any) (TypeRows, error) {
 	rows, err := session.Handler.Query(query, args...)
 	if err != nil {
 		return nil, err
@@ -68,7 +68,7 @@ func (session *TypeSession) mysqlRows(query string, args ...interface{}) (TypeRo
 
 	var result TypeRows
 	values := make([]sql.RawBytes, len(columns))
-	scanArgs := make([]interface{}, len(values))
+	scanArgs := make([]any, len(values))
 	for i := range values {
 		scanArgs[i] = &values[i]
 	}
@@ -90,7 +90,7 @@ func (session *TypeSession) mysqlRows(query string, args ...interface{}) (TypeRo
 	return result, nil
 }
 
-func (session *TypeSession) mysqlCols(query string, args ...interface{}) ([]string, error) {
+func (session *TypeSession) mysqlCols(query string, args ...any) ([]string, error) {
 	rows, err := session.Handler.Query(query, args...)
 	if err != nil {
 		return nil, err

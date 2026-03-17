@@ -63,7 +63,7 @@ func (session *TypeSession) Close() error {
 	return errors.New("no database connection to close")
 }
 
-func (session *TypeSession) Run(query string, args ...interface{}) (result TypeRun, err error) {
+func (session *TypeSession) Run(query string, args ...any) (result TypeRun, err error) {
 	switch session.Engine {
 	case "sqlite":
 		result, err = session.sqliteRun(query, args...)
@@ -81,7 +81,7 @@ func (session *TypeSession) Run(query string, args ...interface{}) (result TypeR
 	return
 }
 
-func (session *TypeSession) Value(query string, args ...interface{}) (result string, err error) {
+func (session *TypeSession) Value(query string, args ...any) (result string, err error) {
 	switch session.Engine {
 	case "sqlite":
 		result, err = session.sqliteValue(query, args...)
@@ -102,7 +102,7 @@ func (session *TypeSession) Value(query string, args ...interface{}) (result str
 	return
 }
 
-func (session *TypeSession) Row(query string, args ...interface{}) (result TypeRow, err error) {
+func (session *TypeSession) Row(query string, args ...any) (result TypeRow, err error) {
 	switch session.Engine {
 	case "sqlite":
 		result, err = session.sqliteRow(query, args...)
@@ -123,7 +123,7 @@ func (session *TypeSession) Row(query string, args ...interface{}) (result TypeR
 	return
 }
 
-func (session *TypeSession) Rows(query string, args ...interface{}) (result TypeRows, err error) {
+func (session *TypeSession) Rows(query string, args ...any) (result TypeRows, err error) {
 	switch session.Engine {
 	case "sqlite":
 		result, err = session.sqliteRows(query, args...)
@@ -144,7 +144,7 @@ func (session *TypeSession) Rows(query string, args ...interface{}) (result Type
 	return
 }
 
-func (session *TypeSession) Cols(query string, args ...interface{}) ([]string, error) {
+func (session *TypeSession) Cols(query string, args ...any) ([]string, error) {
 	switch session.Engine {
 	case "sqlite":
 		return session.sqliteCols(query, args...)

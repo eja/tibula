@@ -20,7 +20,7 @@ type TypeSelect struct {
 	Value string
 }
 
-func (session *TypeSession) String(nameValue interface{}) string {
+func (session *TypeSession) String(nameValue any) string {
 	switch v := nameValue.(type) {
 	case string:
 		return v
@@ -33,7 +33,7 @@ func (session *TypeSession) String(nameValue interface{}) string {
 	}
 }
 
-func (session *TypeSession) Number(nameValue interface{}) int64 {
+func (session *TypeSession) Number(nameValue any) int64 {
 	switch v := nameValue.(type) {
 	case int:
 		return int64(v)
@@ -53,7 +53,7 @@ func (session *TypeSession) Number(nameValue interface{}) int64 {
 	return 0
 }
 
-func (session *TypeSession) Float(nameValue interface{}) float64 {
+func (session *TypeSession) Float(nameValue any) float64 {
 	switch v := nameValue.(type) {
 	case int:
 		return float64(v)
@@ -72,6 +72,6 @@ func (session *TypeSession) Float(nameValue interface{}) float64 {
 	return 0.0
 }
 
-func (session *TypeSession) Bool(value interface{}) bool {
+func (session *TypeSession) Bool(value any) bool {
 	return session.Number(value) > 0
 }

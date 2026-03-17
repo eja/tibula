@@ -10,9 +10,9 @@ import (
 	"github.com/eja/tibula/log"
 )
 
-type TypeSearchColumn map[string]map[string]interface{}
+type TypeSearchColumn map[string]map[string]any
 
-func (session *TypeSession) SearchMatrix(ownerId int64, moduleId int64, query string, queryArgs []interface{}) (resultRows TypeRows, resultCols []string, resultLabels map[string]string, err error) {
+func (session *TypeSession) SearchMatrix(ownerId int64, moduleId int64, query string, queryArgs []any) (resultRows TypeRows, resultCols []string, resultLabels map[string]string, err error) {
 	var sqlResult TypeRows
 	var queryHead TypeSearchColumn
 	resultLabels = make(map[string]string)
@@ -43,9 +43,9 @@ func (session *TypeSession) SearchMatrix(ownerId int64, moduleId int64, query st
 	return
 }
 
-func (session *TypeSession) SearchQuery(ownerId int64, tableName string, values map[string]string) (string, []interface{}, error) {
+func (session *TypeSession) SearchQuery(ownerId int64, tableName string, values map[string]string) (string, []any, error) {
 	var sql []string
-	var args []interface{}
+	var args []any
 
 	moduleId := session.ModuleGetIdByName(tableName)
 	sqlType := make(map[string]string)
@@ -118,7 +118,7 @@ func (session *TypeSession) SearchQuery(ownerId int64, tableName string, values 
 	return strings.Join(sql, ""), args, nil
 }
 
-func (session *TypeSession) SearchCount(query string, args []interface{}) int64 {
+func (session *TypeSession) SearchCount(query string, args []any) int64 {
 	reFrom := regexp.MustCompile(`(?i)\s+FROM\s+`)
 	reLimit := regexp.MustCompile(`(?i)\s+LIMIT\s+`)
 
@@ -156,7 +156,7 @@ func (session *TypeSession) searchHeader(query string, moduleId int64) (TypeSear
 	for _, field := range rows {
 		rowType := field["type"]
 		rowName := field["name"]
-		colValues[rowName] = make(map[string]interface{})
+		colValues[rowName] = make(map[string]any)
 		colValues[rowName]["type"] = rowType
 		switch rowType {
 		case "boolean":

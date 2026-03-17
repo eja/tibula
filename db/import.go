@@ -5,6 +5,7 @@ package db
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/eja/tibula/log"
 )
@@ -264,8 +265,23 @@ func (session *TypeSession) ModuleImport(module TypeModule, moduleName string) e
 			if id, err := session.New(owner, moduleId); err != nil {
 				log.Error(tag, "data append", err)
 			} else {
+				moduleLinksMap := map[string]string{}
 				for key, val := range data {
-					session.Put(owner, moduleId, session.Number(id), key, session.String(val))
+					if strings.Contains(key, ".") {
+						moduleLinksMap[key] = session.String(val)
+					} else {
+						session.Put(owner, moduleId, session.Number(id), key, session.String(val))
+					}
+				}
+				for keys, val := range moduleLinksMap {
+					key := strings.Split(keys, ".")
+					if len(key) == 2 {
+						query := fmt.Sprintf(`SELECT ejaId FROM %s WHERE %s=?`, key[1], key[0])
+						if lnkVal, lnkErr := session.Value(query, val); lnkErr == nil {
+							fmt.Println("UPD", query, val, lnkVal)
+							session.Put(owner, moduleId, session.Number(id), key[0], lnkVal)
+						}
+					}
 				}
 			}
 		}

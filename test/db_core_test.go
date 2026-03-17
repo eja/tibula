@@ -96,11 +96,11 @@ func TestDbOperations(t *testing.T) {
 			workers := 10
 			insertsPerWorker := 50
 
-			for i := 0; i < workers; i++ {
+			for i := range workers {
 				wg.Add(1)
 				go func(id int) {
 					defer wg.Done()
-					for j := 0; j < insertsPerWorker; j++ {
+					for j := range insertsPerWorker {
 						_, err := session.Run(
 							fmt.Sprintf("INSERT INTO %s (ejaOwner, ejaLog, worker_id, payload) VALUES (?,?,?,?)", tableName),
 							1, session.Now(), id, fmt.Sprintf("data_%d_%d", id, j),
@@ -130,11 +130,11 @@ func TestDbOperations(t *testing.T) {
 			readers := 10
 			ops := 20
 
-			for r := 0; r < readers; r++ {
+			for r := range readers {
 				wg.Add(1)
 				go func(rid int) {
 					defer wg.Done()
-					for i := 0; i < ops; i++ {
+					for range ops {
 						_, err := session.Rows(fmt.Sprintf("SELECT * FROM %s LIMIT 5", tableName))
 						if err != nil {
 							t.Errorf("Reader %d failed: %v", rid, err)
@@ -144,11 +144,11 @@ func TestDbOperations(t *testing.T) {
 				}(r)
 			}
 
-			for w := 0; w < writers; w++ {
+			for w := range writers {
 				wg.Add(1)
 				go func(wid int) {
 					defer wg.Done()
-					for i := 0; i < ops; i++ {
+					for range ops {
 						_, err := session.Run(
 							fmt.Sprintf("INSERT INTO %s (ejaOwner, ejaLog, worker_id) VALUES (?,?,?)", tableName),
 							1, session.Now(), 999,

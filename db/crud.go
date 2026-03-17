@@ -41,7 +41,7 @@ func (session *TypeSession) Get(ownerId int64, moduleId int64, ejaId int64) (Typ
 	return session.Row(query, ejaId)
 }
 
-func (session *TypeSession) Put(ownerId int64, moduleId int64, ejaId int64, fieldName string, fieldValue interface{}) error {
+func (session *TypeSession) Put(ownerId int64, moduleId int64, ejaId int64, fieldName string, fieldValue any) error {
 	moduleName := session.ModuleGetNameById(moduleId)
 
 	check, err := session.TableExists(moduleName)

@@ -8,6 +8,7 @@ import (
 	"net"
 	"net/http"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -31,10 +32,8 @@ func csvContains(csvData, searchString string) bool {
 	}
 
 	for _, record := range records {
-		for _, field := range record {
-			if field == searchString {
-				return true
-			}
+		if slices.Contains(record, searchString) {
+			return true
 		}
 	}
 
@@ -49,7 +48,7 @@ func arrayToCsvQuoted(data []string) string {
 }
 
 func subModulePathExtract(value string) (subModulePath []api.SubModulePathItem) {
-	for _, part := range strings.Split(value, ",") {
+	for part := range strings.SplitSeq(value, ",") {
 		pair := strings.Split(part, ".")
 		if len(pair) == 3 {
 			linkingModuleId, _ := strconv.Atoi(pair[0])

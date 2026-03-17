@@ -4,6 +4,7 @@ package db
 
 import (
 	"errors"
+	"fmt"
 )
 
 func (session *TypeSession) GroupExport(groupId int64) (group TypeGroup, err error) {
@@ -113,6 +114,7 @@ func (session *TypeSession) ModuleExport(moduleId int64, data bool) (module Type
 		})
 	}
 
+	moduleLinksMap := map[string]string{}
 	rows, err = session.Rows(`
 		SELECT
 			power,
@@ -122,8 +124,8 @@ func (session *TypeSession) ModuleExport(moduleId int64, data bool) (module Type
 		FROM
 			ejaModuleLinks
 		WHERE
-			srcModuleId=? OR dstModuleId=?
-		`, moduleId, moduleId)
+			srcModuleId=?
+		`, moduleId)
 	if err != nil {
 		return
 	}
@@ -134,6 +136,7 @@ func (session *TypeSession) ModuleExport(moduleId int64, data bool) (module Type
 			DstModule: row["dstModuleName"],
 			Power:     session.Number(row["power"]),
 		})
+		moduleLinksMap[row["srcFieldName"]] = row["dstModuleName"]
 	}
 
 	module.Command = []string{}
@@ -151,8 +154,14 @@ func (session *TypeSession) ModuleExport(moduleId int64, data bool) (module Type
 			return
 		}
 		for idx, row := range rows {
-			module.Data = append(module.Data, make(map[string]interface{}))
+			module.Data = append(module.Data, make(map[string]any))
 			for key, val := range row {
+				if moduleLinksMap[key] != "" {
+					moduleName := moduleLinksMap[key]
+					if lnkVal, lnkErr := session.Value(fmt.Sprintf("SELECT %s FROM %s WHERE ejaId=? LIMIT 1", key, moduleName), val); lnkErr == nil {
+						module.Data[idx][key+"."+moduleName] = lnkVal
+					}
+				}
 				if key != "ejaId" && key != "ejaOwner" && key != "ejaLog" {
 					module.Data[idx][key] = val
 				}

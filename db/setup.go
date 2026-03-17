@@ -9,6 +9,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"sort"
 )
 
 //go:embed all:assets
@@ -44,6 +45,8 @@ func (session *TypeSession) Setup(setupPath string) error {
 			}
 		}
 	}
+
+	sort.Strings(files) //very important for moduleLinks that must be at the end of the list
 
 	for _, file := range files {
 		if filepath.Ext(file) == ".json" {

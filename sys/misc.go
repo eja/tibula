@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func ConfigRead(filename string, instance interface{}) error {
+func ConfigRead(filename string, instance any) error {
 	jsonData, err := os.ReadFile(filename)
 	if err != nil {
 		return err
@@ -23,7 +23,7 @@ func ConfigRead(filename string, instance interface{}) error {
 	return nil
 }
 
-func ConfigWrite(filename string, instance interface{}) error {
+func ConfigWrite(filename string, instance any) error {
 	jsonData, err := json.MarshalIndent(instance, "", "  ")
 	if err != nil {
 		return err

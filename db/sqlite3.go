@@ -36,7 +36,7 @@ func sqliteOpen(path string) (*sql.DB, error) {
 	return db, nil
 }
 
-func (session *TypeSession) sqliteRun(query string, args ...interface{}) (TypeRun, error) {
+func (session *TypeSession) sqliteRun(query string, args ...any) (TypeRun, error) {
 	result, err := session.Handler.Exec(query, args...)
 	if err != nil {
 		return TypeRun{}, err
@@ -46,7 +46,7 @@ func (session *TypeSession) sqliteRun(query string, args ...interface{}) (TypeRu
 	return TypeRun{Changes: changes, LastId: lastId}, nil
 }
 
-func (session *TypeSession) sqliteValue(query string, args ...interface{}) (string, error) {
+func (session *TypeSession) sqliteValue(query string, args ...any) (string, error) {
 	var nullResult sql.NullString
 	err := session.Handler.QueryRow(query, args...).Scan(&nullResult)
 	if err != nil {
@@ -61,7 +61,7 @@ func (session *TypeSession) sqliteValue(query string, args ...interface{}) (stri
 	return "", nil
 }
 
-func (session *TypeSession) sqliteRow(query string, args ...interface{}) (TypeRow, error) {
+func (session *TypeSession) sqliteRow(query string, args ...any) (TypeRow, error) {
 	rows, err := session.Handler.Query(query, args...)
 	if err != nil {
 		return nil, err
@@ -81,7 +81,7 @@ func (session *TypeSession) sqliteRow(query string, args ...interface{}) (TypeRo
 	}
 
 	values := make([]sql.RawBytes, len(columns))
-	scanArgs := make([]interface{}, len(values))
+	scanArgs := make([]any, len(values))
 	for i := range values {
 		scanArgs[i] = &values[i]
 	}
@@ -102,7 +102,7 @@ func (session *TypeSession) sqliteRow(query string, args ...interface{}) (TypeRo
 	return result, nil
 }
 
-func (session *TypeSession) sqliteRows(query string, args ...interface{}) (TypeRows, error) {
+func (session *TypeSession) sqliteRows(query string, args ...any) (TypeRows, error) {
 	rows, err := session.Handler.Query(query, args...)
 	if err != nil {
 		return nil, err
@@ -116,7 +116,7 @@ func (session *TypeSession) sqliteRows(query string, args ...interface{}) (TypeR
 
 	var result TypeRows
 	values := make([]sql.RawBytes, len(columns))
-	scanArgs := make([]interface{}, len(values))
+	scanArgs := make([]any, len(values))
 	for i := range values {
 		scanArgs[i] = &values[i]
 	}
@@ -144,7 +144,7 @@ func (session *TypeSession) sqliteRows(query string, args ...interface{}) (TypeR
 	return result, nil
 }
 
-func (session *TypeSession) sqliteCols(query string, args ...interface{}) ([]string, error) {
+func (session *TypeSession) sqliteCols(query string, args ...any) ([]string, error) {
 	rows, err := session.Handler.Query(query, args...)
 	if err != nil {
 		return nil, err

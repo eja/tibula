@@ -28,14 +28,14 @@ func (session *TypeSession) Sha256(value string) string {
 }
 
 func (session *TypeSession) NumbersToCsv(slice []int64) string {
-	result := ""
+	var result strings.Builder
 	for i, v := range slice {
-		result += fmt.Sprint(v)
+		result.WriteString(fmt.Sprint(v))
 		if i < len(slice)-1 {
-			result += ","
+			result.WriteString(",")
 		}
 	}
-	return result
+	return result.String()
 }
 
 func (session *TypeSession) SelectToRows(value string) []TypeSelect {
@@ -53,8 +53,8 @@ func (session *TypeSession) SelectToRows(value string) []TypeSelect {
 			result = append(result, row)
 		}
 	} else {
-		rows := strings.Split(value, "\n")
-		for _, row := range rows {
+		rows := strings.SplitSeq(value, "\n")
+		for row := range rows {
 			rowData := TypeSelect{row, row}
 			result = append(result, rowData)
 
@@ -83,7 +83,7 @@ func (session *TypeSession) SelectSqlToRows(query string) []TypeSelect {
 	return result
 }
 
-func (session *TypeSession) IncludeList(query string, args ...interface{}) ([]int64, error) {
+func (session *TypeSession) IncludeList(query string, args ...any) ([]int64, error) {
 	response := make([]int64, 0)
 
 	rows, err := session.Rows(query, args...)

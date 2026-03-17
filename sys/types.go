@@ -35,7 +35,7 @@ type TypeCommand struct {
 	Help    bool `json:"help,omitempty"`
 }
 
-func String(nameValue interface{}) string {
+func String(nameValue any) string {
 	switch v := nameValue.(type) {
 	case string:
 		return v
@@ -48,7 +48,7 @@ func String(nameValue interface{}) string {
 	}
 }
 
-func Number(nameValue interface{}) int64 {
+func Number(nameValue any) int64 {
 	switch v := nameValue.(type) {
 	case int:
 		return int64(v)
@@ -68,7 +68,7 @@ func Number(nameValue interface{}) int64 {
 	return 0
 }
 
-func Float(nameValue interface{}) float64 {
+func Float(nameValue any) float64 {
 	switch v := nameValue.(type) {
 	case int:
 		return float64(v)
@@ -87,6 +87,6 @@ func Float(nameValue interface{}) float64 {
 	return 0.0
 }
 
-func Bool(value interface{}) bool {
+func Bool(value any) bool {
 	return Number(value) > 0
 }

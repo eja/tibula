@@ -17,7 +17,7 @@ type Api struct {
 	IdList              []int64             `json:"IdList,omitempty"`
 	Info                []string            `json:"Info,omitempty"`
 	Language            string              `json:"Language,omitempty"`
-	Link                db.TypeLink         `json:"Link,omitempty"`
+	Link                db.TypeLink         `json:"Link"`
 	Linking             bool                `json:"Linking,omitempty"`
 	Links               []db.TypeLink       `json:"Links,omitempty"`
 	ModuleId            int64               `json:"ModuleId,omitempty"`
@@ -39,7 +39,7 @@ type Api struct {
 	Session             string              `json:"Session,omitempty"`
 	SqlQuery            string              `json:"SqlQuery,omitempty"`
 	SqlQuery64          string              `json:"SqlQuery64,omitempty"`
-	SqlQueryArgs        []interface{}       `json:"SqlQueryArgs,omitempty"`
+	SqlQueryArgs        []any               `json:"SqlQueryArgs,omitempty"`
 	Tree                []db.TypeModuleTree `json:"Tree,omitempty"`
 	Values              map[string]string   `json:"Values,omitempty"`
 	GoogleSsoId         string              `json:"GoogleSsoId,omitempty"`

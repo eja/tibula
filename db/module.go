@@ -3,14 +3,14 @@
 package db
 
 type TypeModule struct {
-	Module      TypeModuleModule         `json:"module"`
-	Command     []string                 `json:"command"`
-	Field       []TypeModuleField        `json:"field"`
-	Link        []TypeModuleLink         `json:"link,omitempty"`
-	Translation []TypeModuleTranslation  `json:"translation,omitempty"`
-	Name        string                   `json:"name"`
-	Data        []map[string]interface{} `json:"data,omitempty"`
-	Type        string                   `json:"type"`
+	Module      TypeModuleModule        `json:"module"`
+	Command     []string                `json:"command"`
+	Field       []TypeModuleField       `json:"field"`
+	Link        []TypeModuleLink        `json:"link,omitempty"`
+	Translation []TypeModuleTranslation `json:"translation,omitempty"`
+	Name        string                  `json:"name"`
+	Data        []map[string]any        `json:"data,omitempty"`
+	Type        string                  `json:"type"`
 }
 
 type TypeModuleModule struct {
