@@ -278,7 +278,6 @@ func (session *TypeSession) ModuleImport(module TypeModule, moduleName string) e
 					if len(key) == 2 {
 						query := fmt.Sprintf(`SELECT ejaId FROM %s WHERE %s=?`, key[1], key[0])
 						if lnkVal, lnkErr := session.Value(query, val); lnkErr == nil {
-							fmt.Println("UPD", query, val, lnkVal)
 							session.Put(owner, moduleId, session.Number(id), key[0], lnkVal)
 						}
 					}
