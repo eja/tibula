@@ -143,6 +143,8 @@ func runStatePipeline(eja Api, db DbSession) Api {
 	}
 
 	if eja.Action == "" && db.AutoSearch(eja.ModuleId) {
+		eja.SearchOffset = 0
+		eja.SearchOrder = map[string]string{}
 		eja.ActionType = "List"
 		eja.SqlQuery64 = ""
 	}
