@@ -19,7 +19,7 @@ var Plugins = TypePlugins{
 				eja.alert(db.Translate("passwordMatchError", eja.Owner))
 			} else {
 				user := db.UserGetAllBySession(eja.Session)
-				if db.Password(v["passwordOld"]) != user["password"] {
+				if !db.PasswordCheck(v["passwordOld"], user["password"]) {
 					eja.alert(db.Translate("passwordOldError", eja.Owner))
 				} else {
 					_, err := db.Run("UPDATE ejaUsers SET password=? WHERE ejaId=?", db.Password(v["passwordNew"]), eja.Owner)
