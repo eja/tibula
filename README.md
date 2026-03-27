@@ -14,13 +14,17 @@ Tibula is a powerful and flexible application framework for building data-centri
 
 ## Security & Deployment Best Practices
 
-> [!IMPORTANT]
+> [!IMPORTANT]  
 > Tibula grants administrators the power to modify the database schema and execute dynamic SQL logic. To ensure your data remains secure, follow these best practices for production deployments:
 
 1. **Private Access Only:** Host Tibula on an Intranet or access it via VPN.
-2. **Reverse Proxy:** Use a reverse proxy like Nginx to manage SSL/TLS certificates and headers. Optionally configure a secondary generic authentication layer (e.g., Basic Auth) at the proxy level to shield the application from unauthorized probes.
-3. **Database Hardening:** If using MySQL, use a dedicated database user restricted to the Tibula schema.
+2. **Database Hardening:** If using MySQL, use a dedicated database user restricted to the Tibula schema.
+3. **If Exposing to the Internet:**  
+   - Use a reverse proxy like Nginx to manage SSL/TLS certificates and headers.  
+   - Restrict access by IP whitelisting where possible.
+   - Optionally configure a secondary generic authentication layer (e.g., Basic Auth) at the proxy level to shield the application from unauthorized probes.  
 
+   
 ## Getting Started
 
 To get started with Tibula, simply clone the repository and build the project using the following commands:
