@@ -9,6 +9,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 func (session TypeSession) Now() string {
@@ -16,7 +18,20 @@ func (session TypeSession) Now() string {
 }
 
 func (session *TypeSession) Password(value string) string {
-	return session.Sha256(value)
+	hash, err := bcrypt.GenerateFromPassword([]byte(value), bcrypt.DefaultCost)
+	if err != nil {
+		return session.Sha256(value)
+	}
+	return string(hash)
+}
+
+func (session *TypeSession) PasswordCheck(password string, storedHash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(storedHash), []byte(password))
+	if err == nil {
+		return true
+	}
+
+	return session.Sha256(password) == storedHash
 }
 
 func (session *TypeSession) Sha256(value string) string {

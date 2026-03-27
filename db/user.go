@@ -8,8 +8,16 @@ import (
 )
 
 func (session *TypeSession) UserGetAllByUserAndPass(username string, password string) TypeRow {
-	result, _ := session.Row("SELECT * FROM ejaUsers WHERE username=? AND password=?", username, session.Password(password))
-	return result
+	rows, err := session.Rows("SELECT * FROM ejaUsers WHERE username=?", username)
+	if err != nil {
+		return nil
+	}
+	for _, row := range rows {
+		if session.PasswordCheck(password, row["password"]) {
+			return row
+		}
+	}
+	return nil
 }
 
 func (session *TypeSession) UserGetAllById(userId int64) TypeRow {
