@@ -112,3 +112,7 @@ Tibula provides extensive command-line options to configure various aspects of i
     ```
 
 - **Note:** Replace '-' with '_' and remove '--' for each command option when using JSON configuration.
+
+## Documentation & Technical Resources
+
+The [Tibula Wiki](https://github.com/eja/tibula/wiki) serves as the primary repository for supplementary technical information and operational procedures.
