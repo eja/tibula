@@ -12,6 +12,15 @@ Tibula is a powerful and flexible application framework for building data-centri
 * **Data Portability:** A practical Import/Export feature allows for smooth data interchange of entire module definitions and their content in JSON format.
 * **Multi-Database Support:** Run your application on either SQLite for simplicity and portability or MySQL for production scale.
 
+## Security & Deployment Best Practices
+
+> [!IMPORTANT]
+> Tibula grants administrators the power to modify the database schema and execute dynamic SQL logic. To ensure your data remains secure, follow these best practices for production deployments:
+
+1. **Private Access Only:** Host Tibula on an Intranet or access it via VPN.
+2. **Reverse Proxy:** Use a reverse proxy like Nginx to manage SSL/TLS certificates and headers. Optionally configure a secondary generic authentication layer (e.g., Basic Auth) at the proxy level to shield the application from unauthorized probes.
+3. **Database Hardening:** If using MySQL, use a dedicated database user restricted to the Tibula schema.
+
 ## Getting Started
 
 To get started with Tibula, simply clone the repository and build the project using the following commands:
@@ -54,14 +63,14 @@ Tibula provides extensive command-line options to configure various aspects of i
 - **Setup and Initialization:**
   - Options for initializing the database, setting up the admin user, and defining the importing path.
     ```bash
-    --setup        # Initialize the database
-    --setup-user   # Admin username
-    --setup-pass   # Admin password
-    --setup-path   # Setup files path
+    --db-setup        # Initialize the database
+    --db-setup-user   # Admin username
+    --db-setup-pass   # Admin password
+    --db-setup-path   # Setup files path
     ```
     ***Note:***
-      If `--setup-path` is not provided, the embedded assets will be used to import the default modules.
-      The admin user is set to `admin` by default, you can customize it using `--setup-user`.
+      If `--db-setup-path` is not provided, the embedded assets will be used to import the default modules.
+      The admin user is set to `admin` by default, you can customize it using `--db-setup-user`.
 
 - **Web Service Configuration:**
   - Configuration options for starting the web service, specifying the host, port, path, and SSL/TLS certificates.
@@ -85,7 +94,7 @@ Tibula provides extensive command-line options to configure various aspects of i
     ```
   
 - **General Options:**
-  - The `-help` option provides a summary of available command-line options.
+  - The `--help` option provides a summary of available command-line options.
     ```bash
     --help             # Show this message
     ```
@@ -99,8 +108,3 @@ Tibula provides extensive command-line options to configure various aspects of i
     ```
 
 - **Note:** Replace '-' with '_' and remove '--' for each command option when using JSON configuration.
-
-
-## License
-
-Tibula is released under the [GPL-3.0](LICENSE).
