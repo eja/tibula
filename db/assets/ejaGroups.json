@@ -47,16 +47,6 @@
   ],
   "link": [
     {
-      "srcModule": "ejaPermissions",
-      "dstModule": "ejaGroups",
-      "power": 2
-    },
-    {
-      "srcModule": "ejaModules",
-      "dstModule": "ejaGroups",
-      "power": 1
-    },
-    {
       "srcModule": "ejaGroups",
       "dstModule": "ejaUsers",
       "power": 1
@@ -79,6 +69,12 @@
       "ejaModuleName": "ejaGroups",
       "word": "note",
       "translation": "Note"
+    },
+    {
+      "ejaLanguage": "en",
+      "ejaModuleName": "ejaGroups",
+      "word": "ejaModules",
+      "translation": "Shares"
     }
   ],
   "name": "ejaGroups",

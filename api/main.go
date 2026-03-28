@@ -296,7 +296,7 @@ func handleSave(eja Api, db DbSession) Api {
 		switch db.FieldTypeGet(eja.ModuleId, k) {
 		case "password":
 			val = v
-			if len(v) != 64 {
+			if len(v) != 60 && len(v) != 64 { // bcrypt/sha256
 				val = db.Password(v)
 			}
 		case "boolean", "integer":

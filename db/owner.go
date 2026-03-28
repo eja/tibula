@@ -1,14 +1,8 @@
 // Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
-
 package db
 
-import (
-	"fmt"
-)
-
 func (session *TypeSession) Owners(ownerId int64, moduleId int64) (result []int64) {
-	const maxDepth = 10
-	var groupOwners []int64
+	uniqueOwners := make(map[int64]struct{})
 
 	ejaGroups := session.ModuleGetIdByName("ejaGroups")
 	ejaUsers := session.ModuleGetIdByName("ejaUsers")
@@ -29,45 +23,37 @@ func (session *TypeSession) Owners(ownerId int64, moduleId int64) (result []int6
 	`, ejaGroups, ejaUsers,
 		ejaGroups, ejaUsers, ownerId,
 		ejaModules, moduleId, ejaGroups)
-	if err != nil {
-		return
-	}
 
-	deep := maxDepth
-	userOwners := []int64{ownerId}
-	for deep > 0 {
-		deep--
-		csv := session.NumbersToCsv(userOwners)
-		users, err := session.IncludeList(fmt.Sprintf("SELECT ejaId FROM ejaUsers WHERE ejaOwner IN (%s) AND ejaId NOT IN (%s)", csv, csv))
-		if err != nil {
-			return
-		}
-		if users != nil {
-			group := make(map[int64]struct{})
-			for _, u := range users {
-				group[u] = struct{}{}
-			}
-			for _, u := range userOwners {
-				group[u] = struct{}{}
-			}
-			userOwners = make([]int64, 0, len(group))
-			for u := range group {
-				userOwners = append(userOwners, u)
-			}
-		} else {
-			deep = 0
+	if err == nil {
+		for _, id := range groupOwners {
+			uniqueOwners[id] = struct{}{}
 		}
 	}
-	group := make(map[int64]struct{})
-	for _, u := range userOwners {
-		group[u] = struct{}{}
-	}
-	for _, u := range groupOwners {
-		group[u] = struct{}{}
+
+	userHierarchyQuery := `
+		WITH RECURSIVE user_tree AS (
+			SELECT ejaId FROM ejaUsers WHERE ejaOwner = ? AND ejaId != ejaOwner
+			UNION
+			SELECT u.ejaId 
+			FROM ejaUsers u
+			INNER JOIN user_tree ut ON u.ejaOwner = ut.ejaId
+			WHERE u.ejaId != u.ejaOwner
+		)
+		SELECT ejaId FROM user_tree
+	`
+
+	userOwners, err := session.IncludeList(userHierarchyQuery, ownerId)
+	if err == nil {
+		for _, id := range userOwners {
+			uniqueOwners[id] = struct{}{}
+		}
 	}
 
-	for u := range group {
-		result = append(result, u)
+	uniqueOwners[ownerId] = struct{}{}
+
+	result = make([]int64, 0, len(uniqueOwners))
+	for id := range uniqueOwners {
+		result = append(result, id)
 	}
 
 	return

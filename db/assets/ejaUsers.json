@@ -91,18 +91,6 @@
       "sizeEdit": 0
     }
   ],
-  "link": [
-    {
-      "srcModule": "ejaGroups",
-      "dstModule": "ejaUsers",
-      "power": 1
-    },
-    {
-      "srcModule": "ejaPermissions",
-      "dstModule": "ejaUsers",
-      "power": 2
-    }
-  ],
   "translation": [
     {
       "ejaLanguage": "en",

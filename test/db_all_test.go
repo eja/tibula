@@ -72,10 +72,34 @@ func TestModule(t *testing.T) {
 		}
 	})
 
-	t.Run("Check the owner list for a specific module", func(t *testing.T) {
-		list := db.Owners(1, tableId)
-		if len(list) != 4 {
-			t.Errorf("Expected list length to be 3, got %v", list)
+	t.Run("Check hierarchical visibility and isolation", func(t *testing.T) {
+		contains := func(slice []int64, val int64) bool {
+			for _, item := range slice {
+				if item == val {
+					return true
+				}
+			}
+			return false
+		}
+
+		listAdmin := db.Owners(1, tableId)
+		if len(listAdmin) != 4 {
+			t.Errorf("Admin should see 4 users, got %d: %v", len(listAdmin), listAdmin)
+		}
+
+		listManager := db.Owners(2, tableId)
+		if len(listManager) != 2 || !contains(listManager, 2) || !contains(listManager, 4) {
+			t.Errorf("User 2 should only see [2, 4], got: %v", listManager)
+		}
+
+		listUser3 := db.Owners(3, tableId)
+		if len(listUser3) != 1 || !contains(listUser3, 3) {
+			t.Errorf("User 3 should only see [3], got: %v", listUser3)
+		}
+
+		listUser4 := db.Owners(4, tableId)
+		if len(listUser4) != 1 || !contains(listUser4, 4) {
+			t.Errorf("User 4 should only see [4], got: %v", listUser4)
 		}
 	})
 
