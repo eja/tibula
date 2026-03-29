@@ -5,14 +5,14 @@ package db
 import (
 	"database/sql"
 	"errors"
-
-	"github.com/eja/tibula/log"
+	"log/slog"
 )
 
 const (
-	tag            = "[db]"
 	SESSION_EXPIRE = 10000 //>2 <6 hours
 )
+
+var tag = slog.String("module", "db")
 
 type TypeSession struct {
 	Handler      *sql.DB
@@ -49,7 +49,7 @@ func (session *TypeSession) Open(engine string, database string, username string
 	if err == nil {
 		session.Engine = engine
 		session.ConnectionId += 1
-		log.Debug(tag, "open", session.Engine)
+		slog.Debug("open", tag, "engine", session.Engine)
 	}
 
 	return
@@ -57,7 +57,7 @@ func (session *TypeSession) Open(engine string, database string, username string
 
 func (session *TypeSession) Close() error {
 	if session.Handler != nil {
-		log.Debug(tag, "close", session.Engine)
+		slog.Debug("close", tag, "engine", session.Engine)
 		return session.Handler.Close()
 	}
 	return errors.New("no database connection to close")
@@ -74,9 +74,9 @@ func (session *TypeSession) Run(query string, args ...any) (result TypeRun, err 
 	}
 
 	if err != nil {
-		log.Error(tag, err, query, args, err)
+		slog.Error("query run error", tag, "query", query, "args", args, "error", err)
 	} else {
-		log.Trace(tag, query, args)
+		slog.Debug("query run", tag, "query", query, "args", args)
 	}
 	return
 }
@@ -95,9 +95,9 @@ func (session *TypeSession) Value(query string, args ...any) (result string, err
 	}
 
 	if err != nil {
-		log.Error(tag, err, query, args)
+		slog.Error("query value error", tag, "query", query, "args", args, "error", err)
 	} else {
-		log.Trace(tag, query, args)
+		slog.Debug("query value", tag, "query", query, "args", args)
 	}
 	return
 }
@@ -116,9 +116,9 @@ func (session *TypeSession) Row(query string, args ...any) (result TypeRow, err 
 	}
 
 	if err != nil {
-		log.Error(tag, err, query, args)
+		slog.Error("query row error", tag, "query", query, "args", args, "error", err)
 	} else {
-		log.Trace(tag, query, args)
+		slog.Debug("query row", tag, "query", query, "args", args)
 	}
 	return
 }
@@ -137,9 +137,9 @@ func (session *TypeSession) Rows(query string, args ...any) (result TypeRows, er
 	}
 
 	if err != nil {
-		log.Error(tag, err, query, args)
+		slog.Error("query rows error", tag, "query", query, "args", args, "error", err)
 	} else {
-		log.Trace(tag, query, args)
+		slog.Debug("query rows", tag, "query", query, "args", args)
 	}
 	return
 }

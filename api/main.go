@@ -6,12 +6,13 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"log/slog"
 	"slices"
 
 	"github.com/eja/tibula/sys"
 )
 
-const tag = "[api]"
+var tag = slog.String("module", "api")
 
 func Set() Api {
 	return Api{

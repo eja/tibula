@@ -96,7 +96,7 @@ func WizardSetup() error {
 	if language != "" {
 		Options.Language = language
 	}
-	logLevel := WizardPrompt("Choose log level between 1=Error, 2=Warn, 3=Info, 4=Debug, 5=Trace (3)")
+	logLevel := WizardPrompt("Choose log level between 0=None 1=Error, 2=Warn, 3=Info, 4=Debug (3)")
 	if logLevel != "" {
 		Options.LogLevel, _ = strconv.Atoi(logLevel)
 	}

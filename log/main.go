@@ -1,12 +1,17 @@
 // Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
+//
+// DISCLAIMER: tibula is now using slog, this package is only for backward compatibility
 
 package log
 
 import (
+	"context"
+	"flag"
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -21,19 +26,35 @@ const (
 
 var Level = LevelInfo
 var logStderr = true
+var logLevelChecked = false
 
 func Init(level int, filename string) error {
 	if level < LevelFatal || level > LevelTrace {
 		return fmt.Errorf("invalid log level")
 	}
 	Level = level
-	log.SetFlags(log.Ldate | log.Ltime | log.LUTC)
+	logLevelChecked = true
+
 	if filename != "" {
-		file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)
+		file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 		if err != nil {
 			return err
 		}
-		log.SetOutput(file)
+
+		var sLevel slog.Level
+		switch level {
+		case LevelError:
+			sLevel = slog.LevelError
+		case LevelWarn:
+			sLevel = slog.LevelWarn
+		case LevelInfo:
+			sLevel = slog.LevelInfo
+		default:
+			sLevel = slog.LevelDebug
+		}
+
+		opts := &slog.HandlerOptions{Level: sLevel}
+		slog.SetDefault(slog.New(slog.NewJSONHandler(file, opts)))
 		logStderr = false
 	}
 
@@ -41,22 +62,35 @@ func Init(level int, filename string) error {
 }
 
 func Log(level int, args ...any) {
-	msg := ""
-	switch level {
-	case LevelFatal:
-		msg = "[F]"
-	case LevelError:
-		msg = "[E]"
-	case LevelWarn:
-		msg = "[W]"
-	case LevelInfo:
-		msg = "[I]"
-	case LevelDebug:
-		msg = "[D]"
-	case LevelTrace:
-		msg = "[T]"
+	if !logLevelChecked {
+		if f := flag.Lookup("log-level"); f != nil {
+			if v, err := strconv.Atoi(f.Value.String()); err == nil {
+				Level = v
+			}
+		} else {
+			ctx := context.Background()
+			logger := slog.Default()
+
+			if logger.Enabled(ctx, slog.LevelDebug) {
+				Level = LevelDebug
+			} else if logger.Enabled(ctx, slog.LevelInfo) {
+				Level = LevelInfo
+			} else if logger.Enabled(ctx, slog.LevelWarn) {
+				Level = LevelWarn
+			} else if logger.Enabled(ctx, slog.LevelError) {
+				Level = LevelError
+			} else {
+				Level = LevelFatal
+			}
+		}
+		logLevelChecked = true
 	}
 
+	if level > Level {
+		return
+	}
+
+	msg := ""
 	for _, arg := range args {
 		if str, ok := arg.(string); ok {
 			arg = regexp.MustCompile(`[\n\t\s]+`).ReplaceAllString(str, " ")
@@ -64,17 +98,24 @@ func Log(level int, args ...any) {
 		}
 		msg += fmt.Sprintf(" %v", arg)
 	}
+	msg = strings.TrimSpace(msg)
 
-	if level == LevelFatal {
-		if logStderr {
-			log.SetFlags(0)
-			log.Fatal(args...)
-		} else {
-			log.Fatal(msg)
-		}
-	}
-	if level <= Level && level >= LevelError && level <= LevelTrace {
-		log.Println(msg)
+	legacyAttr := slog.Bool("legacy_logger", true)
+
+	switch level {
+	case LevelFatal:
+		slog.Error(msg, slog.Bool("fatal", true), legacyAttr)
+		os.Exit(1)
+	case LevelError:
+		slog.Error(msg, legacyAttr)
+	case LevelWarn:
+		slog.Warn(msg, legacyAttr)
+	case LevelInfo:
+		slog.Info(msg, legacyAttr)
+	case LevelDebug:
+		slog.Debug(msg, legacyAttr)
+	case LevelTrace:
+		slog.LogAttrs(context.Background(), slog.LevelDebug, msg, slog.Bool("trace", true), legacyAttr)
 	}
 }
 

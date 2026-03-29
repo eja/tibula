@@ -4,27 +4,21 @@ package api
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"time"
-
-	"github.com/eja/tibula/log"
-	"github.com/eja/tibula/sys"
 )
 
 var httpClient = &http.Client{Timeout: 10 * time.Second}
 
 func (a *Api) info(value string) {
 	a.Info = append(a.Info, value)
-	if sys.Options.LogLevel > 3 {
-		log.Trace(tag, "[info]", value)
-	}
+	slog.Debug(value, tag, "gui", "info")
 }
 
 func (a *Api) alert(value string) {
 	a.Alert = append(a.Alert, value)
-	if sys.Options.LogLevel > 3 {
-		log.Trace(tag, "[alert]", value)
-	}
+	slog.Debug(value, tag, "gui", "alert")
 }
 
 func googleSsoEmail(token string) string {

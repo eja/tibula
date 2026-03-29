@@ -5,9 +5,8 @@ package db
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 	"strings"
-
-	"github.com/eja/tibula/log"
 )
 
 func (session *TypeSession) GroupImport(group TypeGroup, groupName string) (err error) {
@@ -86,12 +85,12 @@ func (session *TypeSession) ModuleAppend(module TypeModule, moduleName string) e
 
 	if moduleId < 1 {
 		err := fmt.Errorf("Cannot append data, module does not exists")
-		log.Error(tag, err)
+		slog.Error("module does not exist", tag, "name", moduleName)
 		return err
 	} else {
 		for _, data := range module.Data {
 			if id, err := session.New(owner, moduleId); err != nil {
-				log.Error(tag, "data append", err)
+				slog.Error("data append", tag, "error", err)
 			} else {
 				for key, val := range data {
 					session.Put(owner, moduleId, session.Number(id), key, session.String(val))
@@ -263,7 +262,7 @@ func (session *TypeSession) ModuleImport(module TypeModule, moduleName string) e
 
 		for _, data := range module.Data {
 			if id, err := session.New(owner, moduleId); err != nil {
-				log.Error(tag, "data append", err)
+				slog.Error("data append", tag, "error", err)
 			} else {
 				moduleLinksMap := map[string]string{}
 				for key, val := range data {

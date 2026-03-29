@@ -4,8 +4,10 @@ package sys
 
 import (
 	"flag"
-
-	"github.com/eja/tibula/log"
+	"io"
+	"log"
+	"log/slog"
+	"os"
 )
 
 func Configure() error {
@@ -31,7 +33,7 @@ func Configure() error {
 	flag.StringVar(&Options.ConfigFile, "config", "", "json config file")
 	flag.StringVar(&Options.Language, "language", "en", "default language code")
 	flag.StringVar(&Options.LogFile, "log-file", "", "log file")
-	flag.IntVar(&Options.LogLevel, "log-level", 3, "set the log level (1-5): 1=Error, 2=Warn, 3=Info, 4=Debug, 5=Trace")
+	flag.IntVar(&Options.LogLevel, "log-level", 3, "Detail level: 0=None, 1=Error, 2=Warn, 3=Info, 4=Debug")
 	flag.StringVar(&Options.GoogleSsoId, "google-sso-id", "", "google sso client id")
 	flag.Parse()
 
@@ -51,7 +53,34 @@ func Configure() error {
 		flag.Parse()
 	}
 
-	log.Init(Options.LogLevel, Options.LogFile)
+	var w io.Writer = io.Discard
+	var level slog.Level
+
+	if Options.LogLevel > 0 {
+		w = os.Stderr
+		if Options.LogFile != "" {
+			if f, err := os.OpenFile(Options.LogFile, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644); err != nil {
+				log.Fatal("Failed to open log file")
+			} else {
+				w = f
+			}
+		}
+
+		switch {
+		case Options.LogLevel == 1:
+			level = slog.LevelError
+		case Options.LogLevel == 2:
+			level = slog.LevelWarn
+		case Options.LogLevel == 3:
+			level = slog.LevelInfo
+		default:
+			level = slog.LevelDebug
+		}
+	}
+
+	opts := &slog.HandlerOptions{Level: level}
+	logger := slog.New(slog.NewJSONHandler(w, opts))
+	slog.SetDefault(logger)
 
 	return nil
 }

@@ -3,7 +3,8 @@
 package db
 
 import (
-	"github.com/eja/tibula/log"
+	"context"
+	"log/slog"
 )
 
 func (session *TypeSession) Translate(value string, user ...int64) string {
@@ -31,7 +32,7 @@ func (session *TypeSession) Translate(value string, user ...int64) string {
 		result, _ = session.Value("SELECT translation FROM ejaTranslations WHERE word=? AND (ejaLanguage=0 OR ejaLanguage='') LIMIT 1", value)
 	}
 	if result == "" {
-		if log.Level >= log.LevelDebug {
+		if slog.Default().Enabled(context.Background(), slog.LevelDebug) {
 			result = "{" + value + "}"
 		} else {
 			result = value
