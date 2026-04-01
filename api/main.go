@@ -12,7 +12,7 @@ import (
 	"github.com/eja/tibula/sys"
 )
 
-var tag = slog.String("module", "api")
+var tag = slog.String("module", "tibula.api")
 
 func Set() Api {
 	return Api{

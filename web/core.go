@@ -15,8 +15,6 @@ import (
 	"github.com/eja/tibula/sys"
 )
 
-var tag = slog.String("module", "web")
-
 func Core(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Server", sys.Label+"/"+sys.Version)
 	templateFile := "Login.html"

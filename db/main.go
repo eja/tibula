@@ -12,7 +12,7 @@ const (
 	SESSION_EXPIRE = 10000 //>2 <6 hours
 )
 
-var tag = slog.String("module", "db")
+var tag = slog.String("module", "tibula.db")
 
 type TypeSession struct {
 	Handler      *sql.DB

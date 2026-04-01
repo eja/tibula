@@ -15,6 +15,8 @@ import (
 	"github.com/eja/tibula/sys"
 )
 
+var tag = slog.String("module", "tibula.web")
+
 //go:embed assets
 var assets embed.FS
 
