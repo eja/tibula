@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"errors"
 	"log/slog"
+	"sync"
 )
 
 const (
@@ -22,9 +23,9 @@ func Session() TypeSession {
 	return TypeSession{}
 }
 
-func log() *slog.Logger {
+var log = sync.OnceValue(func() *slog.Logger {
 	return slog.Default().With("app", "tibula", "pkg", "db")
-}
+})
 
 func (session *TypeSession) Open(engine string, database string, username string, password string, host string, port int) (err error) {
 	if database == "" {

@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/eja/tibula/sys"
 )
@@ -22,9 +23,9 @@ var Router = http.NewServeMux()
 var RouterPathCore = "/"
 var RouterPathStatic = "/static/"
 
-func log() *slog.Logger {
-	return slog.Default().With("app", "tibula", "pkg", "web")
-}
+var log = sync.OnceValue(func() *slog.Logger {
+	return slog.Default().With("app", sys.Name, "pkg", "web")
+})
 
 func Start() error {
 

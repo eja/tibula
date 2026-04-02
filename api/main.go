@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log/slog"
 	"slices"
+	"sync"
 
 	"github.com/eja/tibula/sys"
 )
@@ -23,9 +24,9 @@ func Set() Api {
 	}
 }
 
-func log() *slog.Logger {
-	return slog.Default().With("app", "tibula", "pkg", "api")
-}
+var log = sync.OnceValue(func() *slog.Logger {
+	return slog.Default().With("app", sys.Name, "pkg", "api")
+})
 
 func Run(eja Api, sessionSave bool) (Api, error) {
 	db := DbProvider()
