@@ -5,7 +5,6 @@ package web
 import (
 	"encoding/json"
 	"html/template"
-	"log/slog"
 	"net/http"
 	"path/filepath"
 	"strings"
@@ -26,17 +25,17 @@ func Core(w http.ResponseWriter, r *http.Request) {
 		err := decoder.Decode(&eja)
 		if err != nil {
 			msg := "JSON structure is not valid"
-			slog.Error(msg, tag, "address", r.RemoteAddr, "error", err)
+			log().Error(msg, "address", r.RemoteAddr, "error", err)
 			http.Error(w, msg, http.StatusBadRequest)
 			return
 		}
 		eja, err = api.Run(eja, false)
 		if err != nil {
 			if err.Error() == "ejaNotAuthorized" {
-				slog.Warn("API login problem", tag, "address", r.RemoteAddr, "error", err)
+				log().Warn("API login problem", "address", r.RemoteAddr, "error", err)
 				http.Error(w, "Unauthorized: Access Denied", http.StatusUnauthorized)
 			} else {
-				slog.Error("API process error", tag, "address", r.RemoteAddr, "error", err)
+				log().Error("API process error", "address", r.RemoteAddr, "error", err)
 				http.Error(w, "API process error", http.StatusInternalServerError)
 			}
 		} else {
@@ -51,7 +50,7 @@ func Core(w http.ResponseWriter, r *http.Request) {
 			}
 			w.Header().Set("Content-Type", "application/json")
 			if _, err = w.Write(jsonData); err != nil {
-				slog.Error("cannot return json data", tag, "error", err)
+				log().Error("cannot return json data", "error", err)
 			}
 		}
 
@@ -140,9 +139,9 @@ func Core(w http.ResponseWriter, r *http.Request) {
 		eja, err = api.Run(eja, true)
 		if err != nil {
 			if err.Error() == "ejaNotAuthorized" {
-				slog.Warn("API login problem", tag, "address", r.RemoteAddr, "error", err)
+				log().Warn("API login problem", "address", r.RemoteAddr, "error", err)
 			} else {
-				slog.Error("API process error", tag, "address", r.RemoteAddr, "error", err)
+				log().Error("API process error", "address", r.RemoteAddr, "error", err)
 			}
 		} else {
 			templateFile = eja.ActionType + ".html"
@@ -168,6 +167,6 @@ func Core(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
-		slog.Error("API process error", tag, "address", r.RemoteAddr, "error", err)
+		log().Error("API process error", "address", r.RemoteAddr, "error", err)
 	}
 }

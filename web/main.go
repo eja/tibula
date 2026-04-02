@@ -15,8 +15,6 @@ import (
 	"github.com/eja/tibula/sys"
 )
 
-var tag = slog.String("module", "tibula.web")
-
 //go:embed assets
 var assets embed.FS
 
@@ -24,7 +22,12 @@ var Router = http.NewServeMux()
 var RouterPathCore = "/"
 var RouterPathStatic = "/static/"
 
+func log() *slog.Logger {
+	return slog.Default().With("app", "tibula", "pkg", "web")
+}
+
 func Start() error {
+
 	address := fmt.Sprintf("%s:%d", sys.Options.WebHost, sys.Options.WebPort)
 
 	Router.HandleFunc(RouterPathCore, Core)
@@ -46,13 +49,13 @@ func Start() error {
 		} else if _, err := os.Stat(sys.Options.WebTlsPublic); err != nil {
 			return errors.New("failed to open public certificate")
 		} else {
-			slog.Info("Starting server on https://" + address)
+			log().Info("Starting server on https://" + address)
 			if err := http.ListenAndServeTLS(address, sys.Options.WebTlsPublic, sys.Options.WebTlsPrivate, Router); err != nil {
 				return err
 			}
 		}
 	} else {
-		slog.Info("Starting server on http://" + address)
+		log().Info("Starting server on http://" + address)
 		if err := http.ListenAndServe(address, Router); err != nil {
 			return err
 		}

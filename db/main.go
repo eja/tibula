@@ -12,8 +12,6 @@ const (
 	SESSION_EXPIRE = 10000 //>2 <6 hours
 )
 
-var tag = slog.String("module", "tibula.db")
-
 type TypeSession struct {
 	Handler      *sql.DB
 	Engine       string
@@ -24,8 +22,11 @@ func Session() TypeSession {
 	return TypeSession{}
 }
 
-func (session *TypeSession) Open(engine string, database string, username string, password string, host string, port int) (err error) {
+func log() *slog.Logger {
+	return slog.Default().With("app", "tibula", "pkg", "db")
+}
 
+func (session *TypeSession) Open(engine string, database string, username string, password string, host string, port int) (err error) {
 	if database == "" {
 		return errors.New("database name/file is mandatory")
 	}
@@ -49,7 +50,7 @@ func (session *TypeSession) Open(engine string, database string, username string
 	if err == nil {
 		session.Engine = engine
 		session.ConnectionId += 1
-		slog.Debug("open", tag, "engine", session.Engine)
+		log().Debug("open", "engine", session.Engine)
 	}
 
 	return
@@ -57,7 +58,7 @@ func (session *TypeSession) Open(engine string, database string, username string
 
 func (session *TypeSession) Close() error {
 	if session.Handler != nil {
-		slog.Debug("close", tag, "engine", session.Engine)
+		log().Debug("close", "engine", session.Engine)
 		return session.Handler.Close()
 	}
 	return errors.New("no database connection to close")
@@ -74,9 +75,9 @@ func (session *TypeSession) Run(query string, args ...any) (result TypeRun, err 
 	}
 
 	if err != nil {
-		slog.Error("query run error", tag, "query", query, "args", args, "error", err)
+		log().Error("query run error", "query", query, "args", args, "error", err)
 	} else {
-		slog.Debug("query run", tag, "query", query, "args", args)
+		log().Debug("query run", "query", query, "args", args)
 	}
 	return
 }
@@ -95,9 +96,9 @@ func (session *TypeSession) Value(query string, args ...any) (result string, err
 	}
 
 	if err != nil {
-		slog.Error("query value error", tag, "query", query, "args", args, "error", err)
+		log().Error("query value error", "query", query, "args", args, "error", err)
 	} else {
-		slog.Debug("query value", tag, "query", query, "args", args)
+		log().Debug("query value", "query", query, "args", args)
 	}
 	return
 }
@@ -116,9 +117,9 @@ func (session *TypeSession) Row(query string, args ...any) (result TypeRow, err 
 	}
 
 	if err != nil {
-		slog.Error("query row error", tag, "query", query, "args", args, "error", err)
+		log().Error("query row error", "query", query, "args", args, "error", err)
 	} else {
-		slog.Debug("query row", tag, "query", query, "args", args)
+		log().Debug("query row", "query", query, "args", args)
 	}
 	return
 }
@@ -137,9 +138,9 @@ func (session *TypeSession) Rows(query string, args ...any) (result TypeRows, er
 	}
 
 	if err != nil {
-		slog.Error("query rows error", tag, "query", query, "args", args, "error", err)
+		log().Error("query rows error", "query", query, "args", args, "error", err)
 	} else {
-		slog.Debug("query rows", tag, "query", query, "args", args)
+		log().Debug("query rows", "query", query, "args", args)
 	}
 	return
 }

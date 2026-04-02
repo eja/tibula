@@ -12,8 +12,6 @@ import (
 	"github.com/eja/tibula/sys"
 )
 
-var tag = slog.String("module", "tibula.api")
-
 func Set() Api {
 	return Api{
 		Language:           sys.Options.Language,
@@ -23,6 +21,10 @@ func Set() Api {
 		SearchOrder:        make(map[string]string),
 		Link:               DbLink{},
 	}
+}
+
+func log() *slog.Logger {
+	return slog.Default().With("app", "tibula", "pkg", "api")
 }
 
 func Run(eja Api, sessionSave bool) (Api, error) {

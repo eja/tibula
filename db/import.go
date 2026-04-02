@@ -5,7 +5,6 @@ package db
 import (
 	"errors"
 	"fmt"
-	"log/slog"
 	"strings"
 )
 
@@ -85,12 +84,12 @@ func (session *TypeSession) ModuleAppend(module TypeModule, moduleName string) e
 
 	if moduleId < 1 {
 		err := fmt.Errorf("Cannot append data, module does not exists")
-		slog.Error("module does not exist", tag, "name", moduleName)
+		log().Error("module does not exist", "name", moduleName)
 		return err
 	} else {
 		for _, data := range module.Data {
 			if id, err := session.New(owner, moduleId); err != nil {
-				slog.Error("data append", tag, "error", err)
+				log().Error("data append", "error", err)
 			} else {
 				for key, val := range data {
 					session.Put(owner, moduleId, session.Number(id), key, session.String(val))
@@ -262,7 +261,7 @@ func (session *TypeSession) ModuleImport(module TypeModule, moduleName string) e
 
 		for _, data := range module.Data {
 			if id, err := session.New(owner, moduleId); err != nil {
-				slog.Error("data append", tag, "error", err)
+				log().Error("data append", "error", err)
 			} else {
 				moduleLinksMap := map[string]string{}
 				for key, val := range data {

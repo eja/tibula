@@ -4,7 +4,6 @@ package api
 
 import (
 	"encoding/json"
-	"log/slog"
 	"net/http"
 	"time"
 )
@@ -13,12 +12,12 @@ var httpClient = &http.Client{Timeout: 10 * time.Second}
 
 func (a *Api) info(value string) {
 	a.Info = append(a.Info, value)
-	slog.Debug(value, tag, "gui", "info")
+	log().Debug(value, "gui", "info")
 }
 
 func (a *Api) alert(value string) {
 	a.Alert = append(a.Alert, value)
-	slog.Debug(value, tag, "gui", "alert")
+	log().Debug(value, "gui", "alert")
 }
 
 func googleSsoEmail(token string) string {
