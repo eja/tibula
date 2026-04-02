@@ -29,7 +29,7 @@ func ConfigWrite(filename string, instance any) error {
 		return err
 	}
 
-	err = os.WriteFile(filename, jsonData, os.ModePerm)
+	err = os.WriteFile(filename, jsonData, 0600)
 	if err != nil {
 		return err
 	}

@@ -4,6 +4,7 @@ package db
 
 import (
 	"fmt"
+	"log/slog"
 	"regexp"
 	"strings"
 )
@@ -215,7 +216,7 @@ func (session *TypeSession) SearchQueryOrderAndLimit(order string, limit int64, 
 	pattern := `^\s*(\w+\s+(ASC|DESC)\s*,\s*)*\w+\s+(ASC|DESC)\s*$`
 	regexpPattern := regexp.MustCompile(pattern)
 	if !regexpPattern.MatchString(order) {
-		log().Warn("order by is not regex compatible", "order", order)
+		slog.Warn("order by is not regex compatible", "order", order)
 		return fmt.Sprintf("LIMIT %d OFFSET %d", limit, offset)
 	}
 	return fmt.Sprintf("ORDER BY %s LIMIT %d OFFSET %d", order, limit, offset)

@@ -6,7 +6,6 @@ import (
 	"database/sql"
 	"errors"
 	"log/slog"
-	"sync"
 )
 
 const (
@@ -22,10 +21,6 @@ type TypeSession struct {
 func Session() TypeSession {
 	return TypeSession{}
 }
-
-var log = sync.OnceValue(func() *slog.Logger {
-	return slog.Default().With("app", "tibula", "pkg", "db")
-})
 
 func (session *TypeSession) Open(engine string, database string, username string, password string, host string, port int) (err error) {
 	if database == "" {
@@ -51,7 +46,7 @@ func (session *TypeSession) Open(engine string, database string, username string
 	if err == nil {
 		session.Engine = engine
 		session.ConnectionId += 1
-		log().Debug("open", "engine", session.Engine)
+		slog.Debug(session.Engine)
 	}
 
 	return
@@ -59,7 +54,7 @@ func (session *TypeSession) Open(engine string, database string, username string
 
 func (session *TypeSession) Close() error {
 	if session.Handler != nil {
-		log().Debug("close", "engine", session.Engine)
+		slog.Debug(session.Engine)
 		return session.Handler.Close()
 	}
 	return errors.New("no database connection to close")
@@ -76,9 +71,9 @@ func (session *TypeSession) Run(query string, args ...any) (result TypeRun, err 
 	}
 
 	if err != nil {
-		log().Error("query run error", "query", query, "args", args, "error", err)
+		slog.Error(query, "args", args, "error", err)
 	} else {
-		log().Debug("query run", "query", query, "args", args)
+		slog.Debug(query, "args", args)
 	}
 	return
 }
@@ -97,9 +92,9 @@ func (session *TypeSession) Value(query string, args ...any) (result string, err
 	}
 
 	if err != nil {
-		log().Error("query value error", "query", query, "args", args, "error", err)
+		slog.Error(query, "args", args, "error", err)
 	} else {
-		log().Debug("query value", "query", query, "args", args)
+		slog.Debug(query, "args", args)
 	}
 	return
 }
@@ -118,9 +113,9 @@ func (session *TypeSession) Row(query string, args ...any) (result TypeRow, err 
 	}
 
 	if err != nil {
-		log().Error("query row error", "query", query, "args", args, "error", err)
+		slog.Error(query, "args", args, "error", err)
 	} else {
-		log().Debug("query row", "query", query, "args", args)
+		slog.Debug(query, "args", args)
 	}
 	return
 }
@@ -139,9 +134,9 @@ func (session *TypeSession) Rows(query string, args ...any) (result TypeRows, er
 	}
 
 	if err != nil {
-		log().Error("query rows error", "query", query, "args", args, "error", err)
+		slog.Error(query, "args", args, "error", err)
 	} else {
-		log().Debug("query rows", "query", query, "args", args)
+		slog.Debug(query, "args", args)
 	}
 	return
 }

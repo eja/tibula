@@ -4,9 +4,6 @@ package sys
 
 import (
 	"flag"
-	"io"
-	"log"
-	"log/slog"
 	"os"
 )
 
@@ -14,7 +11,6 @@ func Configure() error {
 	flag.BoolVar(&Commands.Start, "start", false, "start the web service")
 	flag.BoolVar(&Commands.DbSetup, "db-setup", false, "initialize the database")
 	flag.BoolVar(&Commands.Wizard, "wizard", false, "guided setup")
-	flag.BoolVar(&Commands.Help, "help", false, "show this message")
 
 	flag.StringVar(&Options.DbType, "db-type", "sqlite", "database type: sqlite/mysql")
 	flag.StringVar(&Options.DbName, "db-name", "", "database name or filename")
@@ -35,52 +31,28 @@ func Configure() error {
 	flag.StringVar(&Options.LogFile, "log-file", "", "log file")
 	flag.IntVar(&Options.LogLevel, "log-level", 3, "Detail level: 0=None, 1=Error, 2=Warn, 3=Info, 4=Debug")
 	flag.StringVar(&Options.GoogleSsoId, "google-sso-id", "", "google sso client id")
+
 	flag.Parse()
 
-	parse := false
+	targetConfig := Options.ConfigFile
+	if targetConfig == "" {
+		targetConfig = ConfigFileName()
+	}
 
-	if Options.ConfigFile != "" {
-		if err := ConfigRead(Options.ConfigFile, &Options); err != nil {
+	if _, err := os.Stat(targetConfig); err == nil {
+		cliOverrides := make(map[string]string)
+		flag.Visit(func(f *flag.Flag) {
+			cliOverrides[f.Name] = f.Value.String()
+		})
+
+		if err := ConfigRead(targetConfig, &Options); err != nil {
 			return err
 		}
-		parse = true
-	} else {
-		if err := ConfigRead(ConfigFileName(), &Options); err == nil {
-			parse = true
-		}
-	}
-	if parse {
-		flag.Parse()
-	}
 
-	var w io.Writer = io.Discard
-	var level slog.Level
-
-	if Options.LogLevel > 0 {
-		w = os.Stderr
-		if Options.LogFile != "" {
-			if f, err := os.OpenFile(Options.LogFile, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644); err != nil {
-				log.Fatal("Failed to open log file")
-			} else {
-				w = f
-			}
-		}
-
-		switch {
-		case Options.LogLevel == 1:
-			level = slog.LevelError
-		case Options.LogLevel == 2:
-			level = slog.LevelWarn
-		case Options.LogLevel == 3:
-			level = slog.LevelInfo
-		default:
-			level = slog.LevelDebug
+		for name, value := range cliOverrides {
+			flag.Set(name, value)
 		}
 	}
 
-	opts := &slog.HandlerOptions{Level: level}
-	logger := slog.New(slog.NewJSONHandler(w, opts))
-	slog.SetDefault(logger)
-
-	return nil
+	return logSetup()
 }

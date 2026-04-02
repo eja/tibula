@@ -3,6 +3,7 @@
 package sys
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"golang.org/x/term"
@@ -14,9 +15,11 @@ import (
 
 func WizardPrompt(message string) string {
 	fmt.Printf("%s: ", message)
-	var input string
-	fmt.Scanln(&input)
-	return input
+	scanner := bufio.NewScanner(os.Stdin)
+	if scanner.Scan() {
+		return strings.TrimSpace(scanner.Text())
+	}
+	return ""
 }
 
 func WizardPassword(message string) string {
@@ -27,6 +30,7 @@ func WizardPassword(message string) string {
 }
 
 func WizardSetup() error {
+	var err error
 	var tibulaDb = "tibula.db"
 	var tibulaJson = ConfigFileName()
 
@@ -54,7 +58,10 @@ func WizardSetup() error {
 	}
 	webPort := WizardPrompt("Web port to listen to (35248)")
 	if webPort != "" {
-		Options.WebPort, _ = strconv.Atoi(webPort)
+		Options.WebPort, err = strconv.Atoi(webPort)
+		if err != nil {
+			return fmt.Errorf("invalid port number: %s", webPort)
+		}
 	}
 	webPrivate := WizardPrompt("Web https private certificate path (none)")
 	if webPrivate != "" {
@@ -77,7 +84,10 @@ func WizardSetup() error {
 		}
 		dbPort := WizardPrompt("Database port (3306)")
 		if dbPort != "" {
-			Options.DbPort, _ = strconv.Atoi(dbPort)
+			Options.DbPort, err = strconv.Atoi(dbPort)
+			if err != nil {
+				return fmt.Errorf("invalid port number: %s", dbPort)
+			}
 		}
 	} else {
 		Options.DbPort = 0
@@ -98,7 +108,10 @@ func WizardSetup() error {
 	}
 	logLevel := WizardPrompt("Choose log level between 0=None 1=Error, 2=Warn, 3=Info, 4=Debug (3)")
 	if logLevel != "" {
-		Options.LogLevel, _ = strconv.Atoi(logLevel)
+		Options.LogLevel, err = strconv.Atoi(logLevel)
+		if err != nil {
+			return fmt.Errorf("invalid log level: %s", logLevel)
+		}
 	}
 	Options.LogFile = WizardPrompt("Choose a log file (stderr)")
 	jsonFile := WizardPrompt(fmt.Sprintf("Config file (%s)", tibulaJson))

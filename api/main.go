@@ -6,9 +6,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"log/slog"
 	"slices"
-	"sync"
 
 	"github.com/eja/tibula/sys"
 )
@@ -23,10 +21,6 @@ func Set() Api {
 		Link:               DbLink{},
 	}
 }
-
-var log = sync.OnceValue(func() *slog.Logger {
-	return slog.Default().With("app", sys.Name, "pkg", "api")
-})
 
 func Run(eja Api, sessionSave bool) (Api, error) {
 	db := DbProvider()

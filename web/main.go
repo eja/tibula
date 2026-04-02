@@ -11,7 +11,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"sync"
 
 	"github.com/eja/tibula/sys"
 )
@@ -22,10 +21,6 @@ var assets embed.FS
 var Router = http.NewServeMux()
 var RouterPathCore = "/"
 var RouterPathStatic = "/static/"
-
-var log = sync.OnceValue(func() *slog.Logger {
-	return slog.Default().With("app", sys.Name, "pkg", "web")
-})
 
 func Start() error {
 
@@ -50,13 +45,13 @@ func Start() error {
 		} else if _, err := os.Stat(sys.Options.WebTlsPublic); err != nil {
 			return errors.New("failed to open public certificate")
 		} else {
-			log().Info("Starting server on https://" + address)
+			slog.Info("Starting server", "address", "https://"+address)
 			if err := http.ListenAndServeTLS(address, sys.Options.WebTlsPublic, sys.Options.WebTlsPrivate, Router); err != nil {
 				return err
 			}
 		}
 	} else {
-		log().Info("Starting server on http://" + address)
+		slog.Info("Starting server", "address", "http://"+address)
 		if err := http.ListenAndServe(address, Router); err != nil {
 			return err
 		}
