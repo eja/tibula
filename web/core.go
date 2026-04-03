@@ -137,15 +137,19 @@ func Core(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		eja, err = api.Run(eja, true)
-		if err != nil {
-			if err.Error() == "ejaNotAuthorized" {
-				slog.Warn("API login problem", "address", r.RemoteAddr, "error", err)
-			} else {
-				slog.Error("API process error", "address", r.RemoteAddr, "error", err)
-			}
+		if len(r.Form) == 0 {
+			err = nil
 		} else {
-			templateFile = eja.ActionType + ".html"
+			eja, err = api.Run(eja, true)
+			if err != nil {
+				if err.Error() == "ejaNotAuthorized" {
+					slog.Warn("API login problem", "address", r.RemoteAddr, "error", err)
+				} else {
+					slog.Error("API process error", "address", r.RemoteAddr, "error", err)
+				}
+			} else {
+				templateFile = eja.ActionType + ".html"
+			}
 		}
 
 		if sys.Options.GoogleSsoId != "" {

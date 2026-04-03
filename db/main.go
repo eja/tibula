@@ -46,7 +46,7 @@ func (session *TypeSession) Open(engine string, database string, username string
 	if err == nil {
 		session.Engine = engine
 		session.ConnectionId += 1
-		slog.Debug(session.Engine)
+		slog.Debug("DB open", "engine", session.Engine)
 	}
 
 	return
@@ -54,7 +54,7 @@ func (session *TypeSession) Open(engine string, database string, username string
 
 func (session *TypeSession) Close() error {
 	if session.Handler != nil {
-		slog.Debug(session.Engine)
+		slog.Debug("DB close", "engine", session.Engine)
 		return session.Handler.Close()
 	}
 	return errors.New("no database connection to close")
