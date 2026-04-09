@@ -3,6 +3,7 @@
 package db
 
 import (
+	"encoding/csv"
 	"strings"
 )
 
@@ -59,10 +60,13 @@ func (session *TypeSession) Owners(ownerId int64, moduleId int64) (result []int6
 	if ok, _ := session.FieldExists("ejaUsers", "ejaManaged"); ok {
 		managed, err := session.Value(`SELECT ejaManaged FROM ejaUsers WHERE ejaId=?`, ownerId)
 		if err == nil && managed != "" {
-			for _, part := range strings.Split(managed, ",") {
-				trimmed := strings.TrimSpace(part)
-				if trimmed != "" {
-					uniqueOwners[session.Number(trimmed)] = struct{}{}
+			r := csv.NewReader(strings.NewReader(managed))
+			parts, err := r.Read()
+			if err == nil {
+				for _, part := range parts {
+					if part != "" {
+						uniqueOwners[session.Number(part)] = struct{}{}
+					}
 				}
 			}
 		}
