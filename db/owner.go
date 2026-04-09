@@ -1,8 +1,15 @@
 // Copyright (C) by Ubaldo Porcheddu <ubaldo@eja.it>
+
 package db
 
+import (
+	"strings"
+)
+
 func (session *TypeSession) Owners(ownerId int64, moduleId int64) (result []int64) {
-	uniqueOwners := make(map[int64]struct{})
+	uniqueOwners := map[int64]struct{}{
+		ownerId: {},
+	}
 
 	ejaGroups := session.ModuleGetIdByName("ejaGroups")
 	ejaUsers := session.ModuleGetIdByName("ejaUsers")
@@ -49,7 +56,17 @@ func (session *TypeSession) Owners(ownerId int64, moduleId int64) (result []int6
 		}
 	}
 
-	uniqueOwners[ownerId] = struct{}{}
+	if ok, _ := session.FieldExists("ejaUsers", "ejaManaged"); ok {
+		managed, err := session.Value(`SELECT ejaManaged FROM ejaUsers WHERE ejaId=?`, ownerId)
+		if err == nil && managed != "" {
+			for _, part := range strings.Split(managed, ",") {
+				trimmed := strings.TrimSpace(part)
+				if trimmed != "" {
+					uniqueOwners[session.Number(trimmed)] = struct{}{}
+				}
+			}
+		}
+	}
 
 	result = make([]int64, 0, len(uniqueOwners))
 	for id := range uniqueOwners {

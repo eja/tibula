@@ -146,13 +146,12 @@ func TestModule(t *testing.T) {
 		}
 	})
 
-	//?
 	t.Run("Check the field for module ejaUsers", func(t *testing.T) {
 		values, err := db.Fields(0, db.ModuleGetIdByName(tableName), "Edit", map[string]string{})
 		if err != nil {
 			t.Fatal(err)
 		}
-		if len(values) != 6 {
+		if len(values) != 7 {
 			t.Errorf("fields length %d is not what expected: %v", len(values), values)
 		}
 	})

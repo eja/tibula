@@ -85,7 +85,7 @@ func (session *TypeSession) ModuleAppend(module TypeModule, moduleName string) e
 
 	if moduleId < 1 {
 		msg := "Cannot append data, module does not exists"
-		err := fmt.Errorf(msg)
+		err := errors.New(msg)
 		slog.Error(msg, "name", moduleName)
 		return err
 	} else {
