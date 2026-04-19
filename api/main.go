@@ -40,11 +40,20 @@ func Run(eja Api, sessionSave bool) (Api, error) {
 		return eja, errors.New(errName)
 	}
 
+	if eja.ModuleId > 0 {
+		eja.ModuleName = db.ModuleGetNameById(eja.ModuleId)
+		if eja.ModuleName == "" {
+			eja.ModuleId = 0
+		}
+	} else if eja.ModuleName != "" {
+		eja.ModuleId = db.ModuleGetIdByName(eja.ModuleName)
+		if eja.ModuleId == 0 {
+			eja.ModuleName = ""
+		}
+	}
 	if eja.ModuleId == 0 {
 		eja.ModuleId = db.ModuleGetIdByName("eja")
-	}
-	if eja.ModuleName == "" {
-		eja.ModuleName = db.ModuleGetNameById(eja.ModuleId)
+		eja.ModuleName = "eja"
 	}
 
 	eja.Commands, _ = db.Commands(eja.Owner, eja.ModuleId, "")
@@ -359,6 +368,9 @@ func handleSearch(eja Api, db DbSession, linkField string, sub ActiveSubModule) 
 
 	var sqlOrder string
 	for _, key := range db.FieldNameList(eja.ModuleId, "List") {
+		if db.FieldNameIsValid(key) != nil {
+			continue
+		}
 		v := eja.SearchOrder[key]
 		if v == "ASC" || v == "DESC" {
 			db.SessionPut(eja.Owner, "SearchOrder", v, key)

@@ -23,7 +23,7 @@ type Api struct {
 	ModuleId            int64               `json:"ModuleId,omitempty"`
 	ModuleLabel         string              `json:"ModuleLabel,omitempty"`
 	ModuleName          string              `json:"ModuleName,omitempty"`
-	Owner               int64               `json:"Owner,omitempty"`
+	Owner               int64               `json:"-"`
 	Path                []db.TypeModulePath `json:"Path,omitempty"`
 	SearchCols          []string            `json:"SearchCols,omitempty"`
 	SearchCount         int64               `json:"SearchCount,omitempty"`
@@ -37,9 +37,9 @@ type Api struct {
 	SearchOrder         map[string]string   `json:"SearchOrder,omitempty"`
 	SearchRows          db.TypeRows         `json:"SearchRows,omitempty"`
 	Session             string              `json:"Session,omitempty"`
-	SqlQuery            string              `json:"SqlQuery,omitempty"`
-	SqlQuery64          string              `json:"SqlQuery64,omitempty"`
-	SqlQueryArgs        []any               `json:"SqlQueryArgs,omitempty"`
+	SqlQuery            string              `json:"-"`
+	SqlQuery64          string              `json:"-"`
+	SqlQueryArgs        []any               `json:"-"`
 	Tree                []db.TypeModuleTree `json:"Tree,omitempty"`
 	Values              map[string]string   `json:"Values,omitempty"`
 	GoogleSsoId         string              `json:"GoogleSsoId,omitempty"`

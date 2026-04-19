@@ -29,12 +29,12 @@ func (session *TypeSession) UserGetAllBySession(sessionHash string) TypeRow {
 	if sessionHash == "" {
 		return nil
 	}
-	if row, err := session.Row(`SELECT * FROM ejaUsers WHERE ejaSession = ? AND ejaSession !="" LIMIT 1`, sessionHash); err == nil && len(row) > 0 {
+	if row, err := session.Row(`SELECT * FROM ejaUsers WHERE ejaSession = ? AND ejaSession != "" LIMIT 1`, sessionHash); err == nil && len(row) > 0 {
 		return row
 	}
 	timeNow := time.Now().Unix() / SESSION_EXPIRE
 	timePre := timeNow - 1
-	rows, err := session.Rows("SELECT * FROM ejaUsers")
+	rows, err := session.Rows(`SELECT * FROM ejaUsers WHERE ejaSession != ""`)
 	if err == nil {
 		for _, row := range rows {
 			hashNow := session.Sha256(fmt.Sprintf("%s.%s.%d", row["ejaSession"], row["ejaId"], timeNow))

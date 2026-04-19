@@ -9,14 +9,60 @@ import (
 	"net/http"
 	"path/filepath"
 	"strings"
+	"sync"
+	"time"
 
 	"github.com/eja/tibula/api"
 	"github.com/eja/tibula/db"
 	"github.com/eja/tibula/sys"
 )
 
+type loginRateLimit struct {
+	failures int
+	lockout  time.Time
+}
+
+var loginTracker sync.Map
+
+const maxLoginFailures = 5
+const loginLockoutDuration = 5 * time.Minute
+
+func updateLoginTracker(ip string, action string, err error) {
+	if action != "login" {
+		return
+	}
+
+	if err != nil && err.Error() == "ejaNotAuthorized" {
+		val, _ := loginTracker.LoadOrStore(ip, loginRateLimit{})
+		limit := val.(loginRateLimit)
+		limit.failures++
+		if limit.failures >= maxLoginFailures {
+			limit.lockout = time.Now().Add(loginLockoutDuration)
+		}
+		loginTracker.Store(ip, limit)
+	} else if err == nil {
+		loginTracker.Delete(ip)
+	}
+}
+
 func Core(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Server", sys.Label+"/"+sys.Version)
+
+	clientIP := getClientIP(r)
+
+	if val, ok := loginTracker.Load(clientIP); ok {
+		limit := val.(loginRateLimit)
+		if limit.failures >= maxLoginFailures {
+			if time.Now().Before(limit.lockout) {
+				slog.Warn("IP locked out due to brute-force protection", "ip", clientIP)
+				http.Error(w, "Too many failed login attempts. Try again later.", http.StatusTooManyRequests)
+				return
+			} else {
+				loginTracker.Delete(clientIP)
+			}
+		}
+	}
+
 	templateFile := "Login.html"
 	var err error
 
@@ -31,6 +77,7 @@ func Core(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		eja, err = api.Run(eja, false)
+		updateLoginTracker(clientIP, eja.Action, err)
 		if err != nil {
 			if err.Error() == "ejaNotAuthorized" {
 				slog.Warn("API login problem", "address", r.RemoteAddr, "error", err)
@@ -141,6 +188,7 @@ func Core(w http.ResponseWriter, r *http.Request) {
 			err = nil
 		} else {
 			eja, err = api.Run(eja, true)
+			updateLoginTracker(clientIP, eja.Action, err)
 			if err != nil {
 				if err.Error() == "ejaNotAuthorized" {
 					slog.Warn("API login problem", "address", r.RemoteAddr, "error", err)
