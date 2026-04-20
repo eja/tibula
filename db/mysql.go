@@ -157,3 +157,29 @@ func mysqlFieldNameIsValid(name string) error {
 	}
 	return nil
 }
+
+func (session *TypeSession) mysqlFtsAdd(tableName, columnName string) error {
+	if err := mysqlTableNameIsValid(tableName); err != nil {
+		return err
+	}
+	if err := mysqlFieldNameIsValid(columnName); err != nil {
+		return err
+	}
+
+	indexName := "ejaFTS_" + columnName
+
+	var count int
+	query := `SELECT COUNT(*) FROM information_schema.STATISTICS 
+	          WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND INDEX_NAME = ?`
+	session.Handler.QueryRow(query, tableName, indexName).Scan(&count)
+
+	if count == 0 {
+		addIndexQuery := fmt.Sprintf(
+			"ALTER TABLE %s ADD FULLTEXT INDEX %s (%s)",
+			tableName, indexName, columnName,
+		)
+		session.Handler.Exec(addIndexQuery)
+	}
+
+	return nil
+}

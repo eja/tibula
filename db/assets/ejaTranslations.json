@@ -50,7 +50,7 @@
       "value": "",
       "powerEdit": 5,
       "powerList": 2,
-      "type": "htmlArea",
+      "type": "textArea",
       "translate": 0,
       "powerSearch": 0,
       "name": "translation"

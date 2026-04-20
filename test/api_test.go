@@ -1420,3 +1420,104 @@ func TestConcurrentOperations(t *testing.T) {
 		}
 	})
 }
+
+// TestFullTextSearch tests FTS field creation, indexing, and searching via the API
+func TestFullTextSearch(t *testing.T) {
+	_, cleanup := setupTestDB(t)
+	defer cleanup()
+
+	session := getAuthenticatedSession(t)
+
+	// 1. Create a dynamic module
+	eja := api.Set()
+	eja.Session = session
+	eja.ModuleName = "ejaModules"
+	eja.Action = "new"
+	res, _ := api.Run(eja, true)
+	moduleId := res.Id
+
+	eja = api.Set()
+	eja.Session = session
+	eja.ModuleName = "ejaModules"
+	eja.Id = moduleId
+	eja.Action = "save"
+	eja.Values["name"] = "testDocs"
+	eja.Values["sqlCreated"] = "1"
+	res, err := api.Run(eja, true)
+	if err != nil {
+		t.Fatalf("Failed to create module: %v", err)
+	}
+
+	// 2. Add an FTS field to the module
+	eja = api.Set()
+	eja.Session = session
+	eja.ModuleName = "ejaFields"
+	eja.Action = "new"
+	res, _ = api.Run(eja, true)
+
+	eja = api.Set()
+	eja.Session = session
+	eja.ModuleName = "ejaFields"
+	eja.Id = res.Id
+	eja.Action = "save"
+	eja.Values["ejaModuleId"] = fmt.Sprintf("%d", moduleId)
+	eja.Values["name"] = "content"
+	eja.Values["type"] = "fts"
+	eja.Values["powerSearch"] = "1"
+	eja.Values["powerList"] = "1"
+	eja.Values["powerEdit"] = "1"
+	_, err = api.Run(eja, true)
+	if err != nil {
+		t.Fatalf("Failed to create FTS field: %v", err)
+	}
+
+	// 3. Insert records via API
+	docs := []string{
+		"Golang is a statically typed language",
+		"I love programming in Go",
+		"SQLite uses fts5 for virtual table text searching",
+	}
+
+	for _, doc := range docs {
+		eja = api.Set()
+		eja.Session = session
+		eja.ModuleName = "testDocs"
+		eja.Action = "new"
+		res, _ = api.Run(eja, true)
+
+		eja = api.Set()
+		eja.Session = session
+		eja.ModuleName = "testDocs"
+		eja.Id = res.Id
+		eja.Action = "save"
+		eja.Values["content"] = doc
+		api.Run(eja, true)
+	}
+
+	// 4. Perform FTS Search via API
+	eja = api.Set()
+	eja.Session = session
+	eja.ModuleName = "testDocs"
+	eja.Action = "search"
+	eja.Values["content"] = "programming"
+
+	res, err = api.Run(eja, true)
+	if err != nil {
+		t.Fatalf("FTS search failed: %v", err)
+	}
+	if res.SearchCount != 1 {
+		t.Errorf("Expected 1 result for 'programming', got %d", res.SearchCount)
+	}
+
+	// Search for another keyword 'fts5'
+	eja = api.Set()
+	eja.Session = session
+	eja.ModuleName = "testDocs"
+	eja.Action = "search"
+	eja.Values["content"] = "fts5"
+	res, _ = api.Run(eja, true)
+
+	if res.SearchCount != 1 {
+		t.Errorf("Expected 1 result for 'fts5', got %d", res.SearchCount)
+	}
+}

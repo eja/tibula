@@ -171,6 +171,51 @@ func TestDbOperations(t *testing.T) {
 		session.TableDel("table_concurrent")
 	})
 
+	t.Run("FTS_Triggers_And_Match", func(t *testing.T) {
+		tableName := "table_fts_test"
+		if err := session.TableAdd(tableName); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := session.FieldAdd(tableName, "body", "fts"); err != nil {
+			t.Fatal(err)
+		}
+
+		res, err := session.Run(fmt.Sprintf("INSERT INTO %s (ejaOwner, ejaLog, body) VALUES (?,?,?)", tableName), 1, session.Now(), "The quick brown fox")
+		if err != nil {
+			t.Fatal(err)
+		}
+		doc1Id := res.LastId
+
+		res, _ = session.Run(fmt.Sprintf("INSERT INTO %s (ejaOwner, ejaLog, body) VALUES (?,?,?)", tableName), 1, session.Now(), "Jumps over the lazy dog")
+		doc2Id := res.LastId
+
+		ftsTableName := fmt.Sprintf("ejaFTS_%s_%s", tableName, "body")
+
+		countStr, err := session.Value(fmt.Sprintf("SELECT count(*) FROM %s WHERE body MATCH 'fox'", ftsTableName))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if countStr != "1" {
+			t.Errorf("Expected 1 match for 'fox', got %s", countStr)
+		}
+
+		session.Run(fmt.Sprintf("UPDATE %s SET body = 'The lazy fox' WHERE ejaId = ?", tableName), doc2Id)
+		countStr, _ = session.Value(fmt.Sprintf("SELECT count(*) FROM %s WHERE body MATCH 'fox'", ftsTableName))
+		if countStr != "2" {
+			t.Errorf("Expected 2 matches for 'fox' after update, got %s", countStr)
+		}
+
+		session.Run(fmt.Sprintf("DELETE FROM %s WHERE ejaId = ?", tableName), doc1Id)
+		countStr, _ = session.Value(fmt.Sprintf("SELECT count(*) FROM %s WHERE body MATCH 'fox'", ftsTableName))
+		if countStr != "1" {
+			t.Errorf("Expected 1 match for 'fox' after delete, got %s", countStr)
+		}
+
+		session.TableDel(tableName)
+		session.Run(fmt.Sprintf("DROP TABLE IF EXISTS %s", ftsTableName))
+	})
+
 	t.Run("DbClose", func(t *testing.T) {
 		if err := session.Close(); err != nil {
 			t.Error(err)

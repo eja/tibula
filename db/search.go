@@ -100,6 +100,16 @@ func (session *TypeSession) SearchQuery(ownerId int64, tableName string, values 
 				}
 			case "multiple", "sqlMultiple":
 				sqlAnd = fmt.Sprintf(` AND %s LIKE '%%"' || ? || '"%%' `, key)
+			case "fts":
+				if session.Engine == "sqlite" {
+					sqlAnd = fmt.Sprintf(
+						" AND rowid IN (SELECT rowid FROM ejaFTS_%s_%s WHERE %s MATCH ?) ",
+						tableName, key, key,
+					)
+				}
+				if session.Engine == "mysql" {
+					sqlAnd = fmt.Sprintf(` AND MATCH(%s) AGAINST(? IN NATURAL LANGUAGE MODE) `, key)
+				}
 			}
 			if sqlAnd == "" {
 				sqlAnd = fmt.Sprintf(" AND %s LIKE ? ", key)
@@ -118,26 +128,7 @@ func (session *TypeSession) SearchQuery(ownerId int64, tableName string, values 
 }
 
 func (session *TypeSession) SearchCount(query string, args []any) int64 {
-	reFrom := regexp.MustCompile(`(?i)\s+FROM\s+`)
-	reLimit := regexp.MustCompile(`(?i)\s+LIMIT\s+`)
-
-	fromMatches := reFrom.FindAllStringIndex(query, -1)
-	if len(fromMatches) == 0 {
-		return 0
-	}
-
-	fromPos := fromMatches[len(fromMatches)-1][1] - 5
-
-	limitMatches := reLimit.FindAllStringIndex(query, -1)
-	var queryCount string
-
-	if len(limitMatches) > 0 {
-		queryCount = query[fromPos:limitMatches[0][0]]
-	} else {
-		queryCount = query[fromPos:]
-	}
-
-	if result, err := session.Value("SELECT COUNT(*) "+queryCount, args...); err != nil {
+	if result, err := session.Value("SELECT COUNT(*) FROM ("+query+") AS T", args...); err != nil {
 		return 0
 	} else {
 		return session.Number(result)

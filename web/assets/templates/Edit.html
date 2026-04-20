@@ -83,7 +83,7 @@
 						{{end}}
 					</select>
 				</div>
-			{{else if or (eq .Type "textArea") (eq .Type "htmlArea")}}
+			{{else if or (eq .Type "textArea") (eq .Type "fts")}}
 				<div class="col-md-12 mt-3">
 					<label for="ejaValues[{{.Name}}]" class="form-label">{{.Label}}</label><span class="lead position-absolute end-0 me-3">
 					<a href="#" onclick="fieldEditor('{{.Name}}')" title="rich text"><i class="bi bi-text-left"></i></a> &nbsp;

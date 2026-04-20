@@ -204,3 +204,48 @@ func sqliteFieldNameIsValid(name string) error {
 	}
 	return nil
 }
+
+func (session *TypeSession) sqliteFtsAdd(tableName, columnName string) error {
+	if err := sqliteTableNameIsValid(tableName); err != nil {
+		return err
+	}
+	if err := sqliteFieldNameIsValid(columnName); err != nil {
+		return err
+	}
+
+	ftsTableName := fmt.Sprintf("ejaFTS_%s_%s", tableName, columnName)
+
+	createFts := fmt.Sprintf(
+		"CREATE VIRTUAL TABLE IF NOT EXISTS %s USING fts5(%s, content='%s', content_rowid='rowid')",
+		ftsTableName, columnName, tableName,
+	)
+	if _, err := session.Handler.Exec(createFts); err != nil {
+		return err
+	}
+
+	ai := fmt.Sprintf(`
+		CREATE TRIGGER IF NOT EXISTS %s_ai AFTER INSERT ON %s BEGIN
+			INSERT INTO %s(rowid, %s) VALUES (new.rowid, new.%s);
+		END;`, ftsTableName, tableName, ftsTableName, columnName, columnName)
+
+	ad := fmt.Sprintf(`
+		CREATE TRIGGER IF NOT EXISTS %s_ad AFTER DELETE ON %s BEGIN
+			INSERT INTO %s(%s, rowid, %s) VALUES('delete', old.rowid, old.%s);
+		END;`, ftsTableName, tableName, ftsTableName, ftsTableName, columnName, columnName)
+
+	au := fmt.Sprintf(`
+		CREATE TRIGGER IF NOT EXISTS %s_au AFTER UPDATE ON %s BEGIN
+			INSERT INTO %s(%s, rowid, %s) VALUES('delete', old.rowid, old.%s);
+			INSERT INTO %s(rowid, %s) VALUES(new.rowid, new.%s);
+		END;`, ftsTableName, tableName, ftsTableName, ftsTableName, columnName, columnName, ftsTableName, columnName, columnName)
+
+	session.Handler.Exec(ai)
+	session.Handler.Exec(ad)
+	session.Handler.Exec(au)
+
+	syncSql := fmt.Sprintf("INSERT INTO %s(rowid, %s) SELECT rowid, %s FROM %s",
+		ftsTableName, columnName, columnName, tableName)
+	session.Handler.Exec(syncSql)
+
+	return nil
+}

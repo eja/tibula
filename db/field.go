@@ -115,6 +115,15 @@ func (session *TypeSession) FieldAdd(tableName string, fieldName string, fieldTy
 		return err
 	}
 
+	if fieldType == "fts" {
+		if session.Engine == "sqlite" {
+			return session.sqliteFtsAdd(tableName, fieldName)
+		}
+		if session.Engine == "mysql" {
+			return session.mysqlFtsAdd(tableName, fieldName)
+		}
+	}
+
 	return nil
 }
 
