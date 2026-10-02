@@ -111,6 +111,43 @@ function fieldCalendar(name) {
   document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
 
+function initInactivityLogout(idle = 30, warn = 5) {
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="modal fade" id="idleModal" data-bs-backdrop="static">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4 text-center">
+          <h5>Session Expiring</h5>
+          <p class="mb-3">Logging out in ${warn} min due to inactivity.</p>
+          <button class="btn btn-primary" data-bs-dismiss="modal">Stay Logged In</button>
+        </div>
+      </div>
+    </div>`);
+
+  const el = document.getElementById('idleModal');
+  const modal = new bootstrap.Modal(el);
+  let tw, tl;
+
+  const reset = () => {
+    clearTimeout(tw);
+    clearTimeout(tl);
+    modal.hide();
+    tw = setTimeout(() => {
+      modal.show();
+      tl = setTimeout(() => {
+        window.onbeforeunload = null;
+        window.location.href = window.location.origin + window.location.pathname;
+      }, warn * 6e4);
+    }, (idle - warn) * 6e4);
+  };
+
+  el.addEventListener('hidden.bs.modal', reset);
+  ['mousemove', 'keydown', 'scroll', 'touchstart'].forEach(e => {
+    window.addEventListener(e, () => !el.classList.contains('show') && reset(), { passive: true });
+  });
+
+  reset();
+}
+
 function formInit() {
   const f = document.getElementById('ejaForm');
   const o = {};
@@ -132,6 +169,8 @@ function formInit() {
   window.onbeforeunload = function() {
     return null;
   };
+
+  initInactivityLogout(30, 5);
 }
 
 
@@ -176,8 +215,5 @@ window.onload = function() {
   })
   google.accounts.id.renderButton(document.getElementById("google"), {type: "icon"})
   }
-  setTimeout(()=>{ alert("Logging out for inactivity in 5 minutes"); }, 9700*1000);
-  setTimeout(()=>{ window.location.href = window.location.origin + window.location.pathname; }, 10000*1000);
-  
   formInit();
 }

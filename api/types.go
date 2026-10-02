@@ -13,6 +13,7 @@ type Api struct {
 	DefaultSearchOrder  string              `json:"DefaultSearchOrder,omitempty"`
 	FieldNameList       []string            `json:"FieldNameList,omitempty"`
 	Fields              []db.TypeField      `json:"Fields,omitempty"`
+	Html                string              `json:"Html,omitempty"`
 	Id                  int64               `json:"Id,omitempty"`
 	IdList              []int64             `json:"IdList,omitempty"`
 	Info                []string            `json:"Info,omitempty"`
